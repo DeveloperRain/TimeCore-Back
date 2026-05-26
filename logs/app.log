@@ -1,0 +1,223 @@
+2026-05-26 08:31:55 - app - INFO - Health check requested
+2026-05-26 09:19:06 - app - INFO - Health check requested
+2026-05-26 13:21:36 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370
+2026-05-26 13:21:37 - app.services.zk - INFO - Conexion establecida con el reloj
+2026-05-26 13:26:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370
+2026-05-26 13:26:09 - app.services.zk - ERROR - Error de conexion con el reloj: can't reach device (ping 192.168.1.50)
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    conn = zk.connect()
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 192.168.1.50)
+2026-05-26 13:26:09 - app.services.zk - ERROR - Error al obtener asistencias del reloj: Error de conexion: can't reach device (ping 192.168.1.50)
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    conn = zk.connect()
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 192.168.1.50)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 206, in get_attendance_records
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 74, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(e)}")
+ConnectionError: Error de conexion: can't reach device (ping 192.168.1.50)
+2026-05-26 13:32:00 - app - INFO - Health check requested
+2026-05-26 13:32:13 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370
+2026-05-26 13:33:06 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 248, in __send_command
+    self.__sock.send(top)
+    ~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    conn = zk.connect()
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 373, in connect
+    cmd_response = self.__send_command(const.CMD_CONNECT)
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: timed out
+2026-05-26 13:33:06 - app.services.zk - ERROR - Error al obtener informacion del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 248, in __send_command
+    self.__sock.send(top)
+    ~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    conn = zk.connect()
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 373, in connect
+    cmd_response = self.__send_command(const.CMD_CONNECT)
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 87, in get_device_info
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 74, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(e)}")
+ConnectionError: Error de conexion: timed out
+2026-05-26 13:33:28 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370
+2026-05-26 13:34:21 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 248, in __send_command
+    self.__sock.send(top)
+    ~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    conn = zk.connect()
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 373, in connect
+    cmd_response = self.__send_command(const.CMD_CONNECT)
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: timed out
+2026-05-26 13:34:21 - app.services.zk - ERROR - Error al obtener asistencias del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 248, in __send_command
+    self.__sock.send(top)
+    ~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    conn = zk.connect()
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 373, in connect
+    cmd_response = self.__send_command(const.CMD_CONNECT)
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 206, in get_attendance_records
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 74, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(e)}")
+ConnectionError: Error de conexion: timed out
+2026-05-26 13:36:45 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370
+2026-05-26 13:37:38 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 248, in __send_command
+    self.__sock.send(top)
+    ~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    {"force_udp": False, "ommit_ping": True, "label": "TCP sin ping"},
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 373, in connect
+    cmd_response = self.__send_command(const.CMD_CONNECT)
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: timed out
+2026-05-26 13:37:38 - app.services.zk - ERROR - Error al obtener asistencias del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 248, in __send_command
+    self.__sock.send(top)
+    ~~~~~~~~~~~~~~~~^^^^^
+TimeoutError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 63, in _create_connection
+    {"force_udp": False, "ommit_ping": True, "label": "TCP sin ping"},
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 373, in connect
+    cmd_response = self.__send_command(const.CMD_CONNECT)
+  File "C:\Users\Sistemas-Apoyo\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 206, in get_attendance_records
+    "message": f"Usuario {uid} actualizado exitosamente",
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 74, in _create_connection
+    port=PORT,
+ConnectionError: Error de conexion: timed out
+2026-05-26 13:39:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 13:40:21 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-05-26 13:40:21 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-05-26 13:41:22 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-05-26 13:41:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-05-26 13:41:55 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-05-26 13:41:55 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-05-26 13:42:25 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-05-26 13:42:25 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-05-26 13:42:25 - app.services.zk - ERROR - Error al obtener asistencias del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 233, in get_attendance_records
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 101, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-05-26 13:47:12 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 13:48:17 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-05-26 13:48:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-05-26 13:49:18 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-05-26 13:49:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-05-26 13:49:51 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-05-26 13:49:51 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-05-26 13:50:21 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-05-26 13:50:21 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+2026-05-26 13:53:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 13:53:31 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 13:54:13 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-05-26 13:54:13 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-05-26 13:54:33 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-05-26 13:54:33 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-05-26 13:55:14 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-05-26 13:55:14 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-05-26 13:55:34 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-05-26 13:55:34 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-05-26 13:55:48 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-05-26 13:55:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-05-26 13:56:08 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-05-26 13:56:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-05-26 13:56:18 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-05-26 13:56:18 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+2026-05-26 13:56:38 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-05-26 13:56:38 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+2026-05-26 13:56:38 - app.services.zk - ERROR - Error al obtener informacion del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 141, in get_device_info
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\zk_service.py", line 128, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-05-26 14:30:20 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 14:30:20 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-26 14:30:34 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 14:30:34 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-26 14:35:36 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 14:35:36 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-26 14:35:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-26 14:35:48 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
