@@ -98,17 +98,15 @@ class DeviceInfo(BaseModel):
 
 
 class AttendanceRecord(BaseModel):
-    uid: Optional[int] = Field(None, description="ID unico del usuario")
-    user_id: str = Field(..., description="ID del usuario")
     name: str = Field(..., description="Nombre del usuario")
+    user_id: str = Field(..., description="ID del usuario")
     timestamp: str = Field(..., description="Fecha y hora de la asistencia")
     status: str = Field(..., description="Estado de la asistencia")
 
     class Config:
         examples = [{
-            "uid": 1,
-            "user_id": "001",
             "name": "Juan Garcia",
+            "user_id": "001",
             "timestamp": "2026-05-25 08:45:30",
             "status": "check_in"
         }]

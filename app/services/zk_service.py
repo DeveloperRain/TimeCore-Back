@@ -1,15 +1,14 @@
 import socket
-import subprocess
 from typing import Any, Dict, List
 
 from zk import ZK
 
-from app.config.logger import get_logger, log_error, log_exception
+from app.config.logger import get_logger, log_exception
 
 IP_RELOJ = "192.168.1.50"
 PORT = 4370
 TIMEOUT = 30
-PASSWORD = 0
+PASSWORD = 10
 
 logger = get_logger("services.zk")
 
@@ -56,40 +55,7 @@ def call_if_available(conn, method_name: str, default: str = "Desconocido"):
         return default
 
 
-def ping_reached_target(output: str) -> bool:
-    output_lower = output.lower()
-    return IP_RELOJ in output and "ttl=" in output_lower
-
-
 class ZKService:
-    @staticmethod
-    def check_network_status() -> Dict[str, Any]:
-        ping_result = subprocess.run(
-            ["ping", "-n", "1", IP_RELOJ],
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-
-        tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        tcp_socket.settimeout(5)
-        try:
-            tcp_available = tcp_socket.connect_ex((IP_RELOJ, PORT)) == 0
-        finally:
-            tcp_socket.close()
-
-        ping_output = ping_result.stdout.strip() or ping_result.stderr.strip()
-
-        return {
-            "ip": IP_RELOJ,
-            "port": PORT,
-            "ping_ok": ping_reached_target(ping_output),
-            "tcp_port_open": tcp_available,
-            "zk_timeout_seconds": TIMEOUT,
-            "zk_password": PASSWORD,
-            "ping_output": ping_output,
-        }
-
     @staticmethod
     def _create_connection():
         attempts = [
@@ -131,7 +97,7 @@ class ZKService:
             log_exception(logger, last_error, "El reloj rechazo la conexion")
             raise ConnectionError("El dispositivo rechazo la conexion")
 
-        log_error(logger, last_error, "Error de conexion con el reloj")
+        log_exception(logger, last_error, "Error de conexion con el reloj")
         raise ConnectionError(f"Error de conexion: {str(last_error)}")
 
     @staticmethod
