@@ -1,3 +1,4 @@
+# El archivo main se encarga de configurar la aplicacion de FasAPI
 from fastapi import FastAPI
 from app.config.logger import setup_logger
 from app.routes.users import router as users_router

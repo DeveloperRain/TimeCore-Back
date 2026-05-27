@@ -1,3 +1,4 @@
+# El servicio ZKService se encarga de manejar la conexion y operaciones con el reloj checador ZKTeco, utilizando la libreria zk.
 import socket
 from typing import Any, Dict, List
 

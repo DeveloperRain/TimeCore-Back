@@ -221,3 +221,12 @@ ConnectionError: Error de conexion: timed out
 2026-05-26 14:35:36 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-05-26 14:35:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-05-26 14:35:48 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-27 08:14:24 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-27 08:14:24 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-27 08:14:47 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-27 08:14:47 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-27 09:24:53 - app - INFO - Health check requested
+2026-05-27 09:25:04 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-27 09:25:04 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-27 09:25:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-27 09:25:17 - app.services.zk - INFO - Conexion establecida con el reloj por TCP

@@ -7,19 +7,6 @@ router = APIRouter(
     tags=["device"]
 )
 
-
-@router.get(
-    "/status",
-    summary="Diagnosticar conexion del dispositivo",
-    description="Revisa ping y puerto del reloj sin usar el protocolo ZK"
-)
-def get_device_status():
-    try:
-        return ZKService.check_network_status()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al diagnosticar conexion del dispositivo: {str(e)}")
-
-
 @router.get(
     "/info",
     summary="Obtener informacion del dispositivo",
