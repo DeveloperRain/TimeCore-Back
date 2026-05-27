@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import FileResponse, StreamingResponse
+from io import BytesIO
 from app.config.logger import get_logger, log_exception
 from app.services.zk_service import ZKService
+from app.services.excel_service import build_attendance_excel
 from app.schemas.user_schema import (
     UserCreate, UserUpdate, UserResponse, AttendanceRecord, ErrorResponse
 )
@@ -140,3 +143,31 @@ def get_attendance():
     except Exception as e:
         log_exception(logger, e, "Error al obtener asistencias")
         raise HTTPException(status_code=500, detail=f"Error al obtener asistencias: {str(e)}")
+
+
+@router.get(
+    "/attendance/download",
+    summary="Descargar registros de asistencia en Excel",
+    responses={
+        200: {"description": "Archivo Excel descargado"},
+        503: {"description": "El dispositivo no está disponible"}
+    }
+)
+def download_attendance_excel():
+    try:
+        asistencias = ZKService.get_attendance_records()
+        records_dict = [record.__dict__ if hasattr(record, '__dict__') else record for record in asistencias]
+        excel_bytes = build_attendance_excel(records_dict)
+
+        return StreamingResponse(
+            BytesIO(excel_bytes),
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=asistencias.xlsx"}
+        )
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
+    except ConnectionError:
+        raise HTTPException(status_code=503, detail="El dispositivo no está disponible")
+    except Exception as e:
+        log_exception(logger, e, "Error al descargar asistencias")
+        raise HTTPException(status_code=500, detail=f"Error al descargar asistencias: {str(e)}")
