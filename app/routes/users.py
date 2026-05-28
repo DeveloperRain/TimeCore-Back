@@ -1,15 +1,16 @@
 from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 from io import BytesIO
+from datetime import datetime
 from app.config.logger import get_logger, log_exception
 from app.services.zk_service import ZKService
+from app.services.db_service import DBService
 from app.services.excel_service import build_attendance_excel
 from app.schemas.user_schema import (
     UserCreate, UserUpdate, UserResponse, AttendanceRecord, ErrorResponse
 )
 
 logger = get_logger("routes.users")
-
 router = APIRouter(
     prefix="/users",
     tags=["users"],
@@ -20,7 +21,7 @@ router = APIRouter(
     "/",
     response_model=list[UserResponse],
     summary="Obtener todos los usuarios",
-    description="Obtiene la lista de todos los usuarios registrados en el reloj biométrico",
+    description="Obtiene la lista de todos los usuarios registrados en el reloj biométrico y sincroniza con BD",
     responses={
         200: {"description": "Lista de usuarios obtenida exitosamente"},
         503: {"description": "El dispositivo no está disponible"}
@@ -28,7 +29,20 @@ router = APIRouter(
 )
 def get_users():
     try:
+        
         usuarios = ZKService.get_all_users()
+        # Sincronizar con BD
+        for user in usuarios:
+            try:
+                DBService.save_user(
+                    uid=user.uid,
+                    user_id=user.user_id,
+                    name=user.name,
+                    role=user.role
+                )
+            except Exception as e:
+                logger.warning(f"Error al sincronizar usuario {user.uid} en BD: {str(e)}")
+
         return usuarios
     except TimeoutError:
         raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
@@ -41,7 +55,7 @@ def get_users():
     "/",
     response_model=dict,
     summary="Crear nuevo usuario",
-    description="Crea un nuevo usuario en el reloj biométrico con los datos proporcionados",
+    description="Crea un nuevo usuario en el reloj biométrico y sincroniza en BD",
     responses={
         200: {"description": "Usuario creado exitosamente"},
         400: {"description": "Datos inválidos"},
@@ -56,6 +70,17 @@ def create_user(user: UserCreate):
             name=user.name,
             role=user.role
         )
+        # Sincronizar con BD
+        try:
+            DBService.save_user(
+                uid=user.uid,
+                user_id=user.user_id,
+                name=user.name,
+                role=user.role
+            )
+        except Exception as e:
+            logger.warning(f"Error al sincronizar usuario {user.uid} en BD: {str(e)}")
+
         return result
     except TimeoutError:
         raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
@@ -68,7 +93,7 @@ def create_user(user: UserCreate):
     "/{uid}",
     response_model=dict,
     summary="Actualizar usuario",
-    description="Actualiza los datos de un usuario existente. Puede actualizar nombre, ID de usuario o ambos",
+    description="Actualiza los datos de un usuario en el reloj y sincroniza en BD",
     responses={
         200: {"description": "Usuario actualizado exitosamente"},
         400: {"description": "Datos inválidos o usuario no encontrado"},
@@ -89,6 +114,17 @@ def update_user(uid: int, user: UserUpdate):
             name=user.name,
             role=user.role
         )
+        # Sincronizar con BD
+        try:
+            DBService.save_user(
+                uid=uid,
+                user_id=user.user_id or result.get("user_id"),
+                name=user.name or result.get("name"),
+                role=user.role or result.get("role")
+            )
+        except Exception as e:
+            logger.warning(f"Error al sincronizar usuario {uid} en BD: {str(e)}")
+
         return result
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -104,7 +140,7 @@ def update_user(uid: int, user: UserUpdate):
 @router.delete(
     "/{uid}",
     summary="Eliminar usuario",
-    description="Elimina un usuario del reloj biométrico",
+    description="Elimina un usuario del reloj biométrico y marca como eliminado en BD",
     responses={
         200: {"description": "Usuario eliminado exitosamente"},
         404: {"description": "Usuario no encontrado"},
@@ -114,6 +150,12 @@ def update_user(uid: int, user: UserUpdate):
 def delete_user(uid: int):
     try:
         result = ZKService.delete_user(uid)
+        # Sincronizar con BD
+        try:
+            DBService.delete_user(uid)
+        except Exception as e:
+            logger.warning(f"Error al eliminar usuario {uid} en BD: {str(e)}")
+
         return result
     except TimeoutError:
         raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
@@ -126,7 +168,7 @@ def delete_user(uid: int):
     "/attendance",
     response_model=list[AttendanceRecord],
     summary="Obtener registros de asistencia",
-    description="Obtiene todos los registros de asistencia del reloj biométrico",
+    description="Obtiene todos los registros de asistencia del reloj biométrico y sincroniza en BD",
     responses={
         200: {"description": "Registros de asistencia obtenidos exitosamente"},
         503: {"description": "El dispositivo no está disponible"}
@@ -135,6 +177,19 @@ def delete_user(uid: int):
 def get_attendance():
     try:
         asistencias = ZKService.get_attendance_records()
+
+        # Sincronizar con BD
+        try:
+            records_to_save = []
+            for att in asistencias:
+                att_dict = att.__dict__ if hasattr(att, '__dict__') else att
+                records_to_save.append(att_dict)
+
+            if records_to_save:
+                DBService.save_bulk_attendance(records_to_save)
+        except Exception as e:
+            logger.warning(f"Error al sincronizar asistencias en BD: {str(e)}")
+
         return asistencias
     except TimeoutError:
         raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
@@ -148,6 +203,7 @@ def get_attendance():
 @router.get(
     "/attendance/download",
     summary="Descargar registros de asistencia en Excel",
+    description="Descarga registros de asistencia del reloj en formato Excel",
     responses={
         200: {"description": "Archivo Excel descargado"},
         503: {"description": "El dispositivo no está disponible"}
@@ -171,3 +227,27 @@ def download_attendance_excel():
     except Exception as e:
         log_exception(logger, e, "Error al descargar asistencias")
         raise HTTPException(status_code=500, detail=f"Error al descargar asistencias: {str(e)}")
+
+
+@router.get(
+    "/attendance/report",
+    summary="Obtener reporte de asistencia por fecha",
+    description="Obtiene registros de asistencia de la BD filtrados por rango de fechas",
+    responses={
+        200: {"description": "Registros obtenidos"},
+        400: {"description": "Fechas inválidas"}
+    }
+)
+def get_attendance_report(start_date: str, end_date: str):
+    try:
+        start = datetime.fromisoformat(start_date)
+        end = datetime.fromisoformat(end_date)
+
+        records = DBService.get_attendance_by_date_range(start, end)
+        return [record.to_dict() for record in records]
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Formato de fecha inválido. Use ISO format: YYYY-MM-DD")
+    except Exception as e:
+        logger.error(f"Error al obtener reporte: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al obtener reporte: {str(e)}")
+

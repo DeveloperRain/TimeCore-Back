@@ -240,3 +240,46 @@ ConnectionError: Error de conexion: timed out
 2026-05-27 11:29:33 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-05-27 11:30:00 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-05-27 11:30:01 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 09:15:01 - app - INFO - Health check requested
+2026-05-28 09:27:36 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 09:28:40 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-05-28 09:28:40 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-05-28 09:29:41 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-05-28 09:29:41 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-05-28 09:30:14 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-05-28 09:30:14 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-05-28 09:30:44 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-05-28 09:30:44 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-05-28 11:32:35 - app - INFO - Health check requested
+2026-05-28 11:37:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:37:06 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 11:37:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:37:49 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 11:38:37 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:38:37 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 11:38:37 - app.services.db - INFO - Usuario UID 30 guardado en BD
+2026-05-28 11:39:34 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:39:34 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 11:39:36 - app.services.db - INFO - Usuario UID 30 actualizado en BD
+2026-05-28 11:39:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:39:48 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 11:39:49 - app.services.db - INFO - Usuario UID 30 marcado como eliminado en BD
+2026-05-28 11:40:11 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:40:11 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 11:40:34 - app.services.db - INFO - Se guardaron 7727 registros de asistencia en BD
+2026-05-28 11:42:40 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 11:42:40 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 12:11:57 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 12:11:57 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 12:12:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 12:12:09 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 12:12:30 - app - INFO - Health check requested
+2026-05-28 12:23:27 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 12:23:27 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 12:25:25 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 12:25:25 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 12:28:26 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 12:28:26 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 12:34:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 12:34:08 - app.services.zk - INFO - Conexion establecida con el reloj por TCP

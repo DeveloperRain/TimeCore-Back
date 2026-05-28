@@ -259,3 +259,4 @@ class ZKService:
         finally:
             if conn:
                 ZKService._disconnect(conn)
+
