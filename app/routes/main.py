@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from app.config.logger import setup_logger
 from app.middleware.error_handler import ErrorHandlerMiddleware
-from app.routes.users import router as users_router
+from app.routes.usuarios import router as usuarios_router
 from app.routes.device import router as device_router
 from app.database.connection import create_tables
 from app.utils.response import success
@@ -29,7 +29,7 @@ app.add_middleware(ErrorHandlerMiddleware)
 # Crear tablas en la base de datos al iniciar
 create_tables()
 
-app.include_router(users_router)
+app.include_router(usuarios_router)
 app.include_router(device_router)
 
 

@@ -24,7 +24,7 @@ def test_get_attendance_json():
         }
     ]
 
-    with patch('app.routes.users.ZKService.get_attendance_records', return_value=mock_attendance):
+    with patch('app.routes.usuarios.ZKService.get_attendance_records', return_value=mock_attendance):
         response = client.get("/users/attendance")
         assert response.status_code == 200
         assert len(response.json()) == 2
@@ -51,7 +51,7 @@ def test_get_attendance_download_excel():
         }
     ]
 
-    with patch('app.routes.users.ZKService.get_attendance_records', return_value=mock_attendance):
+    with patch('app.routes.usuarios.ZKService.get_attendance_records', return_value=mock_attendance):
         response = client.get("/users/attendance/download")
         assert response.status_code == 200
         assert "spreadsheetml" in response.headers["content-type"]
@@ -72,7 +72,7 @@ def test_get_attendance_both_endpoints():
         }
     ]
 
-    with patch('app.routes.users.ZKService.get_attendance_records', return_value=mock_attendance):
+    with patch('app.routes.usuarios.ZKService.get_attendance_records', return_value=mock_attendance):
         # Get JSON
         response_json = client.get("/users/attendance")
         assert response_json.status_code == 200
