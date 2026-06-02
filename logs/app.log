@@ -449,3 +449,78 @@ DETAIL:  La llave (uid)=(4) no está presente en la tabla «users».
 2026-06-02 14:43:38 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-06-02 14:47:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-06-02 14:47:15 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 15:28:20 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 15:28:21 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-02 15:28:22 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-02 15:28:23 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-02 15:28:36 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 15:28:37 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-02 15:28:38 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-02 15:28:39 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-02 15:29:26 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 15:29:27 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 15:29:52 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-02 15:52:43 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 15:52:43 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-02 15:52:45 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 22 actualizado en BD
