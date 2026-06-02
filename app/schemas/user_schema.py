@@ -122,3 +122,4 @@ class ErrorResponse(BaseModel):
             "error": "Usuario no encontrado",
             "code": "USER_NOT_FOUND"
         }]
+

@@ -1,10 +1,12 @@
 """Configuración de conexión a base de datos con SQLAlchemy."""
 import os
+from urllib.parse import quote_plus
 from sqlalchemy import create_engine, pool
 from sqlalchemy.orm import declarative_base, sessionmaker
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 # Por defecto usa SQLite (sin servidor externo)
 # Para PostgreSQL, cambia a: postgresql://user:password@host:port/database
@@ -14,10 +16,15 @@ DB_NAME = os.getenv("DB_NAME", "zk_attendance")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
 DB_ENGINE = os.getenv("DB_ENGINE", "sqlite")  # "sqlite" o "postgresql"
+DATABASE_URL_ENV = os.getenv("DATABASE_URL")
 
 # Configurar URL según el motor
-if DB_ENGINE.lower() == "postgresql":
-    DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+if DATABASE_URL_ENV:
+    DATABASE_URL = DATABASE_URL_ENV
+elif DB_ENGINE.lower() == "postgresql":
+    user = quote_plus(DB_USER)
+    password = quote_plus(DB_PASSWORD)
+    DATABASE_URL = f"postgresql+psycopg://{user}:{password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 else:
     # SQLite - archivo local (recomendado para desarrollo)
     DATABASE_URL = f"sqlite:///./zk_attendance.db"
@@ -46,4 +53,4 @@ def create_tables():
     from app.models.attendance import AttendanceRecord
 
     Base.metadata.create_all(bind=engine)
-
+       

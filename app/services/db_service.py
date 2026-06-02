@@ -55,7 +55,7 @@ class DBService:
 
     @staticmethod
     def delete_user(uid: int, db: Optional[Session] = None) -> bool:
-        """Marca un usuario como eliminado (soft delete)."""
+        """Elimina un usuario de la BD conservando sus asistencias historicas."""
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -65,9 +65,13 @@ class DBService:
         try:
             user = db.query(User).filter(User.uid == uid).first()
             if user:
-                user.deleted_at = datetime.utcnow()
+                db.query(AttendanceRecord).filter(AttendanceRecord.uid == uid).update(
+                    {AttendanceRecord.uid: None},
+                    synchronize_session=False
+                )
+                db.delete(user)
                 db.commit()
-                logger.info(f"Usuario UID {uid} marcado como eliminado en BD")
+                logger.info(f"Usuario UID {uid} eliminado de BD")
                 return True
             return False
         except Exception as e:

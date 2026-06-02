@@ -24,5 +24,4 @@ def root():
     return {
         "status": "online",
         "version": "1.0.0"
-    }
-
+    } 

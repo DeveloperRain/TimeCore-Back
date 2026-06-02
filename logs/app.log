@@ -283,3 +283,135 @@ NoneType: None
 2026-05-28 12:28:26 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-05-28 12:34:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-05-28 12:34:08 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 13:05:52 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 13:05:52 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 13:12:03 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 13:12:03 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 13:12:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 13:12:32 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 13:12:54 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-05-28 15:46:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-28 15:46:09 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-05-28 15:46:33 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-05-29 15:53:40 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-05-29 15:54:44 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-05-29 15:54:44 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-05-29 15:55:45 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-05-29 15:55:45 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-05-29 15:56:18 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-05-29 15:56:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-05-29 15:56:48 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-05-29 15:56:48 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-02 09:17:02 - app - INFO - Health check requested
+2026-06-02 09:33:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 09:33:06 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 09:33:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 09:33:23 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 09:33:48 - app.services.db - ERROR - Error al guardar asistencias en bulk: (psycopg.errors.ForeignKeyViolation) inserción o actualización en la tabla «attendance_records» viola la llave foránea «attendance_records_uid_fkey»
+DETAIL:  La llave (uid)=(4) no está presente en la tabla «users».
+[SQL: INSERT INTO attendance_records (uid, user_id, name, timestamp, status, synced_at) SELECT p0::INTEGER, p1::VARCHAR, p2::VARCHAR, p3::TIMESTAMP WITHOUT TIME ZONE, p4::VARCHAR, p5::TIMESTAMP WITHOUT TIME ZONE FROM (VALUES (%(uid__0)s::INTEGER, %(user_id ... 204231 characters truncated ... 5, sen_counter) ORDER BY sen_counter RETURNING attendance_records.id, attendance_records.id AS id__1]
+[parameters: {'user_id__0': '4', 'uid__0': 4, 'name__0': 'DANIEL 4', 'timestamp__0': datetime.datetime(2020, 4, 16, 6, 27, 24), 'status__0': 'check_in', 'synced_at__0': datetime.datetime(2026, 6, 2, 15, 33, 48, 428036), 'user_id__1': '4', 'uid__1': 4, 'name__1': 'DANIEL 4', 'timestamp__1': datetime.datetime(2020, 4, 15, 18, 35, 49), 'status__1': 'check_in', 'synced_at__1': datetime.datetime(2026, 6, 2, 15, 33, 48, 428042), 'user_id__2': '3', 'uid__2': 3, 'name__2': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__2': datetime.datetime(2020, 4, 15, 18, 35, 53), 'status__2': 'check_in', 'synced_at__2': datetime.datetime(2026, 6, 2, 15, 33, 48, 428044), 'user_id__3': '4', 'uid__3': 4, 'name__3': 'DANIEL 4', 'timestamp__3': datetime.datetime(2020, 4, 16, 8, 13, 42), 'status__3': 'check_in', 'synced_at__3': datetime.datetime(2026, 6, 2, 15, 33, 48, 428046), 'user_id__4': '2', 'uid__4': 2, 'name__4': 'MIGUELC 2', 'timestamp__4': datetime.datetime(2020, 4, 16, 15, 12, 37), 'status__4': 'check_in', 'synced_at__4': datetime.datetime(2026, 6, 2, 15, 33, 48, 428047), 'user_id__5': '3', 'uid__5': 3, 'name__5': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__5': datetime.datetime(2020, 4, 16, 18, 22, 54), 'status__5': 'check_in', 'synced_at__5': datetime.datetime(2026, 6, 2, 15, 33, 48, 428048), 'user_id__6': '4', 'uid__6': 4, 'name__6': 'DANIEL 4', 'timestamp__6': datetime.datetime(2020, 4, 16, 18, 22, 59), 'status__6': 'check_in', 'synced_at__6': datetime.datetime(2026, 6, 2, 15, 33, 48, 428049), 'user_id__7': '3', 'uid__7': 3, 'name__7': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__7': datetime.datetime(2020, 4, 17, 7, 58, 27), 'status__7': 'check_in', 'synced_at__7': datetime.datetime(2026, 6, 2, 15, 33, 48, 428051), 'user_id__8': '4', 'uid__8': 4 ... 5900 parameters truncated ... 'status__991': 'check_in', 'synced_at__991': datetime.datetime(2026, 6, 2, 15, 33, 48, 429175), 'user_id__992': '7', 'uid__992': 7, 'name__992': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__992': datetime.datetime(2020, 12, 1, 17, 31, 29), 'status__992': 'check_in', 'synced_at__992': datetime.datetime(2026, 6, 2, 15, 33, 48, 429176), 'user_id__993': '7', 'uid__993': 7, 'name__993': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__993': datetime.datetime(2020, 12, 1, 17, 32, 21), 'status__993': 'check_in', 'synced_at__993': datetime.datetime(2026, 6, 2, 15, 33, 48, 429178), 'user_id__994': '6', 'uid__994': 6, 'name__994': 'Brenda Trujillo Ruiz', 'timestamp__994': datetime.datetime(2020, 12, 1, 17, 32, 44), 'status__994': 'check_in', 'synced_at__994': datetime.datetime(2026, 6, 2, 15, 33, 48, 429179), 'user_id__995': '6', 'uid__995': 6, 'name__995': 'Brenda Trujillo Ruiz', 'timestamp__995': datetime.datetime(2020, 12, 2, 7, 34), 'status__995': 'check_in', 'synced_at__995': datetime.datetime(2026, 6, 2, 15, 33, 48, 429180), 'user_id__996': '7', 'uid__996': 7, 'name__996': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__996': datetime.datetime(2020, 12, 2, 7, 34, 11), 'status__996': 'check_in', 'synced_at__996': datetime.datetime(2026, 6, 2, 15, 33, 48, 429181), 'user_id__997': '3', 'uid__997': 3, 'name__997': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__997': datetime.datetime(2020, 12, 2, 7, 34, 19), 'status__997': 'check_in', 'synced_at__997': datetime.datetime(2026, 6, 2, 15, 33, 48, 429182), 'user_id__998': '6', 'uid__998': 6, 'name__998': 'Brenda Trujillo Ruiz', 'timestamp__998': datetime.datetime(2020, 12, 2, 13, 0, 52), 'status__998': 'check_in', 'synced_at__998': datetime.datetime(2026, 6, 2, 15, 33, 48, 429183), 'user_id__999': '7', 'uid__999': 7, 'name__999': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__999': datetime.datetime(2020, 12, 2, 13, 1, 1), 'status__999': 'check_in', 'synced_at__999': datetime.datetime(2026, 6, 2, 15, 33, 48, 429184)}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-06-02 09:33:48 - app.routes.users - WARNING - Error al sincronizar asistencias en BD: (psycopg.errors.ForeignKeyViolation) inserción o actualización en la tabla «attendance_records» viola la llave foránea «attendance_records_uid_fkey»
+DETAIL:  La llave (uid)=(4) no está presente en la tabla «users».
+[SQL: INSERT INTO attendance_records (uid, user_id, name, timestamp, status, synced_at) SELECT p0::INTEGER, p1::VARCHAR, p2::VARCHAR, p3::TIMESTAMP WITHOUT TIME ZONE, p4::VARCHAR, p5::TIMESTAMP WITHOUT TIME ZONE FROM (VALUES (%(uid__0)s::INTEGER, %(user_id ... 204231 characters truncated ... 5, sen_counter) ORDER BY sen_counter RETURNING attendance_records.id, attendance_records.id AS id__1]
+[parameters: {'user_id__0': '4', 'uid__0': 4, 'name__0': 'DANIEL 4', 'timestamp__0': datetime.datetime(2020, 4, 16, 6, 27, 24), 'status__0': 'check_in', 'synced_at__0': datetime.datetime(2026, 6, 2, 15, 33, 48, 428036), 'user_id__1': '4', 'uid__1': 4, 'name__1': 'DANIEL 4', 'timestamp__1': datetime.datetime(2020, 4, 15, 18, 35, 49), 'status__1': 'check_in', 'synced_at__1': datetime.datetime(2026, 6, 2, 15, 33, 48, 428042), 'user_id__2': '3', 'uid__2': 3, 'name__2': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__2': datetime.datetime(2020, 4, 15, 18, 35, 53), 'status__2': 'check_in', 'synced_at__2': datetime.datetime(2026, 6, 2, 15, 33, 48, 428044), 'user_id__3': '4', 'uid__3': 4, 'name__3': 'DANIEL 4', 'timestamp__3': datetime.datetime(2020, 4, 16, 8, 13, 42), 'status__3': 'check_in', 'synced_at__3': datetime.datetime(2026, 6, 2, 15, 33, 48, 428046), 'user_id__4': '2', 'uid__4': 2, 'name__4': 'MIGUELC 2', 'timestamp__4': datetime.datetime(2020, 4, 16, 15, 12, 37), 'status__4': 'check_in', 'synced_at__4': datetime.datetime(2026, 6, 2, 15, 33, 48, 428047), 'user_id__5': '3', 'uid__5': 3, 'name__5': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__5': datetime.datetime(2020, 4, 16, 18, 22, 54), 'status__5': 'check_in', 'synced_at__5': datetime.datetime(2026, 6, 2, 15, 33, 48, 428048), 'user_id__6': '4', 'uid__6': 4, 'name__6': 'DANIEL 4', 'timestamp__6': datetime.datetime(2020, 4, 16, 18, 22, 59), 'status__6': 'check_in', 'synced_at__6': datetime.datetime(2026, 6, 2, 15, 33, 48, 428049), 'user_id__7': '3', 'uid__7': 3, 'name__7': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__7': datetime.datetime(2020, 4, 17, 7, 58, 27), 'status__7': 'check_in', 'synced_at__7': datetime.datetime(2026, 6, 2, 15, 33, 48, 428051), 'user_id__8': '4', 'uid__8': 4 ... 5900 parameters truncated ... 'status__991': 'check_in', 'synced_at__991': datetime.datetime(2026, 6, 2, 15, 33, 48, 429175), 'user_id__992': '7', 'uid__992': 7, 'name__992': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__992': datetime.datetime(2020, 12, 1, 17, 31, 29), 'status__992': 'check_in', 'synced_at__992': datetime.datetime(2026, 6, 2, 15, 33, 48, 429176), 'user_id__993': '7', 'uid__993': 7, 'name__993': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__993': datetime.datetime(2020, 12, 1, 17, 32, 21), 'status__993': 'check_in', 'synced_at__993': datetime.datetime(2026, 6, 2, 15, 33, 48, 429178), 'user_id__994': '6', 'uid__994': 6, 'name__994': 'Brenda Trujillo Ruiz', 'timestamp__994': datetime.datetime(2020, 12, 1, 17, 32, 44), 'status__994': 'check_in', 'synced_at__994': datetime.datetime(2026, 6, 2, 15, 33, 48, 429179), 'user_id__995': '6', 'uid__995': 6, 'name__995': 'Brenda Trujillo Ruiz', 'timestamp__995': datetime.datetime(2020, 12, 2, 7, 34), 'status__995': 'check_in', 'synced_at__995': datetime.datetime(2026, 6, 2, 15, 33, 48, 429180), 'user_id__996': '7', 'uid__996': 7, 'name__996': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__996': datetime.datetime(2020, 12, 2, 7, 34, 11), 'status__996': 'check_in', 'synced_at__996': datetime.datetime(2026, 6, 2, 15, 33, 48, 429181), 'user_id__997': '3', 'uid__997': 3, 'name__997': 'TOMAS  RODRIGUEZ SALVADO', 'timestamp__997': datetime.datetime(2020, 12, 2, 7, 34, 19), 'status__997': 'check_in', 'synced_at__997': datetime.datetime(2026, 6, 2, 15, 33, 48, 429182), 'user_id__998': '6', 'uid__998': 6, 'name__998': 'Brenda Trujillo Ruiz', 'timestamp__998': datetime.datetime(2020, 12, 2, 13, 0, 52), 'status__998': 'check_in', 'synced_at__998': datetime.datetime(2026, 6, 2, 15, 33, 48, 429183), 'user_id__999': '7', 'uid__999': 7, 'name__999': 'JOAQUIN  RODRIGUEZ SALVA', 'timestamp__999': datetime.datetime(2020, 12, 2, 13, 1, 1), 'status__999': 'check_in', 'synced_at__999': datetime.datetime(2026, 6, 2, 15, 33, 48, 429184)}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-06-02 09:38:34 - app - INFO - Health check requested
+2026-06-02 09:38:46 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 09:38:47 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 09:48:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 09:52:02 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 09:52:03 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 1 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 2 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 3 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 4 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 5 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 6 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 7 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 8 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 9 guardado en BD
+2026-06-02 09:52:04 - app.services.db - INFO - Usuario UID 10 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 11 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 12 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 13 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 14 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 15 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 16 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 17 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 18 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 19 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 20 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 21 guardado en BD
+2026-06-02 09:52:05 - app.services.db - INFO - Usuario UID 25 guardado en BD
+2026-06-02 10:00:40 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 10:00:40 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 10:00:41 - app.services.db - INFO - Usuario UID 30 guardado en BD
+2026-06-02 10:01:02 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 10:01:02 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-02 10:01:03 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-02 10:01:04 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-02 10:01:05 - app.services.db - INFO - Usuario UID 25 actualizado en BD
+2026-06-02 10:01:05 - app.services.db - INFO - Usuario UID 30 actualizado en BD
+2026-06-02 10:02:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 10:02:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 10:02:07 - app.services.db - INFO - Usuario UID 30 actualizado en BD
+2026-06-02 10:03:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 10:03:17 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 10:03:18 - app.services.db - INFO - Usuario UID 30 marcado como eliminado en BD
+2026-06-02 10:03:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 10:03:33 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 10:03:34 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-02 10:03:34 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-02 10:03:34 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-02 10:03:34 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-02 10:03:34 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-02 10:03:34 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-02 10:03:35 - app.services.db - INFO - Usuario UID 25 actualizado en BD
+2026-06-02 11:27:58 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 11:27:58 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 11:28:24 - app.services.db - INFO - Se guardaron 7727 registros de asistencia en BD
+2026-06-02 11:31:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 11:31:51 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 11:32:04 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 11:32:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 11:35:14 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 11:35:14 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 11:35:15 - app.services.db - INFO - Usuario UID 25 marcado como eliminado en BD2026-06-02 11:37:55 - app.services.db - INFO - Usuario UID 25 eliminado de BD
+2026-06-02 11:38:30 - app.services.db - INFO - Usuario UID 30 eliminado de BD

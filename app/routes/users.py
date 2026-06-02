@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, time
 from app.config.logger import get_logger, log_exception
 from app.services.zk_service import ZKService
 from app.services.db_service import DBService
@@ -17,6 +17,25 @@ router = APIRouter(
     responses={503: {"model": ErrorResponse, "description": "Servicio no disponible"}}
 )
 
+DATE_FORMATS = (
+    "%d-%m-%Y",
+    "%d/%m/%Y",
+)
+
+
+def parse_report_date(value: str) -> datetime.date:
+    value = value.strip()
+    for date_format in DATE_FORMATS:
+        try:
+            return datetime.strptime(value, date_format).date()
+        except ValueError:
+            continue
+
+    raise HTTPException(
+        status_code=400,
+        detail="Formato de fecha invalido. Usa DD-MM-YYYY o DD/MM/YYYY",
+    )
+
 @router.get(
     "/",
     response_model=list[UserResponse],
@@ -29,19 +48,18 @@ router = APIRouter(
 )
 def get_users():
     try:
-        
         usuarios = ZKService.get_all_users()
         # Sincronizar con BD
         for user in usuarios:
             try:
                 DBService.save_user(
-                    uid=user.uid,
-                    user_id=user.user_id,
-                    name=user.name,
-                    role=user.role
+                    uid=user["uid"],
+                    user_id=user["user_id"],
+                    name=user["name"],
+                    role=user["role"]
                 )
             except Exception as e:
-                logger.warning(f"Error al sincronizar usuario {user.uid} en BD: {str(e)}")
+                logger.warning(f"Error al sincronizar usuario {user.get('uid')} en BD: {str(e)}")
 
         return usuarios
     except TimeoutError:
@@ -90,7 +108,7 @@ def create_user(user: UserCreate):
         raise HTTPException(status_code=500, detail=f"Error al crear usuario: {str(e)}")
 
 @router.put(
-    "/{uid}",
+    "/{uid:int}",
     response_model=dict,
     summary="Actualizar usuario",
     description="Actualiza los datos de un usuario en el reloj y sincroniza en BD",
@@ -138,7 +156,7 @@ def update_user(uid: int, user: UserUpdate):
         raise HTTPException(status_code=500, detail=f"Error al actualizar usuario: {str(e)}")
 
 @router.delete(
-    "/{uid}",
+    "/{uid:int}",
     summary="Eliminar usuario",
     description="Elimina un usuario del reloj biométrico y marca como eliminado en BD",
     responses={
@@ -238,16 +256,24 @@ def download_attendance_excel():
         400: {"description": "Fechas inválidas"}
     }
 )
-def get_attendance_report(start_date: str, end_date: str):
+def get_attendance_report(
+    start_date: str = Query(..., description="Fecha inicial. Formato: DD-MM-YYYY o DD/MM/YYYY"),
+    end_date: str = Query(..., description="Fecha final. Formato: DD-MM-YYYY o DD/MM/YYYY"),
+):
     try:
-        start = datetime.fromisoformat(start_date)
-        end = datetime.fromisoformat(end_date)
+        parsed_start_date = parse_report_date(start_date)
+        parsed_end_date = parse_report_date(end_date)
+
+        if parsed_start_date > parsed_end_date:
+            raise HTTPException(status_code=400, detail="La fecha inicial no puede ser mayor que la fecha final")
+
+        start = datetime.combine(parsed_start_date, time.min)
+        end = datetime.combine(parsed_end_date, time.max)
 
         records = DBService.get_attendance_by_date_range(start, end)
         return [record.to_dict() for record in records]
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Formato de fecha inválido. Use ISO format: YYYY-MM-DD")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error al obtener reporte: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error al obtener reporte: {str(e)}")
-
