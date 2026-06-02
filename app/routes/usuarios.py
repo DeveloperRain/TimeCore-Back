@@ -12,10 +12,10 @@ from app.schemas.user_schema import (
 )
 from app.utils.response import success, paginated
 
-logger = get_logger("routes.users")
+logger = get_logger("routes.usuarios")
 router = APIRouter(
     prefix="/users",
-    tags=["users"],
+    tags=["Usuarios"],
     responses={503: {"model": ErrorResponse, "description": "Servicio no disponible"}}
 )
 

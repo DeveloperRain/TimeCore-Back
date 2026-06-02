@@ -60,7 +60,7 @@ app.openapi = custom_openapi
     "/",
     summary="Health Check",
     description="Verifica que la API está disponible y obtiene información general",
-    tags=["health"]
+    tags=["General"]
 )
 def root():
     """Endpoint raíz con información general de la API."""
@@ -72,8 +72,8 @@ def root():
             "service": "API Reloj Biométrico ZKTeco",
             "timestamp": datetime.utcnow().isoformat(),
             "endpoints": {
-                "users": "/docs#!/users",
-                "device": "/docs#!/device",
+                "usuarios": "/docs#!/Usuarios",
+                "dispositivo": "/docs#!/Dispositivo",
                 "documentation": "/docs"
             }
         },
