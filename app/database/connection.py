@@ -53,4 +53,6 @@ def create_tables():
     from app.models.attendance import AttendanceRecord
 
     Base.metadata.create_all(bind=engine)
+
+    
        

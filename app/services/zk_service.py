@@ -154,10 +154,20 @@ class ZKService:
 
     @staticmethod
     def create_user(uid: int, user_id: str, name: str, role: str = "usuario") -> Dict[str, Any]:
+        from app.exceptions import DuplicateUserError
+
         conn = None
         try:
             conn = ZKService._create_connection()
             user_id = normalize_user_id(user_id)
+
+            usuarios = conn.get_users()
+            for usuario in usuarios:
+                if usuario.uid == uid:
+                    raise DuplicateUserError(f"Usuario con UID {uid} ya existe")
+                if normalize_user_id(usuario.user_id) == user_id:
+                    raise DuplicateUserError(f"User ID '{user_id}' ya está registrado")
+
             conn.set_user(
                 uid=uid,
                 name=name,
@@ -221,6 +231,17 @@ class ZKService:
         conn = None
         try:
             conn = ZKService._create_connection()
+            usuarios = conn.get_users()
+
+            usuario_encontrado = False
+            for usuario in usuarios:
+                if usuario.uid == uid:
+                    usuario_encontrado = True
+                    break
+
+            if not usuario_encontrado:
+                raise ValueError(f"Usuario con UID {uid} no existe")
+
             conn.delete_user(uid)
             return {"message": f"Usuario {uid} eliminado exitosamente"}
         finally:

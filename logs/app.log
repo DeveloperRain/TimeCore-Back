@@ -415,3 +415,37 @@ DETAIL:  La llave (uid)=(4) no está presente en la tabla «users».
 2026-06-02 11:35:14 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-06-02 11:35:15 - app.services.db - INFO - Usuario UID 25 marcado como eliminado en BD2026-06-02 11:37:55 - app.services.db - INFO - Usuario UID 25 eliminado de BD
 2026-06-02 11:38:30 - app.services.db - INFO - Usuario UID 30 eliminado de BD
+2026-06-02 12:41:53 - app - INFO - Health check requested
+2026-06-02 12:42:06 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 12:42:06 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 12:43:02 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 12:43:02 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:26:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:26:08 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:26:09 - app.services.db - INFO - Usuario UID 22 guardado en BD
+2026-06-02 14:26:51 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:26:52 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:26:52 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-02 14:26:57 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:26:57 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:26:58 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-02 14:28:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:28:15 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:28:16 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-02 14:35:56 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:35:56 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:37:01 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:37:01 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:37:25 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:37:26 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:37:53 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:37:53 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:38:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:38:08 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:41:51 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:41:51 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:41:53 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-02 14:43:38 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:43:38 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-02 14:47:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-02 14:47:15 - app.services.zk - INFO - Conexion establecida con el reloj por TCP

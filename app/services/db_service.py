@@ -2,11 +2,13 @@
 from typing import List, Dict, Optional
 from datetime import datetime
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from app.database.connection import SessionLocal
 from app.models.user import User, UserRole
 from app.models.attendance import AttendanceRecord
 from app.config.logger import get_logger
+from app.exceptions import DataValidationError
+from app.services.validators import DataValidator
 
 logger = get_logger("services.db")
 
@@ -16,6 +18,9 @@ class DBService:
     @staticmethod
     def save_user(uid: int, user_id: str, name: str, role: str, db: Optional[Session] = None) -> User:
         """Guarda o actualiza un usuario en la BD."""
+        # Validar datos antes de guardar
+        DataValidator.validate_user(uid, user_id, name, role)
+
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -28,7 +33,10 @@ class DBService:
             if existing_user:
                 existing_user.user_id = user_id
                 existing_user.name = name
-                existing_user.role = UserRole(role) if role else UserRole.usuario
+                try:
+                    existing_user.role = UserRole(role) if role else UserRole.usuario
+                except ValueError:
+                    raise DataValidationError(f"role inválido: {role}")
                 existing_user.updated_at = datetime.utcnow()
                 db.commit()
                 logger.info(f"Usuario UID {uid} actualizado en BD")
@@ -45,6 +53,11 @@ class DBService:
             logger.info(f"Usuario UID {uid} guardado en BD")
             return new_user
 
+        except DataValidationError:
+            raise
+        except ValueError as e:
+            db.rollback()
+            raise DataValidationError(f"Error al procesar role: {str(e)}")
         except Exception as e:
             db.rollback()
             logger.error(f"Error al guardar usuario {uid}: {str(e)}")
@@ -141,8 +154,31 @@ class DBService:
             count = 0
             for record in records:
                 timestamp = record.get("timestamp")
+
+                # Validar timestamp presente
+                if not timestamp:
+                    logger.warning(f"timestamp faltante en registro: {record}")
+                    continue
+
                 if isinstance(timestamp, str):
-                    timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    try:
+                        timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                    except ValueError:
+                        logger.warning(f"Formato de timestamp inválido: {timestamp}")
+                        continue
+
+                # Validar datos antes de guardar
+                try:
+                    DataValidator.validate_attendance(
+                        record.get("uid"),
+                        record.get("user_id"),
+                        record.get("name"),
+                        timestamp,
+                        record.get("status")
+                    )
+                except DataValidationError as e:
+                    logger.warning(f"Registro de asistencia inválido descartado: {e}")
+                    continue
 
                 existing = db.query(AttendanceRecord).filter(
                     and_(
@@ -167,6 +203,8 @@ class DBService:
             logger.info(f"Se guardaron {count} registros de asistencia en BD")
             return count
 
+        except DataValidationError:
+            raise
         except Exception as e:
             db.rollback()
             logger.error(f"Error al guardar asistencias en bulk: {str(e)}")
@@ -193,6 +231,38 @@ class DBService:
                 )
             ).order_by(AttendanceRecord.timestamp.desc()).all()
             return records
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def get_attendance_dates_summary(db: Optional[Session] = None) -> List[Dict]:
+        """Obtiene las fechas con registros de asistencia y su total."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            attendance_date = func.date(AttendanceRecord.timestamp)
+            rows = (
+                db.query(
+                    attendance_date.label("fecha"),
+                    func.count(AttendanceRecord.id).label("total")
+                )
+                .group_by(attendance_date)
+                .order_by(attendance_date.desc())
+                .all()
+            )
+
+            return [
+                {
+                    "fecha": row.fecha.isoformat() if hasattr(row.fecha, "isoformat") else str(row.fecha),
+                    "total": int(row.total),
+                }
+                for row in rows
+            ]
         finally:
             if close_db:
                 db.close()
