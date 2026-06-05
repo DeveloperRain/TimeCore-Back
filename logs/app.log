@@ -524,3 +524,6 @@ DETAIL:  La llave (uid)=(4) no está presente en la tabla «users».
 2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 20 actualizado en BD
 2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 21 actualizado en BD
 2026-06-02 15:52:46 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-04 11:55:01 - app - INFO - Health check requested
+2026-06-04 11:55:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-04 11:55:24 - app.services.zk - INFO - Conexion establecida con el reloj por TCP

@@ -72,3 +72,4 @@ def error(message, code="ERROR", details=None):
 def paginated(data, page, limit, total, message="Datos obtenidos"):
     """Respuesta paginada."""
     return ApiResponseBuilder.paginated(data, page, limit, total, message)
+

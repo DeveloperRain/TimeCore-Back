@@ -15,3 +15,4 @@ class DuplicateUserError(Exception):
 class SyncError(Exception):
     """Error en sincronización ZK-BD."""
     pass
+

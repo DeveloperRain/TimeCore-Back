@@ -1,5 +1,8 @@
+from email.mime import message
 import logging
 from pathlib import Path
+
+from fastapi import logger
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 LOG_DIR = BASE_DIR / "logs"
@@ -46,3 +49,7 @@ def log_exception(logger: logging.Logger, exc: Exception, message: str = "Ocurri
 
 def log_error(logger: logging.Logger, exc: Exception, message: str):
     logger.error(f"{message}: {str(exc)}")
+
+
+
+

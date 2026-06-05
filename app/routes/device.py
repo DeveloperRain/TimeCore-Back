@@ -27,3 +27,4 @@ def get_device_info():
         raise HTTPException(status_code=503, detail="El dispositivo no esta disponible")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error al obtener informacion del dispositivo: {str(e)}")
+
