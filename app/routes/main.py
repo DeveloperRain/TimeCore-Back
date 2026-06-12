@@ -8,19 +8,33 @@ from app.routes.device import router as device_router
 from app.database.connection import create_tables
 from app.utils.response import success
 from datetime import datetime
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 
 logger = setup_logger()
 app = FastAPI(
     title="API Reloj Biométrico ZKTeco",
     description="API profesional para gestión de usuarios y asistencia del reloj biométrico ZKTeco",
     version="1.0.0",
-    contact={
-        "name": "Soporte",
-        "email": "support@example.com"
-    },
     license_info={
         "name": "MIT"
     }
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:8080",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8080",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registrar middleware de manejo de errores
@@ -78,4 +92,6 @@ def root():
             }
         },
         message="API disponible y funcionando correctamente"
+    
     ) 
+

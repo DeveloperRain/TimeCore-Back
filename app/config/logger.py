@@ -51,5 +51,3 @@ def log_error(logger: logging.Logger, exc: Exception, message: str):
     logger.error(f"{message}: {str(exc)}")
 
 
-
-
