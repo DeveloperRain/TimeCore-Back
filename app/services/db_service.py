@@ -9,6 +9,7 @@ from app.models.attendance import AttendanceRecord
 from app.config.logger import get_logger
 from app.exceptions import DataValidationError
 from app.services.validators import DataValidator
+from app.models.device import Device
 
 logger = get_logger("services.db")
 
@@ -61,6 +62,111 @@ class DBService:
         except Exception as e:
             db.rollback()
             logger.error(f"Error al guardar usuario {uid}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+            
+    @staticmethod
+    def save_device(nombre: str, ip: str, puerto: int = 4370, sucursal: str = None,
+                    ubicacion: str = None, db: Optional[Session] = None) -> Device:
+        """Guarda o actualiza un reloj biométrico en la BD."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            existing = db.query(Device).filter(Device.ip == ip).first()
+
+            if existing:
+                existing.nombre = nombre
+                existing.puerto = puerto
+                existing.sucursal = sucursal
+                existing.ubicacion = ubicacion
+                existing.updated_at = datetime.utcnow()
+                db.commit()
+                return existing
+
+            device = Device(
+                nombre=nombre,
+                ip=ip,
+                puerto=puerto,
+                sucursal=sucursal,
+                ubicacion=ubicacion,
+            )
+
+            db.add(device)
+            db.commit()
+            return device
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al guardar reloj {ip}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def get_all_devices(db: Optional[Session] = None) -> List[Device]:
+        """Obtiene todos los relojes registrados."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            return db.query(Device).order_by(Device.id.asc()).all()
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def get_device_by_id(device_id: int, db: Optional[Session] = None) -> Optional[Device]:
+        """Obtiene un reloj por ID."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            return db.query(Device).filter(Device.id == device_id).first()
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def update_device_status(device_id: int, estado: str,
+                             ultima_sincronizacion: datetime = None,
+                             db: Optional[Session] = None) -> Optional[Device]:
+        """Actualiza estado y última sincronización de un reloj."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            device = db.query(Device).filter(Device.id == device_id).first()
+
+            if not device:
+                return None
+
+            device.estado = estado
+            if ultima_sincronizacion:
+                device.ultima_sincronizacion = ultima_sincronizacion
+
+            device.updated_at = datetime.utcnow()
+            db.commit()
+            return device
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar estado del reloj {device_id}: {str(e)}")
             raise
         finally:
             if close_db:

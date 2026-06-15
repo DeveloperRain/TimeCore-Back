@@ -3194,3 +3194,29 @@ ConnectionError: Error de conexion: timed out
 2026-06-15 11:22:12 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-06-15 11:22:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-06-15 11:22:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:03:01 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:03:01 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:03:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:03:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:03:51 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:03:52 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:03:55 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:03:55 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:05:02 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:05:02 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:05:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:05:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:26:54 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:26:55 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:27:16 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:27:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:27:19 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:27:19 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:40:29 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:40:29 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:40:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:40:32 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:45:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:45:15 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 12:45:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 12:45:18 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
