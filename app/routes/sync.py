@@ -146,6 +146,11 @@ def sync_device_by_id(device_id: int):
             ultima_sincronizacion=datetime.utcnow()
         )
 
+        DBService.create_log(
+            accion="Sincronización de reloj",
+            detalle=f"Se sincronizó {device.name} ({device.ip}). Usuarios: {users_count}, asistencias nuevas: {attendance_count}"
+        )
+
         return success(
             data={
                 "device_id": device_id,
@@ -159,12 +164,19 @@ def sync_device_by_id(device_id: int):
 
     except HTTPException:
         raise
+
     except Exception as e:
         try:
             DBService.update_device_status(
                 device_id=device_id,
                 estado="Desconectado"
             )
+
+            DBService.create_log(
+                accion="Error de sincronización",
+                detalle=f"No se pudo sincronizar el reloj ID {device_id}: {str(e)}"
+            )
+
         except Exception:
             pass
 
@@ -174,3 +186,4 @@ def sync_device_by_id(device_id: int):
             status_code=500,
             detail=f"Error al sincronizar reloj: {str(e)}"
         )
+   

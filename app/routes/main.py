@@ -14,6 +14,7 @@ from fastapi.openapi.utils import get_openapi
 from app.routes.db import router as db_router
 from app.routes.sync import router as sync_router
 from app.routes.dashboard import router as dashboard_router
+from app.routes.logs import router as logs_router
 
 logger = setup_logger()
 app = FastAPI(
@@ -98,7 +99,9 @@ def root():
             }
         },
         message="API disponible y funcionando correctamente"
-    
+
     ) 
+
+app.include_router(logs_router)
 
          

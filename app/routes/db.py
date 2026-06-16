@@ -171,6 +171,11 @@ def create_device(device: DeviceCreate):
         ubicacion=device.ubicacion,
     )
 
+    DBService.create_log(
+    accion="Reloj agregado",
+    detalle=f"Se registró el reloj {saved.name} ({saved.ip})"
+)
+
     return success(
         data={
             "id": saved.id,
@@ -223,6 +228,11 @@ def update_device(device_id: int, device: DeviceUpdate):
 
     if not updated:
         raise HTTPException(status_code=404, detail="Reloj no encontrado")
+    
+    DBService.create_log(
+    accion="Reloj actualizado",
+    detalle=f"Se actualizó el reloj {updated.name} ({updated.ip})"
+)
 
     return success(
         data={
@@ -240,10 +250,23 @@ def update_device(device_id: int, device: DeviceUpdate):
 
 @router.delete("/devices/{device_id}", summary="Eliminar reloj biométrico")
 def delete_device(device_id: int):
+    device = DBService.get_device_by_id(device_id)
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    device_name = device.name
+    device_ip = device.ip
+
     deleted = DBService.delete_device(device_id)
 
     if not deleted:
         raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    DBService.create_log(
+        accion="Reloj eliminado",
+        detalle=f"Se eliminó el reloj {device_name} ({device_ip})"
+    )
 
     return success(
         data={"id": device_id},
