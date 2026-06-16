@@ -10,6 +10,7 @@ from app.config.logger import get_logger
 from app.exceptions import DataValidationError
 from app.services.validators import DataValidator
 from app.models.device import Device
+from app.models.log import Log
 
 logger = get_logger("services.db")
 
@@ -474,6 +475,56 @@ class DBService:
             db.rollback()
             logger.error(f"Error al eliminar reloj {device_id}: {str(e)}")
             raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def create_log(accion: str, detalle: str, db: Optional[Session] = None) -> Log:
+        """Crea un registro de auditoría."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            log = Log(
+                accion=accion,
+                detalle=detalle,
+                created_at=datetime.utcnow()
+            )
+
+            db.add(log)
+            db.commit()
+            db.refresh(log)
+
+            return log
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al crear log: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def get_logs(limit: int = 100, db: Optional[Session] = None) -> List[Log]:
+        """Obtiene los últimos registros de auditoría."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            return (
+                db.query(Log)
+                .order_by(Log.created_at.desc())
+                .limit(limit)
+                .all()
+            )
         finally:
             if close_db:
                 db.close()
