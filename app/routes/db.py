@@ -4,6 +4,9 @@ from app.services.db_service import DBService
 from app.utils.response import success
 from pydantic import BaseModel
 from typing import Optional
+from fastapi.responses import StreamingResponse
+from io import BytesIO
+from app.services.excel_service import build_attendance_excel
 
 router = APIRouter(
     prefix="/db",
@@ -235,7 +238,6 @@ def update_device(device_id: int, device: DeviceUpdate):
         message="Reloj actualizado correctamente"
     )
 
-
 @router.delete("/devices/{device_id}", summary="Eliminar reloj biométrico")
 def delete_device(device_id: int):
     deleted = DBService.delete_device(device_id)
@@ -246,4 +248,61 @@ def delete_device(device_id: int):
     return success(
         data={"id": device_id},
         message="Reloj eliminado correctamente"
+    )
+
+@router.get("/attendance/download", summary="Descargar asistencias desde PostgreSQL en Excel")
+def download_attendance_from_db():
+    records = DBService.get_attendance_by_date_range(
+        datetime.min,
+        datetime.max
+    )
+
+    records_dict = [
+        {
+            "uid": record.uid,
+            "user_id": record.user_id,
+            "name": record.name,
+            "timestamp": record.timestamp,
+            "status": record.status,
+        }
+        for record in records
+    ]
+
+    excel_bytes = build_attendance_excel(records_dict)
+
+    return StreamingResponse(
+        BytesIO(excel_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=asistencias_bd.xlsx"}
+    )
+
+@router.get("/attendance/report/download", summary="Descargar reporte de asistencias desde PostgreSQL en Excel")
+def download_attendance_report_from_db(
+    start_date: str = Query(..., description="Fecha inicial DD-MM-YYYY o DD/MM/YYYY"),
+    end_date: str = Query(..., description="Fecha final DD-MM-YYYY o DD/MM/YYYY"),
+):
+    start = datetime.combine(parse_date(start_date), time.min)
+    end = datetime.combine(parse_date(end_date), time.max)
+
+    records = DBService.get_attendance_by_date_range(start, end)
+
+    records_dict = [
+        {
+            "uid": record.uid,
+            "user_id": record.user_id,
+            "name": record.name,
+            "timestamp": record.timestamp,
+            "status": record.status,
+        }
+        for record in records
+    ]
+
+    excel_bytes = build_attendance_excel(records_dict)
+
+    filename = f"asistencias_{start_date.replace('/', '-')}_a_{end_date.replace('/', '-')}.xlsx"
+
+    return StreamingResponse(
+        BytesIO(excel_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
