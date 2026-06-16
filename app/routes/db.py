@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Query
 from datetime import datetime, time
 from app.services.db_service import DBService
 from app.utils.response import success
+from pydantic import BaseModel
+from typing import Optional
 
 router = APIRouter(
     prefix="/db",
@@ -110,4 +112,138 @@ def get_attendance_report_from_db(
     return success(
         data=data,
         message=f"Se obtuvieron {len(data)} registros desde {start_date} hasta {end_date}"
+    )
+
+class DeviceCreate(BaseModel):
+    nombre: str
+    ip: str
+    puerto: int = 4370
+    sucursal: Optional[str] = None
+    ubicacion: Optional[str] = None
+
+class DeviceUpdate(BaseModel):
+    nombre: Optional[str] = None
+    ip: Optional[str] = None
+    puerto: Optional[int] = None
+    sucursal: Optional[str] = None
+    ubicacion: Optional[str] = None
+    activo: Optional[bool] = None
+
+@router.get("/devices", summary="Obtener relojes registrados desde PostgreSQL")
+def get_devices_from_db():
+    devices = DBService.get_all_devices()
+
+    data = [
+        {
+            "id": device.id,
+            "nombre": device.name,
+            "ip": device.ip,
+            "puerto": device.port,
+            "sucursal": device.location,
+            "ubicacion": device.description,
+            "activo": device.is_active,
+            "estado": device.status,
+            "ultima_sincronizacion": device.last_connection.isoformat()
+            if device.last_connection
+            else None,
+            "created_at": device.created_at.isoformat() if device.created_at else None,
+            "updated_at": device.updated_at.isoformat() if device.updated_at else None,
+        }
+        for device in devices
+    ]
+
+    return success(
+        data=data,
+        message=f"Se obtuvieron {len(data)} relojes registrados"
+    )
+
+
+@router.post("/devices", summary="Registrar reloj biométrico en PostgreSQL")
+def create_device(device: DeviceCreate):
+    saved = DBService.save_device(
+        nombre=device.nombre,
+        ip=device.ip,
+        puerto=device.puerto,
+        sucursal=device.sucursal,
+        ubicacion=device.ubicacion,
+    )
+
+    return success(
+        data={
+            "id": saved.id,
+            "nombre": saved.name,
+            "ip": saved.ip,
+            "puerto": saved.port,
+            "sucursal": saved.location,
+            "ubicacion": saved.description,
+            "estado": saved.status,
+            "activo": saved.is_active,
+        },
+        message="Reloj registrado correctamente"
+    )
+
+
+@router.get("/devices/{device_id}", summary="Obtener reloj por ID desde PostgreSQL")
+def get_device_by_id(device_id: int):
+    device = DBService.get_device_by_id(device_id)
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    return success(
+        data={
+            "id": device.id,
+            "nombre": device.name,
+            "ip": device.ip,
+            "puerto": device.port,
+            "sucursal": device.location,
+            "ubicacion": device.description,
+            "activo": device.is_active,
+            "estado": device.status,
+            "ultima_sincronizacion": device.last_connection.isoformat()
+            if device.last_connection
+            else None,
+        },
+        message="Reloj obtenido correctamente"
+    )
+@router.put("/devices/{device_id}", summary="Actualizar reloj biométrico")
+def update_device(device_id: int, device: DeviceUpdate):
+    updated = DBService.update_device(
+        device_id=device_id,
+        nombre=device.nombre,
+        ip=device.ip,
+        puerto=device.puerto,
+        sucursal=device.sucursal,
+        ubicacion=device.ubicacion,
+        activo=device.activo,
+    )
+
+    if not updated:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    return success(
+        data={
+            "id": updated.id,
+            "nombre": updated.name,
+            "ip": updated.ip,
+            "puerto": updated.port,
+            "sucursal": updated.location,
+            "ubicacion": updated.description,
+            "activo": updated.is_active,
+            "estado": updated.status,
+        },
+        message="Reloj actualizado correctamente"
+    )
+
+
+@router.delete("/devices/{device_id}", summary="Eliminar reloj biométrico")
+def delete_device(device_id: int):
+    deleted = DBService.delete_device(device_id)
+
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    return success(
+        data={"id": device_id},
+        message="Reloj eliminado correctamente"
     )

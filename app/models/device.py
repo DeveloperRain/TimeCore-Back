@@ -1,27 +1,23 @@
-"""Modelo de relojes biométricos ZKTeco."""
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text
 from app.database.connection import Base
 
-
 class Device(Base):
-    """Representa un reloj biométrico registrado."""
-
     __tablename__ = "devices"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
 
-    nombre = Column(String(100), nullable=False)
-    ip = Column(String(50), nullable=False, unique=True)
-    puerto = Column(Integer, nullable=False, default=4370)
+    name = Column(String(100), nullable=False)
+    ip = Column(String(45), nullable=False, unique=True)
+    port = Column(Integer, default=4370)
 
-    sucursal = Column(String(150), nullable=True)
-    ubicacion = Column(String(200), nullable=True)
+    location = Column(String(100))
+    description = Column(Text)
 
-    activo = Column(Boolean, default=True)
-    estado = Column(String(30), default="Desconocido")
+    is_active = Column(Boolean, default=True)
 
-    ultima_sincronizacion = Column(DateTime, nullable=True)
+    last_connection = Column(DateTime)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    status = Column(String(20), default="Desconectado")
+
+    created_at = Column(DateTime)
+    updated_at = Column(DateTime)

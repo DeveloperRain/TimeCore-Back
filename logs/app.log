@@ -3220,3 +3220,1786 @@ ConnectionError: Error de conexion: timed out
 2026-06-15 12:45:15 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-06-15 12:45:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-06-15 12:45:18 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 14:27:47 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 14:27:48 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 14:27:51 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-15 14:27:51 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-15 14:27:51 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-15 14:27:51 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-15 14:27:52 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-15 14:27:53 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-15 14:27:54 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-15 14:27:54 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-15 14:27:54 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-15 14:27:54 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 14:27:54 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 14:28:26 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-15 14:31:28 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 14:31:28 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 14:32:16 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 14:32:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 14:32:19 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-15 14:32:19 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-15 14:52:59 - app.services.db - ERROR - Error al guardar reloj 192.168.1.50: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 14:52:59 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 156, in create_device
+    saved = DBService.save_device(
+        nombre=device.nombre,
+    ...<3 lines>...
+        ubicacion=device.ubicacion,
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\db_service.py", line 81, in save_device
+    existing = db.query(Device).filter(Device.ip == ip).first()
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 14:53:30 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices ORDER BY devices.id ASC]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 127, in get_devices_from_db
+    devices = DBService.get_all_devices()
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\db_service.py", line 122, in get_all_devices
+    return db.query(Device).order_by(Device.id.asc()).all()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices ORDER BY devices.id ASC]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 14:54:16 - app.services.db - ERROR - Error al guardar reloj 192.168.1.50: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 14:54:16 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 156, in create_device
+    saved = DBService.save_device(
+        nombre=device.nombre,
+    ...<3 lines>...
+        ubicacion=device.ubicacion,
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\db_service.py", line 81, in save_device
+    existing = db.query(Device).filter(Device.ip == ip).first()
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.UndefinedColumn) no existe la columna devices.nombre
+LINE 1: SELECT devices.id AS devices_id, devices.nombre AS devices_n...
+                                         ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.name».
+[SQL: SELECT devices.id AS devices_id, devices.nombre AS devices_nombre, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 15:16:01 - app.services.db - ERROR - Error al guardar reloj 192.168.1.50: (psycopg.errors.UndefinedColumn) no existe la columna devices.puerto
+LINE 1: ...s.name AS devices_name, devices.ip AS devices_ip, devices.pu...
+                                                             ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.port».
+[SQL: SELECT devices.id AS devices_id, devices.name AS devices_name, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 15:16:01 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: (psycopg.errors.UndefinedColumn) no existe la columna devices.puerto
+LINE 1: ...s.name AS devices_name, devices.ip AS devices_ip, devices.pu...
+                                                             ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.port».
+[SQL: SELECT devices.id AS devices_id, devices.name AS devices_name, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedColumn: no existe la columna devices.puerto
+LINE 1: ...s.name AS devices_name, devices.ip AS devices_ip, devices.pu...
+                                                             ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.port».
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 156, in create_device
+    saved = DBService.save_device(
+        nombre=device.nombre,
+    ...<3 lines>...
+        ubicacion=device.ubicacion,
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\services\db_service.py", line 81, in save_device
+    existing = db.query(Device).filter(Device.ip == ip).first()
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2372, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2270, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.UndefinedColumn) no existe la columna devices.puerto
+LINE 1: ...s.name AS devices_name, devices.ip AS devices_ip, devices.pu...
+                                                             ^
+HINT:  Probablemente quiera hacer referencia a la columna «devices.port».
+[SQL: SELECT devices.id AS devices_id, devices.name AS devices_name, devices.ip AS devices_ip, devices.puerto AS devices_puerto, devices.sucursal AS devices_sucursal, devices.ubicacion AS devices_ubicacion, devices.activo AS devices_activo, devices.estado AS devices_estado, devices.ultima_sincronizacion AS devices_ultima_sincronizacion, devices.created_at AS devices_created_at, devices.updated_at AS devices_updated_at 
+FROM devices 
+WHERE devices.ip = %(ip_1)s::VARCHAR 
+ LIMIT %(param_1)s::INTEGER]
+[parameters: {'ip_1': '192.168.1.50', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-06-15 15:33:30 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: Instance <Device at 0x1e500c9c590> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 166, in create_device
+    "id": saved.id,
+          ^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\attributes.py", line 569, in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\attributes.py", line 1096, in get
+    value = self._fire_loader_callables(state, key, passive)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\attributes.py", line 1126, in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\state.py", line 828, in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 1607, in load_scalar_attributes
+    raise orm_exc.DetachedInstanceError(
+    ...<2 lines>...
+    )
+sqlalchemy.orm.exc.DetachedInstanceError: Instance <Device at 0x1e500c9c590> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/20/bhk3)
+2026-06-15 15:38:31 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: type object 'DBService' has no attribute 'save_device'
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 156, in create_device
+    saved = DBService.save_device(
+            ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'DBService' has no attribute 'save_device'
+2026-06-15 16:06:28 - app.middleware.error_handler - ERROR - Error no manejado en /db/devices: type object 'DBService' has no attribute 'save_device'
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "c:\Users\Sistemas-Apoyo\Documents\Estadia\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\Estadia\app\routes\db.py", line 156, in create_device
+    saved = DBService.save_device(
+            ^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'DBService' has no attribute 'save_device'
+2026-06-16 08:38:45 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 08:39:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 08:39:49 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-06-16 08:39:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-06-16 08:40:09 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-06-16 08:40:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-06-16 08:40:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-06-16 08:40:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-06-16 08:41:10 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-06-16 08:41:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-06-16 08:41:23 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-06-16 08:41:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-06-16 08:41:43 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-06-16 08:41:43 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-06-16 08:41:53 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-06-16 08:41:53 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-16 08:41:53 - app.services.zk - ERROR - Error al obtener informacion del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 115, in get_device_info
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 102, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 08:42:13 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-06-16 08:42:13 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-16 08:42:13 - app.services.zk - ERROR - Error al obtener informacion del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 115, in get_device_info
+    conn = ZKService._create_connection()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 102, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 09:58:40 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 09:58:40 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 09:58:41 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 09:58:42 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 09:58:43 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 09:58:44 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 09:58:44 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 09:58:44 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 09:58:44 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 09:58:44 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 09:58:44 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 09:58:44 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 09:58:44 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 09:59:09 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:07:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:07:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:07:30 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:19:12 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:12 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:14 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:19:14 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:19:14 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:19:14 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:19:14 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:19:15 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:19:15 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:19:15 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:19:15 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:19:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:15 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:19:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:16 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:19:16 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:19:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:16 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:16 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:19:16 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:16 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:19:16 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:19:16 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:19:17 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:19:17 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:19:17 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:17 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:19:17 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:19:17 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:19:17 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:19:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:17 - app.services.zk - WARNING - No se pudo cerrar la conexion con el reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:19:18 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 120, in sync_device_by_id
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 161, in get_all_users
+    usuarios = conn.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1073, in get_users
+    self.read_sizes()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 658, in read_sizes
+    cmd_response = self.__send_command(command,b'', response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:19:18 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:19 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:24 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:19:24 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:19:24 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:19:25 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:19:26 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:19:27 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:19:28 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:19:29 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:19:30 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:19:31 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:19:31 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:32 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:19:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:32 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:19:32 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:19:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:19:32 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:19:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-06-16 10:19:32 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:19:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-06-16 10:19:33 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:34 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:19:55 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:20:02 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-06-16 10:20:02 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-06-16 10:20:25 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:26 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:27 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:27 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:28 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:28 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:20:28 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:28 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:20:28 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:20:29 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:20:29 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:20:29 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:20:29 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:20:29 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:20:29 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:20:30 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:20:30 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:20:30 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:20:30 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:20:30 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:20:31 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:20:32 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:20:32 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:20:32 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-06-16 10:20:32 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-16 10:20:32 - app.services.zk - ERROR - Error al obtener asistencias del reloj: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 311, in get_attendance_records
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 10:20:32 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:20:32 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:20:32 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:20:32 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 136, in sync_device_by_id
+    asistencias = ZKService.get_attendance_records(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 311, in get_attendance_records
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 10:20:32 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:20:33 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:20:33 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:20:33 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:33 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:20:34 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:20:34 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:20:34 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:34 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:20:34 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:20:34 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:20:34 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:20:35 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:20:35 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:20:35 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:20:35 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:20:35 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:20:35 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:20:36 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:20:37 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:20:38 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:20:38 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:20:38 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:20:38 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:20:38 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:38 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:20:39 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:39 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:20:39 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:20:39 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:20:39 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:20:40 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:20:40 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:20:41 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:20:41 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:20:41 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:20:41 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:20:41 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:20:41 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:41 - app.services.zk - ERROR - Error al obtener asistencias del reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 313, in get_attendance_records
+    asistencias = conn.get_attendance()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1553, in get_attendance
+    attendance_data, size = self.read_with_buffer(const.CMD_ATTLOG_RRQ)
+                            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1508, in read_with_buffer
+    cmd_response = self.__send_command(1503, command_string, response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:41 - app.services.zk - WARNING - No se pudo cerrar la conexion con el reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:41 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 136, in sync_device_by_id
+    asistencias = ZKService.get_attendance_records(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 313, in get_attendance_records
+    asistencias = conn.get_attendance()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1553, in get_attendance
+    attendance_data, size = self.read_with_buffer(const.CMD_ATTLOG_RRQ)
+                            ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1508, in read_with_buffer
+    cmd_response = self.__send_command(1503, command_string, response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:42 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:45 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:20:45 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:20:46 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:20:47 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:20:48 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:20:48 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:20:48 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:20:48 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:20:48 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:20:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:48 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:49 - app.services.zk - ERROR - Error al obtener asistencias del reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 313, in get_attendance_records
+    asistencias = conn.get_attendance()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1550, in get_attendance
+    users = self.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1073, in get_users
+    self.read_sizes()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 658, in read_sizes
+    cmd_response = self.__send_command(command,b'', response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:49 - app.services.zk - WARNING - No se pudo cerrar la conexion con el reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:49 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 136, in sync_device_by_id
+    asistencias = ZKService.get_attendance_records(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 313, in get_attendance_records
+    asistencias = conn.get_attendance()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1550, in get_attendance
+    users = self.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1073, in get_users
+    self.read_sizes()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 658, in read_sizes
+    cmd_response = self.__send_command(command,b'', response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:49 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:49 - app.services.zk - ERROR - Error al obtener asistencias del reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 313, in get_attendance_records
+    asistencias = conn.get_attendance()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1550, in get_attendance
+    users = self.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1080, in get_users
+    userdata, size = self.read_with_buffer(const.CMD_USERTEMP_RRQ, const.FCT_USER)
+                     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1535, in read_with_buffer
+    data.append(self.__read_chunk(start, remain))
+                ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1488, in __read_chunk
+    cmd_response = self.__send_command(command, command_string, response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:49 - app.services.zk - WARNING - No se pudo cerrar la conexion con el reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 136, in sync_device_by_id
+    asistencias = ZKService.get_attendance_records(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 313, in get_attendance_records
+    asistencias = conn.get_attendance()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1550, in get_attendance
+    users = self.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1080, in get_users
+    userdata, size = self.read_with_buffer(const.CMD_USERTEMP_RRQ, const.FCT_USER)
+                     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1535, in read_with_buffer
+    data.append(self.__read_chunk(start, remain))
+                ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1488, in __read_chunk
+    cmd_response = self.__send_command(command, command_string, response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:50 - app.services.zk - ERROR - Error al obtener asistencias del reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 312, in get_attendance_records
+    usuarios = conn.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1073, in get_users
+    self.read_sizes()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 658, in read_sizes
+    cmd_response = self.__send_command(command,b'', response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo cerrar la conexion con el reloj: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-06-16 10:20:50 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 249, in __send_command
+    self.__tcp_data_recv = self.__sock.recv(response_size + 8)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 136, in sync_device_by_id
+    asistencias = ZKService.get_attendance_records(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 312, in get_attendance_records
+    usuarios = conn.get_users()
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 1073, in get_users
+    self.read_sizes()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 658, in read_sizes
+    cmd_response = self.__send_command(command,b'', response_size)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\zk\base.py", line 260, in __send_command
+    raise ZKNetworkError(str(e))
+zk.exception.ZKNetworkError: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP sin ping
+2026-06-16 10:20:50 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: [WinError 10054] Se ha forzado la interrupción de una conexión existente por el host remoto
+2026-06-16 10:20:50 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP
+2026-06-16 10:21:02 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:21:02 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:21:02 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:21:02 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:21:02 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:21:02 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:21:03 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:21:04 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:21:04 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:21:04 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:21:04 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:21:04 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:21:04 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:21:05 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:21:05 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:21:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:21:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:21:06 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:21:06 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:21:06 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:21:06 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:21:06 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:21:07 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:21:08 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:21:09 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:21:09 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:21:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:21:09 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:21:20 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-06-16 10:21:20 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-06-16 10:21:20 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-06-16 10:21:20 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-06-16 10:21:20 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-06-16 10:21:20 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por UDP sin ping
+2026-06-16 10:21:23 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:21:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:21:24 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:21:50 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-06-16 10:21:50 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-16 10:21:50 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 120, in sync_device_by_id
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 10:21:50 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-06-16 10:21:50 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-16 10:21:50 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 120, in sync_device_by_id
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 10:21:50 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-06-16 10:21:50 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-06-16 10:21:50 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 120, in sync_device_by_id
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-06-16 10:21:51 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:21:51 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:21:52 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:21:53 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:21:54 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:21:54 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:21:54 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:21:54 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:21:54 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:21:54 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:21:54 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:21:57 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:22:09 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:22:11 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:22:31 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 10:28:36 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:28:36 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:28:40 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 10:28:40 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 10:28:40 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 10:28:41 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 10:28:42 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 10:28:43 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 10:28:43 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 10:28:43 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 10:28:43 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 10:28:43 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 10:28:43 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 10:29:18 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-16 11:06:16 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 11:06:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 11:06:20 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-16 11:06:20 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-16 11:06:20 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-16 11:06:20 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-16 11:06:20 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-16 11:06:20 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-16 11:06:21 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-16 11:06:21 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-16 11:06:21 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-16 11:06:21 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-16 11:06:21 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-16 11:06:21 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-16 11:06:22 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-16 11:06:23 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-16 11:06:23 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-16 11:06:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-16 11:06:23 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-16 11:06:57 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD

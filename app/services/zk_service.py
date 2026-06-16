@@ -1,4 +1,3 @@
-# El servicio ZKService se encarga de manejar la conexion y operaciones con el reloj checador ZKTeco, utilizando la libreria zk.
 import socket
 from typing import Any, Dict, List
 
@@ -45,6 +44,7 @@ def normalize_user_id(user_id) -> str:
 
 def call_if_available(conn, method_name: str, default: str = "Desconocido"):
     method = getattr(conn, method_name, None)
+
     if not callable(method):
         return default
 
@@ -58,35 +58,49 @@ def call_if_available(conn, method_name: str, default: str = "Desconocido"):
 
 class ZKService:
     @staticmethod
-    def _create_connection():
+    def _create_connection(ip: str = None, port: int = None):
+        target_ip = ip or IP_RELOJ
+        target_port = port or PORT
+
         attempts = [
             {"force_udp": False, "ommit_ping": False, "label": "TCP"},
             {"force_udp": False, "ommit_ping": True, "label": "TCP sin ping"},
             {"force_udp": True, "ommit_ping": False, "label": "UDP"},
             {"force_udp": True, "ommit_ping": True, "label": "UDP sin ping"},
         ]
+
         last_error = None
 
         for attempt in attempts:
             try:
-                logger.info("Conectando al reloj %s:%s por %s", IP_RELOJ, PORT, attempt["label"])
+                logger.info(
+                    "Conectando al reloj %s:%s por %s",
+                    target_ip,
+                    target_port,
+                    attempt["label"],
+                )
+
                 zk = ZK(
-                    IP_RELOJ,
-                    port=PORT,
+                    target_ip,
+                    port=target_port,
                     timeout=TIMEOUT,
                     password=PASSWORD,
                     force_udp=attempt["force_udp"],
                     ommit_ping=attempt["ommit_ping"],
                 )
+
                 conn = zk.connect()
                 logger.info("Conexion establecida con el reloj por %s", attempt["label"])
                 return conn
+
             except socket.timeout as e:
                 last_error = e
                 logger.warning("Tiempo agotado conectando al reloj por %s", attempt["label"])
+
             except ConnectionRefusedError as e:
                 last_error = e
                 logger.warning("El reloj rechazo la conexion por %s", attempt["label"])
+
             except Exception as e:
                 last_error = e
                 logger.warning("No se pudo conectar al reloj por %s: %s", attempt["label"], e)
@@ -94,6 +108,7 @@ class ZKService:
         if isinstance(last_error, socket.timeout):
             log_exception(logger, last_error, "Tiempo agotado conectando al reloj")
             raise TimeoutError("Conexion agotada con el dispositivo")
+
         if isinstance(last_error, ConnectionRefusedError):
             log_exception(logger, last_error, "El reloj rechazo la conexion")
             raise ConnectionError("El dispositivo rechazo la conexion")
@@ -109,10 +124,13 @@ class ZKService:
             logger.warning("No se pudo cerrar la conexion con el reloj: %s", e)
 
     @staticmethod
-    def get_device_info() -> Dict[str, Any]:
+    def get_device_info(ip: str = None, port: int = None) -> Dict[str, Any]:
         conn = None
+        target_ip = ip or IP_RELOJ
+
         try:
-            conn = ZKService._create_connection()
+            conn = ZKService._create_connection(ip, port)
+
             return {
                 "name": str(call_if_available(conn, "get_device_name")),
                 "serial": str(call_if_available(conn, "get_serialnumber")),
@@ -120,23 +138,26 @@ class ZKService:
                 "mac_address": str(call_if_available(conn, "get_mac")),
                 "device_time": str(call_if_available(conn, "get_time")),
                 "network_params": {
-                    "ip": IP_RELOJ,
+                    "ip": target_ip,
                     "gateway": "Desconocido",
                     "dns": "Desconocido",
-                }
+                },
             }
+
         except Exception as e:
             log_exception(logger, e, "Error al obtener informacion del reloj")
             raise
+
         finally:
             if conn:
                 ZKService._disconnect(conn)
 
     @staticmethod
-    def get_all_users() -> List[Dict[str, Any]]:
+    def get_all_users(ip: str = None, port: int = None) -> List[Dict[str, Any]]:
         conn = None
+
         try:
-            conn = ZKService._create_connection()
+            conn = ZKService._create_connection(ip, port)
             usuarios = conn.get_users()
 
             return [
@@ -148,23 +169,34 @@ class ZKService:
                 }
                 for u in usuarios
             ]
+
         finally:
             if conn:
                 ZKService._disconnect(conn)
 
     @staticmethod
-    def create_user(uid: int, user_id: str, name: str, role: str = "usuario") -> Dict[str, Any]:
+    def create_user(
+        uid: int,
+        user_id: str,
+        name: str,
+        role: str = "usuario",
+        ip: str = None,
+        port: int = None,
+    ) -> Dict[str, Any]:
         from app.exceptions import DuplicateUserError
 
         conn = None
+
         try:
-            conn = ZKService._create_connection()
+            conn = ZKService._create_connection(ip, port)
             user_id = normalize_user_id(user_id)
 
             usuarios = conn.get_users()
+
             for usuario in usuarios:
                 if usuario.uid == uid:
                     raise DuplicateUserError(f"Usuario con UID {uid} ya existe")
+
                 if normalize_user_id(usuario.user_id) == user_id:
                     raise DuplicateUserError(f"User ID '{user_id}' ya está registrado")
 
@@ -176,22 +208,38 @@ class ZKService:
                 group_id="",
                 user_id=user_id,
             )
+
             return {
                 "message": f"Usuario '{name}' creado exitosamente",
-                "user": {"uid": uid, "user_id": user_id, "name": name, "role": role},
+                "user": {
+                    "uid": uid,
+                    "user_id": user_id,
+                    "name": name,
+                    "role": role,
+                },
             }
+
         finally:
             if conn:
                 ZKService._disconnect(conn)
 
     @staticmethod
-    def update_user(uid: int, user_id: str = None, name: str = None, role: str = None) -> Dict[str, Any]:
+    def update_user(
+        uid: int,
+        user_id: str = None,
+        name: str = None,
+        role: str = None,
+        ip: str = None,
+        port: int = None,
+    ) -> Dict[str, Any]:
         conn = None
+
         try:
-            conn = ZKService._create_connection()
+            conn = ZKService._create_connection(ip, port)
             usuarios = conn.get_users()
 
             usuario_actual = None
+
             for usuario in usuarios:
                 if usuario.uid == uid:
                     usuario_actual = usuario
@@ -222,18 +270,21 @@ class ZKService:
                     "role": nuevo_role,
                 },
             }
+
         finally:
             if conn:
                 ZKService._disconnect(conn)
 
     @staticmethod
-    def delete_user(uid: int) -> Dict[str, Any]:
+    def delete_user(uid: int, ip: str = None, port: int = None) -> Dict[str, Any]:
         conn = None
+
         try:
-            conn = ZKService._create_connection()
+            conn = ZKService._create_connection(ip, port)
             usuarios = conn.get_users()
 
             usuario_encontrado = False
+
             for usuario in usuarios:
                 if usuario.uid == uid:
                     usuario_encontrado = True
@@ -243,16 +294,21 @@ class ZKService:
                 raise ValueError(f"Usuario con UID {uid} no existe")
 
             conn.delete_user(uid)
-            return {"message": f"Usuario {uid} eliminado exitosamente"}
+
+            return {
+                "message": f"Usuario {uid} eliminado exitosamente",
+            }
+
         finally:
             if conn:
                 ZKService._disconnect(conn)
 
     @staticmethod
-    def get_attendance_records() -> List[Dict[str, Any]]:
+    def get_attendance_records(ip: str = None, port: int = None) -> List[Dict[str, Any]]:
         conn = None
+
         try:
-            conn = ZKService._create_connection()
+            conn = ZKService._create_connection(ip, port)
             usuarios = conn.get_users()
             asistencias = conn.get_attendance()
 
@@ -268,16 +324,20 @@ class ZKService:
                 {
                     "uid": users_by_id.get(normalize_user_id(a.user_id), {}).get("uid"),
                     "user_id": normalize_user_id(a.user_id),
-                    "name": users_by_id.get(normalize_user_id(a.user_id), {}).get("name", "Desconocido"),
+                    "name": users_by_id.get(
+                        normalize_user_id(a.user_id),
+                        {},
+                    ).get("name", "Desconocido"),
                     "timestamp": str(a.timestamp),
                     "status": ATTENDANCE_STATUS.get(a.status, str(a.status)),
                 }
                 for a in asistencias
             ]
+
         except Exception as e:
             log_exception(logger, e, "Error al obtener asistencias del reloj")
             raise
+
         finally:
             if conn:
                 ZKService._disconnect(conn)
-
