@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query
 from datetime import datetime, time
+from app.models import user
 from app.services.db_service import DBService
 from app.utils.response import success
 from pydantic import BaseModel
@@ -39,6 +40,7 @@ def get_users_from_db():
             "user_id": user.user_id,
             "name": user.name,
             "role": user.role.value if hasattr(user.role, "value") else str(user.role),
+            "status": user.status if hasattr(user, "status") else "Activo",
             "created_at": user.created_at.isoformat() if user.created_at else None,
             "updated_at": user.updated_at.isoformat() if user.updated_at else None,
         }
@@ -248,7 +250,7 @@ def update_device(device_id: int, device: DeviceUpdate):
         message="Reloj actualizado correctamente"
     )
 
-@router.delete("/devices/{device_id}", summary="Eliminar reloj biométrico")
+@router.delete("/devices/{device_id}", summary="Inactivar reloj biométrico")
 def delete_device(device_id: int):
     device = DBService.get_device_by_id(device_id)
 
@@ -264,18 +266,43 @@ def delete_device(device_id: int):
         raise HTTPException(status_code=404, detail="Reloj no encontrado")
 
     DBService.create_log(
-        accion="Reloj eliminado",
-        detalle=f"Se eliminó el reloj {device_name} ({device_ip})"
+        accion="Reloj inactivado",
+        detalle=f"Se inactivó el reloj {device_name} ({device_ip})"
     )
 
     return success(
         data={"id": device_id},
-        message="Reloj eliminado correctamente"
+        message="Reloj inactivado correctamente"
     )
 
-@router.get("/attendance/download", summary="Descargar asistencias desde PostgreSQL en Excel")
-def download_attendance_from_db():
-    records = DBService.get_attendance_by_date_range(
+@router.put("/devices/{device_id}/activate", summary="Activar reloj biométrico")
+def activate_device(device_id: int):
+    device = DBService.get_device_by_id(device_id)
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    activated = DBService.activate_device(device_id)
+
+    if not activated:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    DBService.create_log(
+        accion="Reloj activado",
+        detalle=f"Se activó el reloj {device.name} ({device.ip})"
+    )
+
+    return success(
+        data={"id": device_id},
+        message="Reloj activado correctamente"
+    )
+
+@router.put("/devices/{device_id}/activate")
+def activate_device(device_id: int):
+
+    @router.get("/attendance/download", summary="Descargar asistencias desde PostgreSQL en Excel")
+    def download_attendance_from_db():
+        records = DBService.get_attendance_by_date_range(
         datetime.min,
         datetime.max
     )
@@ -328,4 +355,37 @@ def download_attendance_report_from_db(
         BytesIO(excel_bytes),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+class UserStatusUpdate(BaseModel):
+    status: str
+
+@router.put("/users/{uid}/status", summary="Actualizar estado de empleado")
+def update_user_status(uid: int, payload: UserStatusUpdate):
+    allowed = ["Activo", "Inactivo", "Baja"]
+
+    if payload.status not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail="Estado inválido. Usa Activo, Inactivo o Baja"
+        )
+
+    user = DBService.update_user_status(uid, payload.status)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Empleado no encontrado")
+
+    DBService.create_log(
+        accion="Estado de empleado actualizado",
+        detalle=f"Empleado {user.name} ({user.user_id}) cambió a estado {payload.status}"
+    )
+
+    return success(
+        data={
+            "uid": user.uid,
+            "user_id": user.user_id,
+            "name": user.name,
+            "status": user.status,
+        },
+        message="Estado de empleado actualizado correctamente"
     )

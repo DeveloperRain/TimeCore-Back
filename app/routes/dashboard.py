@@ -1,4 +1,6 @@
 from fastapi import APIRouter
+from app.models.user import User
+from app.routes import db
 from app.services.db_service import DBService
 from app.utils.response import success
 
@@ -12,6 +14,7 @@ def dashboard_summary():
     users = DBService.get_all_users_from_db()
     dates = DBService.get_attendance_dates_summary()
     devices = DBService.get_all_devices()
+    users = db.query(User).all()
 
     total_attendance = sum(item["total"] for item in dates)
     connected_devices = len([

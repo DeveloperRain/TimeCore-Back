@@ -71,7 +71,7 @@ class DBService:
     @staticmethod
     def save_device(nombre: str, ip: str, puerto: int = 4370, sucursal: str = None,
                     ubicacion: str = None, db: Optional[Session] = None) -> Device:
-        """Guarda o actualiza un reloj biométrico en la BD."""
+        """Guarda un nuevo reloj biométrico en la BD."""
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -82,14 +82,7 @@ class DBService:
             existing = db.query(Device).filter(Device.ip == ip).first()
 
             if existing:
-                existing.name = nombre
-                existing.port = puerto
-                existing.location = sucursal
-                existing.description = ubicacion
-                existing.updated_at = datetime.utcnow()
-                db.commit()
-                db.refresh(existing)
-                return existing
+                raise DataValidationError(f"Ya existe un reloj registrado con la IP {ip}")
 
             device = Device(
                 name=nombre,
@@ -97,6 +90,8 @@ class DBService:
                 port=puerto,
                 location=sucursal,
                 description=ubicacion,
+                is_active=True,
+                status="Desconectado",
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -104,6 +99,7 @@ class DBService:
             db.add(device)
             db.commit()
             db.refresh(device)
+
             return device
 
         except Exception as e:
@@ -116,18 +112,18 @@ class DBService:
 
     @staticmethod
     def get_all_devices(db: Optional[Session] = None) -> List[Device]:
-            """Obtiene todos los relojes registrados."""
-            if db is None:
-                db = SessionLocal()
-                close_db = True
-            else:
-                close_db = False
+        """Obtiene todos los relojes registrados."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
 
-            try:
-                return db.query(Device).order_by(Device.id.asc()).all()
-            finally:
-                if close_db:
-                    db.close()
+        try:
+            return db.query(Device).order_by(Device.id.asc()).all()
+        finally:
+            if close_db:
+                db.close()
 
     @staticmethod
     def get_device_by_id(device_id: int, db: Optional[Session] = None) -> Optional[Device]:
@@ -221,6 +217,36 @@ class DBService:
             finally:
                 if close_db:
                     db.close()
+
+@staticmethod
+def update_user_status(uid: int, status: str, db: Optional[Session] = None) -> Optional[User]:
+    if db is None:
+        db = SessionLocal()
+        close_db = True
+    else:
+        close_db = False
+
+    try:
+        user = db.query(User).filter(User.uid == uid).first()
+
+        if not user:
+            return None
+
+        user.status = status
+        user.updated_at = datetime.utcnow()
+
+        db.commit()
+        db.refresh(user)
+
+        return user
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error al actualizar estado del usuario {uid}: {str(e)}")
+        raise
+    finally:
+        if close_db:
+            db.close()
 
     @staticmethod
     def save_attendance(uid: int, user_id: str, name: str, timestamp: datetime, status: str,
@@ -453,7 +479,7 @@ class DBService:
 
     @staticmethod
     def delete_device(device_id: int, db: Optional[Session] = None) -> bool:
-        """Elimina un reloj registrado de la BD."""
+        """Inactiva un reloj registrado en lugar de eliminarlo."""
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -466,14 +492,48 @@ class DBService:
             if not device:
                 return False
 
-            db.delete(device)
+            device.is_active = False
+            device.status = "Inactivo"
+            device.updated_at = datetime.utcnow()
+
             db.commit()
 
             return True
 
         except Exception as e:
             db.rollback()
-            logger.error(f"Error al eliminar reloj {device_id}: {str(e)}")
+            logger.error(f"Error al inactivar reloj {device_id}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def activate_device(device_id: int, db: Optional[Session] = None) -> bool:
+        """Reactiva un reloj previamente inactivado."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            device = db.query(Device).filter(Device.id == device_id).first()
+
+            if not device:
+                return False
+
+            device.is_active = True
+            device.status = "Desconectado"
+            device.updated_at = datetime.utcnow()
+
+            db.commit()
+
+            return True
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al activar reloj {device_id}: {str(e)}")
             raise
         finally:
             if close_db:

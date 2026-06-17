@@ -22,6 +22,7 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     deleted_at = Column(DateTime, nullable=True)
+    status = Column(String(20), default="Activo")
 
     attendance_records = relationship("AttendanceRecord", back_populates="user", cascade="all, delete-orphan")
 
