@@ -15,6 +15,8 @@ from app.routes.db import router as db_router
 from app.routes.sync import router as sync_router
 from app.routes.dashboard import router as dashboard_router
 from app.routes.logs import router as logs_router
+from app.routes.branches import router as branches_router
+
 
 logger = setup_logger()
 app = FastAPI(
@@ -103,5 +105,8 @@ def root():
     ) 
 
 app.include_router(logs_router)
+
+app.include_router(branches_router)
+
 
          

@@ -11,6 +11,7 @@ from app.exceptions import DataValidationError
 from app.services.validators import DataValidator
 from app.models.device import Device
 from app.models.log import Log
+from app.models.branch import Branch
 
 logger = get_logger("services.db")
 
@@ -218,35 +219,35 @@ class DBService:
                 if close_db:
                     db.close()
 
-@staticmethod
-def update_user_status(uid: int, status: str, db: Optional[Session] = None) -> Optional[User]:
-    if db is None:
-        db = SessionLocal()
-        close_db = True
-    else:
-        close_db = False
+    @staticmethod
+    def update_user_status(uid: int, status: str, db: Optional[Session] = None) -> Optional[User]:
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
 
-    try:
-        user = db.query(User).filter(User.uid == uid).first()
+        try:
+            user = db.query(User).filter(User.uid == uid).first()
 
-        if not user:
-            return None
+            if not user:
+                return None
 
-        user.status = status
-        user.updated_at = datetime.utcnow()
+            user.status = status
+            user.updated_at = datetime.utcnow()
 
-        db.commit()
-        db.refresh(user)
+            db.commit()
+            db.refresh(user)
 
-        return user
+            return user
 
-    except Exception as e:
-        db.rollback()
-        logger.error(f"Error al actualizar estado del usuario {uid}: {str(e)}")
-        raise
-    finally:
-        if close_db:
-            db.close()
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar estado del usuario {uid}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
 
     @staticmethod
     def save_attendance(uid: int, user_id: str, name: str, timestamp: datetime, status: str,
@@ -585,6 +586,100 @@ def update_user_status(uid: int, status: str, db: Optional[Session] = None) -> O
                 .limit(limit)
                 .all()
             )
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def create_branch(name: str, address: str = None, db: Optional[Session] = None) -> Branch:
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            existing = db.query(Branch).filter(Branch.name == name).first()
+
+            if existing:
+                raise DataValidationError(f"Ya existe una sucursal llamada {name}")
+
+            branch = Branch(
+                name=name,
+                address=address,
+                is_active=True,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+
+            db.add(branch)
+            db.commit()
+            db.refresh(branch)
+
+            return branch
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al crear sucursal {name}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+
+    @staticmethod
+    def get_all_branches(db: Optional[Session] = None) -> List[Branch]:
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            return db.query(Branch).order_by(Branch.id.asc()).all()
+        finally:
+            if close_db:
+                db.close()
+
+
+    @staticmethod
+    def update_branch(
+        branch_id: int,
+        name: str = None,
+        address: str = None,
+        is_active: bool = None,
+        db: Optional[Session] = None
+    ) -> Optional[Branch]:
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            branch = db.query(Branch).filter(Branch.id == branch_id).first()
+
+            if not branch:
+                return None
+
+            if name is not None:
+                branch.name = name
+            if address is not None:
+                branch.address = address
+            if is_active is not None:
+                branch.is_active = is_active
+
+            branch.updated_at = datetime.utcnow()
+
+            db.commit()
+            db.refresh(branch)
+
+            return branch
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar sucursal {branch_id}: {str(e)}")
+            raise
         finally:
             if close_db:
                 db.close()
