@@ -23,6 +23,8 @@ class User(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
     deleted_at = Column(DateTime, nullable=True)
     status = Column(String(20), default="Activo")
+    sucursal = Column(String(100), nullable=True)
+    email = Column(String(150), nullable=True)
 
     attendance_records = relationship("AttendanceRecord", back_populates="user", cascade="all, delete-orphan")
 
@@ -37,4 +39,6 @@ class User(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
+            "sucursal": self.sucursal,
+            "email": self.email,
         }

@@ -8,6 +8,9 @@ from typing import Optional
 from fastapi.responses import StreamingResponse
 from io import BytesIO
 from app.services.excel_service import build_attendance_excel
+from typing import Optional
+from pydantic import BaseModel
+
 
 router = APIRouter(
     prefix="/db",
@@ -388,4 +391,39 @@ def update_user_status(uid: int, payload: UserStatusUpdate):
             "status": user.status,
         },
         message="Estado de empleado actualizado correctamente"
+    )
+
+class UserProfileUpdate(BaseModel):
+    role: Optional[str] = None
+    sucursal: Optional[str] = None
+    email: Optional[str] = None
+
+
+@router.put("/users/{uid}/profile", summary="Actualizar perfil de empleado")
+def update_user_profile(uid: int, payload: UserProfileUpdate):
+    user = DBService.update_user_profile(
+        uid=uid,
+        role=payload.role,
+        sucursal=payload.sucursal,
+        email=payload.email,
+    )
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Empleado no encontrado")
+
+    DBService.create_log(
+        accion="Perfil de empleado actualizado",
+        detalle=f"Empleado {user.name} ({user.user_id}) actualizado"
+    )
+
+    return success(
+        data={
+            "uid": user.uid,
+            "user_id": user.user_id,
+            "name": user.name,
+            "role": user.role.value if hasattr(user.role, "value") else str(user.role),
+            "sucursal": user.sucursal,
+            "email": user.email,
+        },
+        message="Perfil de empleado actualizado correctamente"
     )

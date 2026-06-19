@@ -1,6 +1,12 @@
+from datetime import datetime
+
 from fastapi import APIRouter
+
+from app.database.connection import SessionLocal
 from app.models.user import User
-from app.routes import db
+from app.models.device import Device
+from app.models.attendance import AttendanceRecord
+from app.models.branch import Branch
 from app.services.db_service import DBService
 from app.utils.response import success
 
@@ -9,40 +15,47 @@ router = APIRouter(
     tags=["Dashboard"]
 )
 
+
 @router.get("/summary", summary="Resumen general del dashboard")
 def dashboard_summary():
-    users = DBService.get_all_users_from_db()
-    dates = DBService.get_attendance_dates_summary()
-    devices = DBService.get_all_devices()
-    users = db.query(User).all()
+    db = SessionLocal()
 
-    total_attendance = sum(item["total"] for item in dates)
-    connected_devices = len([
-        device for device in devices
-        if str(device.status).lower() == "conectado"
-    ])
+    try:
+        total_users = db.query(User).count()
 
-    data = {
-        "total_users": len(users),
-        "total_attendance": total_attendance,
-        "total_devices": len(devices),
-        "connected_devices": connected_devices,
-        "active_branches": len(set(
-            device.location for device in devices
-            if device.location
-        )),
-    }
+        total_devices = db.query(Device).count()
 
-    return success(
-        data=data,
-        message="Resumen del dashboard obtenido correctamente"
-    )
+        connected_devices = db.query(Device).filter(
+            Device.is_active == True,
+            Device.status == "Conectado"
+        ).count()
+
+        total_attendance = db.query(AttendanceRecord).count()
+
+        active_branches = db.query(Branch).filter(
+            Branch.is_active == True
+        ).count()
+
+        return success(
+            data={
+                "total_empleados": total_users,
+                "relojes_conectados": connected_devices,
+                "total_relojes": total_devices,
+                "asistencias_registradas": total_attendance,
+                "sucursales_activas": active_branches,
+            },
+            message="Resumen del dashboard obtenido correctamente"
+        )
+
+    finally:
+        db.close()
+
 
 @router.get("/activity", summary="Actividad reciente del dashboard")
 def dashboard_activity():
     records = DBService.get_attendance_by_date_range(
-        __import__("datetime").datetime.min,
-        __import__("datetime").datetime.max
+        datetime.min,
+        datetime.max
     )
 
     records = records[:10]
