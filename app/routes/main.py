@@ -20,8 +20,8 @@ from app.routes.branches import router as branches_router
 
 logger = setup_logger()
 app = FastAPI(
-    title="API Reloj Biométrico ZKTeco",
-    description="API profesional para gestión de usuarios y asistencia del reloj biométrico ZKTeco",
+    title="TIMECORE API ",
+    description="API para gestión de usuarios y asistencia del reloj biométrico ZKTeco/Steren",
     version="1.0.0",
     license_info={
         "name": "MIT"
@@ -60,9 +60,9 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title="API Reloj Biométrico ZKTeco",
+        title="TIMECORE API ",
         version="1.0.0",
-        description="API para gestión de usuarios, asistencia y dispositivo ZKTeco con respuestas estandarizadas",
+        description="API para gestión de usuarios, asistencia y dispositivo ZKTeco y/o Steren",
         routes=app.routes,
     )
 
@@ -90,7 +90,7 @@ def root():
         data={
             "status": "online",
             "version": "1.0.0",
-            "service": "API Reloj Biométrico ZKTeco",
+            "service": "TIMECORE API",
             "timestamp": datetime.utcnow().isoformat(),
             "endpoints": {
                 "usuarios": "/docs#!/Usuarios",

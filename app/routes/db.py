@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from app.models import user
 from app.services.db_service import DBService
 from app.utils.response import success
@@ -46,6 +46,8 @@ def get_users_from_db():
             "status": user.status if hasattr(user, "status") else "Activo",
             "created_at": user.created_at.isoformat() if user.created_at else None,
             "updated_at": user.updated_at.isoformat() if user.updated_at else None,
+            "sucursal": user.sucursal if hasattr(user, "sucursal") else None,
+            "email": user.email if hasattr(user, "email") else None,
         }
         for user in users
     ]
@@ -120,6 +122,70 @@ def get_attendance_report_from_db(
     return success(
         data=data,
         message=f"Se obtuvieron {len(data)} registros desde {start_date} hasta {end_date}"
+    )
+
+
+@router.get("/attendance/today", summary="Obtener asistencias del día actual")
+def get_today_attendance():
+    today = datetime.now().date()
+
+    start_datetime = datetime.combine(today, time.min)
+    end_datetime = datetime.combine(today, time.max)
+
+    records = DBService.get_attendance_by_date_range(
+        start_datetime,
+        end_datetime
+    )
+
+    data = [
+        {
+            "id": record.id,
+            "uid": record.uid,
+            "user_id": record.user_id,
+            "name": record.name,
+            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
+            "status": record.status,
+            "synced_at": record.synced_at.isoformat() if record.synced_at else None,
+        }
+        for record in records
+    ]
+
+    return success(
+        data=data,
+        message=f"Se obtuvieron {len(data)} asistencias de hoy"
+    )
+
+#Endpoint para obtener las asistencias por semana de lunes a domingo
+@router.get("/attendance/week", summary="Obtener asistencias de esta semana")
+def get_week_attendance():
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+
+    start_datetime = datetime.combine(start_of_week, time.min)
+    end_datetime = datetime.combine(end_of_week, time.max)
+
+    records = DBService.get_attendance_by_date_range(
+        start_datetime,
+        end_datetime
+    )
+
+    data = [
+        {
+            "id": record.id,
+            "uid": record.uid,
+            "user_id": record.user_id,
+            "name": record.name,
+            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
+            "status": record.status,
+            "synced_at": record.synced_at.isoformat() if record.synced_at else None,
+        }
+        for record in records
+    ]
+
+    return success(
+        data=data,
+        message=f"Se obtuvieron {len(data)} asistencias de esta semana"
     )
 
 class DeviceCreate(BaseModel):

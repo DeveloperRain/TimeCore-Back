@@ -643,58 +643,14 @@ class DBService:
 
 
 
-@staticmethod
-def update_user_profile(
-    uid: int,
-    role: str = None,
-    sucursal: str = None,
-    email: str = None,
-    db: Optional[Session] = None
-) -> Optional[User]:
-    if db is None:
-        db = SessionLocal()
-        close_db = True
-    else:
-        close_db = False
-
-    try:
-        user = db.query(User).filter(User.uid == uid).first()
-
-        if not user:
-            return None
-
-        if role is not None:
-            user.role = UserRole(role) if role else UserRole.usuario
-
-        if sucursal is not None:
-            user.sucursal = sucursal
-
-        if email is not None:
-            user.email = email
-
-        user.updated_at = datetime.utcnow()
-
-        db.commit()
-        db.refresh(user)
-
-        return user
-
-    except Exception as e:
-        db.rollback()
-        logger.error(f"Error al actualizar perfil del usuario {uid}: {str(e)}")
-        raise
-    finally:
-        if close_db:
-            db.close()
-
-@staticmethod
-def update_branch(
-        branch_id: int,
-        name: str = None,
-        address: str = None,
-        is_active: bool = None,
+    @staticmethod
+    def update_user_profile(
+        uid: int,
+        role: str = None,
+        sucursal: str = None,
+        email: str = None,
         db: Optional[Session] = None
-    ) -> Optional[Branch]:
+    ) -> Optional[User]:
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -702,33 +658,77 @@ def update_branch(
             close_db = False
 
         try:
-            branch = db.query(Branch).filter(Branch.id == branch_id).first()
+            user = db.query(User).filter(User.uid == uid).first()
 
-            if not branch:
+            if not user:
                 return None
 
-            if name is not None:
-                branch.name = name
-            if address is not None:
-                branch.address = address
-            if is_active is not None:
-                branch.is_active = is_active
+            if role is not None:
+                user.role = UserRole(role) if role else UserRole.usuario
 
-            branch.updated_at = datetime.utcnow()
+            if sucursal is not None:
+                user.sucursal = sucursal
+
+            if email is not None:
+                user.email = email
+
+            user.updated_at = datetime.utcnow()
 
             db.commit()
-            db.refresh(branch)
+            db.refresh(user)
 
-            return branch
+            return user
 
         except Exception as e:
             db.rollback()
-            logger.error(f"Error al actualizar sucursal {branch_id}: {str(e)}")
+            logger.error(f"Error al actualizar perfil del usuario {uid}: {str(e)}")
             raise
         finally:
             if close_db:
                 db.close()
-        
+
+    @staticmethod
+    def update_branch(
+            branch_id: int,
+            name: str = None,
+            address: str = None,
+            is_active: bool = None,
+            db: Optional[Session] = None
+        ) -> Optional[Branch]:
+            if db is None:
+                db = SessionLocal()
+                close_db = True
+            else:
+                close_db = False
+
+            try:
+                branch = db.query(Branch).filter(Branch.id == branch_id).first()
+
+                if not branch:
+                    return None
+
+                if name is not None:
+                    branch.name = name
+                if address is not None:
+                    branch.address = address
+                if is_active is not None:
+                    branch.is_active = is_active
+
+                branch.updated_at = datetime.utcnow()
+
+                db.commit()
+                db.refresh(branch)
+
+                return branch
+
+            except Exception as e:
+                db.rollback()
+                logger.error(f"Error al actualizar sucursal {branch_id}: {str(e)}")
+                raise
+            finally:
+                if close_db:
+                    db.close()
+            
     
     
     
