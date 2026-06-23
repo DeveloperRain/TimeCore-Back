@@ -591,7 +591,13 @@ class DBService:
                 db.close()
 
     @staticmethod
-    def create_branch(name: str, address: str = None, db: Optional[Session] = None) -> Branch:
+    def create_branch(
+        name: str,
+        address: str = None,
+        is_active: bool = True,
+        status: str = "Activo",
+        db: Optional[Session] = None
+    ) -> Branch:
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -604,10 +610,14 @@ class DBService:
             if existing:
                 raise DataValidationError(f"Ya existe una sucursal llamada {name}")
 
+            if status not in ("Activo", "Inactivo", "Baja"):
+                status = "Activo" if is_active else "Inactivo"
+
             branch = Branch(
                 name=name,
                 address=address,
-                is_active=True,
+                is_active=status == "Activo",
+                status=status,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -640,8 +650,6 @@ class DBService:
         finally:
             if close_db:
                 db.close()
-
-
 
     @staticmethod
     def update_user_profile(
@@ -689,45 +697,56 @@ class DBService:
 
     @staticmethod
     def update_branch(
-            branch_id: int,
-            name: str = None,
-            address: str = None,
-            is_active: bool = None,
-            db: Optional[Session] = None
-        ) -> Optional[Branch]:
-            if db is None:
-                db = SessionLocal()
-                close_db = True
-            else:
-                close_db = False
+        branch_id: int,
+        name: str = None,
+        address: str = None,
+        is_active: bool = None,
+        status: str = None,
+        db: Optional[Session] = None
+    ) -> Optional[Branch]:
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
 
-            try:
-                branch = db.query(Branch).filter(Branch.id == branch_id).first()
+        try:
+            branch = db.query(Branch).filter(Branch.id == branch_id).first()
 
-                if not branch:
-                    return None
+            if not branch:
+                return None
 
-                if name is not None:
-                    branch.name = name
-                if address is not None:
-                    branch.address = address
-                if is_active is not None:
-                    branch.is_active = is_active
+            if name is not None:
+                branch.name = name
 
-                branch.updated_at = datetime.utcnow()
+            if address is not None:
+                branch.address = address
 
-                db.commit()
-                db.refresh(branch)
+            if status is not None:
+                if status not in ("Activo", "Inactivo", "Baja"):
+                    status = "Activo" if is_active else "Inactivo"
 
-                return branch
+                branch.status = status
+                branch.is_active = status == "Activo"
 
-            except Exception as e:
-                db.rollback()
-                logger.error(f"Error al actualizar sucursal {branch_id}: {str(e)}")
-                raise
-            finally:
-                if close_db:
-                    db.close()
+            elif is_active is not None:
+                branch.is_active = is_active
+                branch.status = "Activo" if is_active else "Inactivo"
+
+            branch.updated_at = datetime.utcnow()
+
+            db.commit()
+            db.refresh(branch)
+
+            return branch
+
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar sucursal {branch_id}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
             
     
     

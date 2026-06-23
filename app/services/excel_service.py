@@ -193,3 +193,5 @@ def build_attendance_excel(records: List[Dict[str, Any]]) -> bytes:
             workbook.writestr(path, content)
 
     return output.getvalue()
+
+    

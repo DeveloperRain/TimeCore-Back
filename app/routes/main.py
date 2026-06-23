@@ -1,26 +1,27 @@
 # Configuración principal de FastAPI. Registra routers e inicializa tablas de BD.
-from fastapi import FastAPI
-from fastapi.openapi.utils import get_openapi
-from app.config.logger import setup_logger
-from app.middleware.error_handler import ErrorHandlerMiddleware
-from app.routes.usuarios import router as usuarios_router
-from app.routes.device import router as device_router
-from app.database.connection import create_tables
-from app.utils.response import success
 from datetime import datetime
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.utils import get_openapi
-from app.routes.db import router as db_router
-from app.routes.sync import router as sync_router
-from app.routes.dashboard import router as dashboard_router
-from app.routes.logs import router as logs_router
-from app.routes.branches import router as branches_router
 
+from app.config.logger import setup_logger
+from app.database.connection import create_tables
+from app.middleware.error_handler import ErrorHandlerMiddleware
+from app.routes.auth import router as auth_router
+from app.routes.branches import router as branches_router
+from app.routes.dashboard import router as dashboard_router
+from app.routes.db import router as db_router
+from app.routes.device import router as device_router
+from app.routes.logs import router as logs_router
+from app.routes.sync import router as sync_router
+from app.routes.usuarios import router as usuarios_router
+from app.utils.response import success
 
 logger = setup_logger()
+
 app = FastAPI(
-    title="TIMECORE API ",
+    title="TIMECORE API",
     description="API para gestión de usuarios y asistencia del reloj biométrico ZKTeco/Steren",
     version="1.0.0",
     license_info={
@@ -41,17 +42,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Registrar middleware de manejo de errores
 app.add_middleware(ErrorHandlerMiddleware)
 
 # Crear tablas en la base de datos al iniciar
 create_tables()
 
+# Routers
+app.include_router(auth_router)
 app.include_router(usuarios_router)
 app.include_router(device_router)
 app.include_router(db_router)
 app.include_router(sync_router)
 app.include_router(dashboard_router)
+app.include_router(logs_router)
+app.include_router(branches_router)
 
 
 def custom_openapi():
@@ -60,7 +64,7 @@ def custom_openapi():
         return app.openapi_schema
 
     openapi_schema = get_openapi(
-        title="TIMECORE API ",
+        title="TIMECORE API",
         version="1.0.0",
         description="API para gestión de usuarios, asistencia y dispositivo ZKTeco y/o Steren",
         routes=app.routes,
@@ -86,6 +90,7 @@ app.openapi = custom_openapi
 def root():
     """Endpoint raíz con información general de la API."""
     logger.info("Health check requested")
+
     return success(
         data={
             "status": "online",
@@ -93,18 +98,11 @@ def root():
             "service": "TIMECORE API",
             "timestamp": datetime.utcnow().isoformat(),
             "endpoints": {
+                "auth": "/docs#!/Autenticación",
                 "usuarios": "/docs#!/Usuarios",
                 "dispositivo": "/docs#!/Dispositivo",
-                "documentation": "/docs"
-            }
+                "documentation": "/docs",
+            },
         },
         message="API disponible y funcionando correctamente"
-
-    ) 
-
-app.include_router(logs_router)
-
-app.include_router(branches_router)
-
-
-         
+    )

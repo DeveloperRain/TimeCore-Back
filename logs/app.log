@@ -14783,3 +14783,787 @@ ConnectionError: Error de conexion: timed out
 2026-06-22 14:55:39 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
 2026-06-22 15:45:12 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
 2026-06-22 15:45:13 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:30:51 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 08:30:51 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:31:18 - app.services.db - INFO - Se guardaron 1 registros de asistencia en BD
+2026-06-23 08:32:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 08:32:23 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:32:24 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-23 08:32:25 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-23 08:32:26 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-23 08:32:27 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-23 08:32:28 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-23 08:32:28 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-23 08:32:29 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-23 08:32:29 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-23 08:32:29 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-23 08:32:30 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-23 08:32:30 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-23 08:32:30 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-23 08:32:30 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-23 08:32:31 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-23 08:32:31 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-23 08:32:31 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-23 08:32:31 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-23 08:32:31 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-23 08:32:32 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-23 08:32:32 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-23 08:32:32 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-23 08:32:32 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-23 08:32:32 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 08:32:33 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:33:00 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-06-23 08:47:27 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 08:47:28 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:47:29 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-23 08:47:30 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-23 08:47:30 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-23 08:47:30 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-23 08:47:30 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-23 08:47:31 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-23 08:47:31 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-23 08:47:31 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-23 08:47:32 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-23 08:47:32 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-23 08:47:32 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-23 08:47:32 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-23 08:47:33 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-23 08:47:33 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-23 08:47:33 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-23 08:47:33 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-23 08:47:34 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-23 08:47:34 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-23 08:47:34 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-23 08:47:35 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-23 08:47:35 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-23 08:47:35 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-23 08:49:35 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 08:49:35 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:49:37 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-23 08:52:29 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 08:52:29 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 08:52:31 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-23 09:31:05 - app - INFO - Health check requested
+2026-06-23 13:22:59 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 13:23:00 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 13:23:01 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-23 13:23:01 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-23 13:23:02 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-23 13:23:02 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-23 13:23:02 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-23 13:23:02 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-23 13:23:03 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-23 13:23:03 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-23 13:23:03 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-23 13:23:04 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-23 13:23:04 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-23 13:23:04 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-23 13:23:06 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-23 13:23:06 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-23 13:23:07 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-23 13:23:08 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-23 13:23:09 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-23 13:23:09 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-23 13:23:09 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-23 13:23:10 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-23 13:23:10 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-23 13:23:10 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-23 13:23:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-23 13:23:11 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-23 13:23:38 - app.services.db - INFO - Se guardaron 1 registros de asistencia en BD
+2026-06-23 15:37:58 - app.middleware.error_handler - ERROR - Error no manejado en /auth/login: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1609, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 2047, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1629, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 99, in login
+    ensure_default_admin()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 76, in ensure_default_admin
+    password_hash=hash_password("Admin1234"),
+                  ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 48, in hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-06-23 15:38:22 - app.middleware.error_handler - ERROR - Error no manejado en /auth/login: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1609, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 2047, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1629, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 99, in login
+    ensure_default_admin()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 76, in ensure_default_admin
+    password_hash=hash_password("Admin1234"),
+                  ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 48, in hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-06-23 15:39:29 - app.middleware.error_handler - ERROR - Error no manejado en /auth/login: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1609, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 2047, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1629, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 99, in login
+    ensure_default_admin()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 76, in ensure_default_admin
+    password_hash=hash_password("Admin1234"),
+                  ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 48, in hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-06-23 15:45:09 - app.middleware.error_handler - ERROR - Error no manejado en /auth/login: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1609, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 2047, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1629, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 99, in login
+    ensure_default_admin()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 76, in ensure_default_admin
+    password_hash=hash_password("Admin1234"),
+                  ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 48, in hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-06-23 15:45:13 - app.middleware.error_handler - ERROR - Error no manejado en /auth/login: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1609, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 2047, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1629, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 99, in login
+    ensure_default_admin()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 76, in ensure_default_admin
+    password_hash=hash_password("Admin1234"),
+                  ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 48, in hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-06-23 15:46:46 - app.middleware.error_handler - ERROR - Error no manejado en /auth/register: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\middleware\error_handler.py", line 17, in dispatch
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1609, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 2047, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1629, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 136, in register
+    ensure_default_admin()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 76, in ensure_default_admin
+    password_hash=hash_password("Admin1234"),
+                  ~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\auth.py", line 48, in hash_password
+    return pwd_context.hash(password)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\context.py", line 2258, in hash
+    return record.hash(secret, **kwds)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 779, in hash
+    self.checksum = self._calc_checksum(secret)
+                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 591, in _calc_checksum
+    self._stub_requires_backend()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2254, in _stub_requires_backend
+    cls.set_backend()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2156, in set_backend
+    return owner.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2163, in set_backend
+    return cls.set_backend(name, dryrun=dryrun)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2188, in set_backend
+    cls._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2311, in _set_backend
+    super(SubclassBackendMixin, cls)._set_backend(name, dryrun)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 2224, in _set_backend
+    ok = loader(**kwds)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 626, in _load_backend_mixin
+    return mixin_cls._finalize_backend_mixin(name, dryrun)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 421, in _finalize_backend_mixin
+    if detect_wrap_bug(IDENT_2A):
+       ~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 380, in detect_wrap_bug
+    if verify(secret, bug_hash):
+       ~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\utils\handlers.py", line 792, in verify
+    return consteq(self._calc_checksum(secret), chk)
+                   ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
+    hash = _bcrypt.hashpw(secret, config)
+ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
