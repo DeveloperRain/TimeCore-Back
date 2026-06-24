@@ -15567,3 +15567,36 @@ Traceback (most recent call last):
   File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\.venv\Lib\site-packages\passlib\handlers\bcrypt.py", line 655, in _calc_checksum
     hash = _bcrypt.hashpw(secret, config)
 ValueError: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2026-06-24 08:53:03 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 08:53:03 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 08:53:05 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-24 08:53:13 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 08:53:13 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 08:53:15 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-24 08:53:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 08:53:24 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 08:53:27 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-24 09:34:43 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 09:34:43 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 09:34:45 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-24 09:34:45 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-06-24 09:34:45 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-06-24 09:34:46 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-06-24 09:34:46 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-06-24 09:34:46 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-06-24 09:34:46 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-06-24 09:34:46 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-06-24 09:34:47 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-06-24 09:34:47 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-06-24 09:34:47 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-06-24 09:34:47 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-06-24 09:34:48 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-06-24 09:34:48 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-06-24 09:34:48 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-06-24 09:34:48 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-06-24 09:34:49 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-06-24 09:34:49 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-06-24 09:34:49 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-06-24 09:34:49 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-06-24 09:34:50 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-06-24 09:34:52 - app.services.db - INFO - Usuario UID 22 actualizado en BD
