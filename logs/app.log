@@ -15600,3 +15600,16 @@ ValueError: password cannot be longer than 72 bytes, truncate manually if necess
 2026-06-24 09:34:49 - app.services.db - INFO - Usuario UID 20 actualizado en BD
 2026-06-24 09:34:50 - app.services.db - INFO - Usuario UID 21 actualizado en BD
 2026-06-24 09:34:52 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-24 11:16:27 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 11:16:27 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 11:16:29 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-24 11:16:53 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 11:16:53 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 11:16:55 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-06-24 11:37:02 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 11:37:02 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 11:37:04 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-24 11:37:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-06-24 11:37:23 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-06-24 11:37:25 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-06-24 12:32:26 - app - INFO - Health check requested
