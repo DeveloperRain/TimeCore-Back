@@ -204,6 +204,6 @@ def me(credentials: HTTPAuthorizationCredentials = Depends(security)):
             data=user_to_dict(user),
             message="Token válido",
         )
-
+  
     finally:
         db.close()
