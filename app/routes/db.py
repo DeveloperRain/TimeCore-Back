@@ -1,15 +1,13 @@
 from fastapi import APIRouter, HTTPException, Query
 from datetime import datetime, time, timedelta
-from app.models import user
-from app.services.db_service import DBService
-from app.utils.response import success
 from pydantic import BaseModel
 from typing import Optional
 from fastapi.responses import StreamingResponse
 from io import BytesIO
+
+from app.services.db_service import DBService
+from app.utils.response import success
 from app.services.excel_service import build_attendance_excel
-from typing import Optional
-from pydantic import BaseModel
 
 
 router = APIRouter(
@@ -17,7 +15,7 @@ router = APIRouter(
     tags=["Base de Datos"]
 )
 
-DATE_FORMATS = ("%d-%m-%Y", "%d/%m/%Y")
+DATE_FORMATS = ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y")
 
 
 def parse_date(value: str):
@@ -29,28 +27,127 @@ def parse_date(value: str):
 
     raise HTTPException(
         status_code=400,
-        detail="Formato de fecha inválido. Usa DD-MM-YYYY o DD/MM/YYYY"
+        detail="Formato de fecha inválido. Usa YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY"
+    )
+
+
+def user_to_dict(user):
+    return {
+        "uid": user.uid,
+        "user_id": user.user_id,
+        "name": user.name,
+        "role": user.role.value if hasattr(user.role, "value") else str(user.role),
+        "status": user.status if hasattr(user, "status") else "Activo",
+        "created_at": user.created_at.isoformat() if user.created_at else None,
+        "updated_at": user.updated_at.isoformat() if user.updated_at else None,
+        "sucursal": user.sucursal if hasattr(user, "sucursal") else None,
+        "email": user.email if hasattr(user, "email") else None,
+        "branch_id": getattr(user, "branch_id", None),
+        "device_id": getattr(user, "device_id", None),
+        "device_code": getattr(user, "device_code", None),
+    }
+
+
+def attendance_to_dict(record):
+    return {
+        "id": record.id,
+        "uid": record.uid,
+        "user_id": record.user_id,
+        "name": record.name,
+        "timestamp": record.timestamp.isoformat() if record.timestamp else None,
+        "status": record.status,
+        "synced_at": record.synced_at.isoformat() if getattr(record, "synced_at", None) else None,
+        "branch_id": getattr(record, "branch_id", None),
+        "device_id": getattr(record, "device_id", None),
+        "device_code": getattr(record, "device_code", None),
+    }
+
+
+def attendance_to_excel_dict(record):
+    return {
+        "uid": record.uid,
+        "user_id": record.user_id,
+        "name": record.name,
+        "timestamp": record.timestamp,
+        "status": record.status,
+    }
+
+
+def device_to_dict(device):
+    return {
+        "id": device.id,
+        "nombre": device.name,
+        "name": device.name,
+        "ip": device.ip,
+        "ip_address": device.ip,
+        "puerto": device.port,
+        "port": device.port,
+        "sucursal": device.location,
+        "ubicacion": device.description,
+        "location": device.location,
+        "description": device.description,
+        "activo": device.is_active,
+        "is_active": device.is_active,
+        "estado": device.status,
+        "status": device.status,
+        "branch_id": getattr(device, "branch_id", None),
+        "ultima_sincronizacion": device.last_connection.isoformat()
+        if device.last_connection
+        else None,
+        "created_at": device.created_at.isoformat() if device.created_at else None,
+        "updated_at": device.updated_at.isoformat() if device.updated_at else None,
+    }
+
+
+def get_branch_or_404(branch_id: int):
+    branch = DBService.get_branch_by_id(branch_id)
+
+    if not branch:
+        raise HTTPException(status_code=404, detail="Sucursal no encontrada")
+
+    return branch
+
+
+def filter_records_by_range(records, start_datetime: datetime, end_datetime: datetime):
+    return [
+        record
+        for record in records
+        if record.timestamp
+        and record.timestamp >= start_datetime
+        and record.timestamp <= end_datetime
+    ]
+
+
+def get_attendance_records(
+    start_datetime: datetime = datetime.min,
+    end_datetime: datetime = datetime.max,
+    branch_id: Optional[int] = None,
+):
+    if branch_id is not None:
+        get_branch_or_404(branch_id)
+        records = DBService.get_attendance_by_branch(branch_id)
+        return filter_records_by_range(records, start_datetime, end_datetime)
+
+    return DBService.get_attendance_by_date_range(
+        start_datetime,
+        end_datetime
     )
 
 
 @router.get("/users", summary="Obtener usuarios desde PostgreSQL")
-def get_users_from_db():
-    users = DBService.get_all_users_from_db()
+def get_users_from_db(
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar empleados"
+    )
+):
+    if branch_id is not None:
+        get_branch_or_404(branch_id)
+        users = DBService.get_users_by_branch(branch_id)
+    else:
+        users = DBService.get_all_users_from_db()
 
-    data = [
-        {
-            "uid": user.uid,
-            "user_id": user.user_id,
-            "name": user.name,
-            "role": user.role.value if hasattr(user.role, "value") else str(user.role),
-            "status": user.status if hasattr(user, "status") else "Activo",
-            "created_at": user.created_at.isoformat() if user.created_at else None,
-            "updated_at": user.updated_at.isoformat() if user.updated_at else None,
-            "sucursal": user.sucursal if hasattr(user, "sucursal") else None,
-            "email": user.email if hasattr(user, "email") else None,
-        }
-        for user in users
-    ]
+    data = [user_to_dict(user) for user in users]
 
     return success(
         data=data,
@@ -61,25 +158,15 @@ def get_users_from_db():
 @router.get("/attendance", summary="Obtener asistencias desde PostgreSQL")
 def get_attendance_from_db(
     limit: int = Query(100, ge=1, le=1000),
-):
-    records = DBService.get_attendance_by_date_range(
-        datetime.min,
-        datetime.max
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar asistencias"
     )
-
+):
+    records = get_attendance_records(branch_id=branch_id)
     records = records[:limit]
 
-    data = [
-        {
-            "id": record.id,
-            "uid": record.uid,
-            "user_id": record.user_id,
-            "name": record.name,
-            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
-            "status": record.status,
-        }
-        for record in records
-    ]
+    data = [attendance_to_dict(record) for record in records]
 
     return success(
         data=data,
@@ -88,8 +175,39 @@ def get_attendance_from_db(
 
 
 @router.get("/attendance/dates", summary="Obtener fechas con asistencias desde PostgreSQL")
-def get_attendance_dates_from_db():
-    dates = DBService.get_attendance_dates_summary()
+def get_attendance_dates_from_db(
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar fechas con asistencia"
+    )
+):
+    if branch_id is None:
+        dates = DBService.get_attendance_dates_summary()
+
+        return success(
+            data=dates,
+            message=f"Se obtuvieron {len(dates)} fechas con registros"
+        )
+
+    get_branch_or_404(branch_id)
+    records = DBService.get_attendance_by_branch(branch_id)
+
+    grouped = {}
+
+    for record in records:
+        if not record.timestamp:
+            continue
+
+        fecha = record.timestamp.date().isoformat()
+        grouped[fecha] = grouped.get(fecha, 0) + 1
+
+    dates = [
+        {
+            "fecha": fecha,
+            "total": total,
+        }
+        for fecha, total in sorted(grouped.items(), reverse=True)
+    ]
 
     return success(
         data=dates,
@@ -99,25 +217,23 @@ def get_attendance_dates_from_db():
 
 @router.get("/attendance/report", summary="Obtener reporte de asistencias desde PostgreSQL")
 def get_attendance_report_from_db(
-    start_date: str = Query(..., description="Fecha inicial DD-MM-YYYY o DD/MM/YYYY"),
-    end_date: str = Query(..., description="Fecha final DD-MM-YYYY o DD/MM/YYYY"),
+    start_date: str = Query(..., description="Fecha inicial YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY"),
+    end_date: str = Query(..., description="Fecha final YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY"),
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar reporte"
+    )
 ):
     start = datetime.combine(parse_date(start_date), time.min)
     end = datetime.combine(parse_date(end_date), time.max)
 
-    records = DBService.get_attendance_by_date_range(start, end)
+    records = get_attendance_records(
+        start_datetime=start,
+        end_datetime=end,
+        branch_id=branch_id,
+    )
 
-    data = [
-        {
-            "id": record.id,
-            "uid": record.uid,
-            "user_id": record.user_id,
-            "name": record.name,
-            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
-            "status": record.status,
-        }
-        for record in records
-    ]
+    data = [attendance_to_dict(record) for record in records]
 
     return success(
         data=data,
@@ -126,38 +242,38 @@ def get_attendance_report_from_db(
 
 
 @router.get("/attendance/today", summary="Obtener asistencias del día actual")
-def get_today_attendance():
+def get_today_attendance(
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar asistencias de hoy"
+    )
+):
     today = datetime.now().date()
 
     start_datetime = datetime.combine(today, time.min)
     end_datetime = datetime.combine(today, time.max)
 
-    records = DBService.get_attendance_by_date_range(
-        start_datetime,
-        end_datetime
+    records = get_attendance_records(
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        branch_id=branch_id,
     )
 
-    data = [
-        {
-            "id": record.id,
-            "uid": record.uid,
-            "user_id": record.user_id,
-            "name": record.name,
-            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
-            "status": record.status,
-            "synced_at": record.synced_at.isoformat() if record.synced_at else None,
-        }
-        for record in records
-    ]
+    data = [attendance_to_dict(record) for record in records]
 
     return success(
         data=data,
         message=f"Se obtuvieron {len(data)} asistencias de hoy"
     )
 
-#Endpoint para obtener las asistencias por semana de lunes a domingo
+
 @router.get("/attendance/week", summary="Obtener asistencias de esta semana")
-def get_week_attendance():
+def get_week_attendance(
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar asistencias de la semana"
+    )
+):
     today = datetime.now().date()
     start_of_week = today - timedelta(days=today.weekday())
     end_of_week = start_of_week + timedelta(days=6)
@@ -165,28 +281,19 @@ def get_week_attendance():
     start_datetime = datetime.combine(start_of_week, time.min)
     end_datetime = datetime.combine(end_of_week, time.max)
 
-    records = DBService.get_attendance_by_date_range(
-        start_datetime,
-        end_datetime
+    records = get_attendance_records(
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        branch_id=branch_id,
     )
 
-    data = [
-        {
-            "id": record.id,
-            "uid": record.uid,
-            "user_id": record.user_id,
-            "name": record.name,
-            "timestamp": record.timestamp.isoformat() if record.timestamp else None,
-            "status": record.status,
-            "synced_at": record.synced_at.isoformat() if record.synced_at else None,
-        }
-        for record in records
-    ]
+    data = [attendance_to_dict(record) for record in records]
 
     return success(
         data=data,
         message=f"Se obtuvieron {len(data)} asistencias de esta semana"
     )
+
 
 class DeviceCreate(BaseModel):
     nombre: str
@@ -194,6 +301,8 @@ class DeviceCreate(BaseModel):
     puerto: int = 4370
     sucursal: Optional[str] = None
     ubicacion: Optional[str] = None
+    branch_id: Optional[int] = None
+
 
 class DeviceUpdate(BaseModel):
     nombre: Optional[str] = None
@@ -202,29 +311,23 @@ class DeviceUpdate(BaseModel):
     sucursal: Optional[str] = None
     ubicacion: Optional[str] = None
     activo: Optional[bool] = None
+    branch_id: Optional[int] = None
+
 
 @router.get("/devices", summary="Obtener relojes registrados desde PostgreSQL")
-def get_devices_from_db():
-    devices = DBService.get_all_devices()
+def get_devices_from_db(
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar relojes"
+    )
+):
+    if branch_id is not None:
+        get_branch_or_404(branch_id)
+        devices = DBService.get_devices_by_branch(branch_id)
+    else:
+        devices = DBService.get_all_devices()
 
-    data = [
-        {
-            "id": device.id,
-            "nombre": device.name,
-            "ip": device.ip,
-            "puerto": device.port,
-            "sucursal": device.location,
-            "ubicacion": device.description,
-            "activo": device.is_active,
-            "estado": device.status,
-            "ultima_sincronizacion": device.last_connection.isoformat()
-            if device.last_connection
-            else None,
-            "created_at": device.created_at.isoformat() if device.created_at else None,
-            "updated_at": device.updated_at.isoformat() if device.updated_at else None,
-        }
-        for device in devices
-    ]
+    data = [device_to_dict(device) for device in devices]
 
     return success(
         data=data,
@@ -234,30 +337,27 @@ def get_devices_from_db():
 
 @router.post("/devices", summary="Registrar reloj biométrico en PostgreSQL")
 def create_device(device: DeviceCreate):
+    sucursal = device.sucursal
+
+    if device.branch_id is not None:
+        branch = get_branch_or_404(device.branch_id)
+        sucursal = branch.name
+
     saved = DBService.save_device(
         nombre=device.nombre,
         ip=device.ip,
         puerto=device.puerto,
-        sucursal=device.sucursal,
+        sucursal=sucursal,
         ubicacion=device.ubicacion,
     )
 
     DBService.create_log(
-    accion="Reloj agregado",
-    detalle=f"Se registró el reloj {saved.name} ({saved.ip})"
-)
+        accion="Reloj agregado",
+        detalle=f"Se registró el reloj {saved.name} ({saved.ip})"
+    )
 
     return success(
-        data={
-            "id": saved.id,
-            "nombre": saved.name,
-            "ip": saved.ip,
-            "puerto": saved.port,
-            "sucursal": saved.location,
-            "ubicacion": saved.description,
-            "estado": saved.status,
-            "activo": saved.is_active,
-        },
+        data=device_to_dict(saved),
         message="Reloj registrado correctamente"
     )
 
@@ -270,54 +370,42 @@ def get_device_by_id(device_id: int):
         raise HTTPException(status_code=404, detail="Reloj no encontrado")
 
     return success(
-        data={
-            "id": device.id,
-            "nombre": device.name,
-            "ip": device.ip,
-            "puerto": device.port,
-            "sucursal": device.location,
-            "ubicacion": device.description,
-            "activo": device.is_active,
-            "estado": device.status,
-            "ultima_sincronizacion": device.last_connection.isoformat()
-            if device.last_connection
-            else None,
-        },
+        data=device_to_dict(device),
         message="Reloj obtenido correctamente"
     )
+
+
 @router.put("/devices/{device_id}", summary="Actualizar reloj biométrico")
 def update_device(device_id: int, device: DeviceUpdate):
+    sucursal = device.sucursal
+
+    if device.branch_id is not None:
+        branch = get_branch_or_404(device.branch_id)
+        sucursal = branch.name
+
     updated = DBService.update_device(
         device_id=device_id,
         nombre=device.nombre,
         ip=device.ip,
         puerto=device.puerto,
-        sucursal=device.sucursal,
+        sucursal=sucursal,
         ubicacion=device.ubicacion,
         activo=device.activo,
     )
 
     if not updated:
         raise HTTPException(status_code=404, detail="Reloj no encontrado")
-    
+
     DBService.create_log(
-    accion="Reloj actualizado",
-    detalle=f"Se actualizó el reloj {updated.name} ({updated.ip})"
-)
+        accion="Reloj actualizado",
+        detalle=f"Se actualizó el reloj {updated.name} ({updated.ip})"
+    )
 
     return success(
-        data={
-            "id": updated.id,
-            "nombre": updated.name,
-            "ip": updated.ip,
-            "puerto": updated.port,
-            "sucursal": updated.location,
-            "ubicacion": updated.description,
-            "activo": updated.is_active,
-            "estado": updated.status,
-        },
+        data=device_to_dict(updated),
         message="Reloj actualizado correctamente"
     )
+
 
 @router.delete("/devices/{device_id}", summary="Inactivar reloj biométrico")
 def delete_device(device_id: int):
@@ -344,6 +432,7 @@ def delete_device(device_id: int):
         message="Reloj inactivado correctamente"
     )
 
+
 @router.put("/devices/{device_id}/activate", summary="Activar reloj biométrico")
 def activate_device(device_id: int):
     device = DBService.get_device_by_id(device_id)
@@ -366,59 +455,25 @@ def activate_device(device_id: int):
         message="Reloj activado correctamente"
     )
 
-@router.put("/devices/{device_id}/activate")
-def activate_device(device_id: int):
 
-    @router.get("/attendance/download", summary="Descargar asistencias desde PostgreSQL en Excel")
-    def download_attendance_from_db():
-        records = DBService.get_attendance_by_date_range(
-        datetime.min,
-        datetime.max
+@router.get("/attendance/download", summary="Descargar asistencias desde PostgreSQL en Excel")
+def download_attendance_from_db(
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar descarga"
     )
-
-    records_dict = [
-        {
-            "uid": record.uid,
-            "user_id": record.user_id,
-            "name": record.name,
-            "timestamp": record.timestamp,
-            "status": record.status,
-        }
-        for record in records
-    ]
-
-    excel_bytes = build_attendance_excel(records_dict)
-
-    return StreamingResponse(
-        BytesIO(excel_bytes),
-        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=asistencias_bd.xlsx"}
-    )
-
-@router.get("/attendance/report/download", summary="Descargar reporte de asistencias desde PostgreSQL en Excel")
-def download_attendance_report_from_db(
-    start_date: str = Query(..., description="Fecha inicial DD-MM-YYYY o DD/MM/YYYY"),
-    end_date: str = Query(..., description="Fecha final DD-MM-YYYY o DD/MM/YYYY"),
 ):
-    start = datetime.combine(parse_date(start_date), time.min)
-    end = datetime.combine(parse_date(end_date), time.max)
+    records = get_attendance_records(branch_id=branch_id)
 
-    records = DBService.get_attendance_by_date_range(start, end)
-
-    records_dict = [
-        {
-            "uid": record.uid,
-            "user_id": record.user_id,
-            "name": record.name,
-            "timestamp": record.timestamp,
-            "status": record.status,
-        }
-        for record in records
-    ]
+    records_dict = [attendance_to_excel_dict(record) for record in records]
 
     excel_bytes = build_attendance_excel(records_dict)
 
-    filename = f"asistencias_{start_date.replace('/', '-')}_a_{end_date.replace('/', '-')}.xlsx"
+    filename = "asistencias_bd.xlsx"
+
+    if branch_id is not None:
+        branch = get_branch_or_404(branch_id)
+        filename = f"asistencias_{branch.name.replace(' ', '_')}.xlsx"
 
     return StreamingResponse(
         BytesIO(excel_bytes),
@@ -426,8 +481,48 @@ def download_attendance_report_from_db(
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
+
+@router.get("/attendance/report/download", summary="Descargar reporte de asistencias desde PostgreSQL en Excel")
+def download_attendance_report_from_db(
+    start_date: str = Query(..., description="Fecha inicial YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY"),
+    end_date: str = Query(..., description="Fecha final YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY"),
+    branch_id: Optional[int] = Query(
+        None,
+        description="ID de sucursal para filtrar descarga"
+    )
+):
+    start = datetime.combine(parse_date(start_date), time.min)
+    end = datetime.combine(parse_date(end_date), time.max)
+
+    records = get_attendance_records(
+        start_datetime=start,
+        end_datetime=end,
+        branch_id=branch_id,
+    )
+
+    records_dict = [attendance_to_excel_dict(record) for record in records]
+
+    excel_bytes = build_attendance_excel(records_dict)
+
+    filename = f"asistencias_{start_date.replace('/', '-')}_a_{end_date.replace('/', '-')}.xlsx"
+
+    if branch_id is not None:
+        branch = get_branch_or_404(branch_id)
+        filename = (
+            f"asistencias_{branch.name.replace(' ', '_')}_"
+            f"{start_date.replace('/', '-')}_a_{end_date.replace('/', '-')}.xlsx"
+        )
+
+    return StreamingResponse(
+        BytesIO(excel_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
 class UserStatusUpdate(BaseModel):
     status: str
+
 
 @router.put("/users/{uid}/status", summary="Actualizar estado de empleado")
 def update_user_status(uid: int, payload: UserStatusUpdate):
@@ -459,18 +554,26 @@ def update_user_status(uid: int, payload: UserStatusUpdate):
         message="Estado de empleado actualizado correctamente"
     )
 
+
 class UserProfileUpdate(BaseModel):
     role: Optional[str] = None
     sucursal: Optional[str] = None
     email: Optional[str] = None
+    branch_id: Optional[int] = None
 
 
 @router.put("/users/{uid}/profile", summary="Actualizar perfil de empleado")
 def update_user_profile(uid: int, payload: UserProfileUpdate):
+    sucursal = payload.sucursal
+
+    if payload.branch_id is not None:
+        branch = get_branch_or_404(payload.branch_id)
+        sucursal = branch.name
+
     user = DBService.update_user_profile(
         uid=uid,
         role=payload.role,
-        sucursal=payload.sucursal,
+        sucursal=sucursal,
         email=payload.email,
     )
 
@@ -490,6 +593,7 @@ def update_user_profile(uid: int, payload: UserProfileUpdate):
             "role": user.role.value if hasattr(user.role, "value") else str(user.role),
             "sucursal": user.sucursal,
             "email": user.email,
+            "branch_id": getattr(user, "branch_id", None),
         },
         message="Perfil de empleado actualizado correctamente"
     )

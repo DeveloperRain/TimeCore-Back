@@ -3,7 +3,6 @@ from fastapi.responses import StreamingResponse
 from io import BytesIO
 from datetime import datetime, time, timedelta
 from typing import Optional
-
 from app.config.logger import get_logger, log_exception
 from app.services.zk_service import ZKService
 from app.services.db_service import DBService
@@ -67,7 +66,57 @@ def get_safe_end_datetime(parsed_end_date):
 )
 def get_users(
     page: int = Query(1, ge=1, description="Número de página"),
-    limit: int = Query(20, ge=1, le=100, description="Items por página"),
+    limit: int = Query(
+        1000,
+        ge=1,
+        le=1000,
+        description="Empleados por página. Máximo 1000 contando todas las sucursales.",
+    ),
+):
+    try:
+        usuarios = ZKService.get_all_users()
+
+        for user in usuarios:
+            try:
+                DBService.save_user(
+                    uid=user["uid"],
+                    user_id=user["user_id"],
+                    name=user["name"],
+                    role=user["role"],
+                )
+            except DataValidationError as e:
+                logger.warning(f"Usuario inválido descartado del reloj: {e}")
+            except Exception as e:
+                logger.warning(
+                    f"Error al sincronizar usuario {user.get('uid')} en BD: {str(e)}"
+                )
+
+        total = len(usuarios)
+        start = (page - 1) * limit
+        end = start + limit
+        usuarios_paginados = usuarios[start:end]
+
+        return paginated(
+            data=usuarios_paginados,
+            page=page,
+            limit=limit,
+            total=total,
+            message=f"Se obtuvieron {len(usuarios_paginados)} usuarios",
+        )
+
+    except DataValidationError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
+    except ConnectionError:
+        raise HTTPException(status_code=503, detail="El dispositivo no está disponible")
+    except Exception as e:
+        logger.error(f"Error al obtener usuarios: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error al obtener usuarios: {str(e)}")
+    
+def get_users(
+    page: int = Query(1, ge=1, description="Número de página"),
+    limit: int = Query(100, ge=1, le=1000, description="Items por página"),
 ):
     try:
         from app.services.validators import DataValidator
@@ -241,7 +290,7 @@ def delete_user(uid: int):
 )
 def get_attendance(
     page: int = Query(1, ge=1, description="Número de página"),
-    limit: int = Query(20, ge=1, le=100, description="Items por página"),
+    limit: int = Query(20, ge=1, le=1000, description="Items por página"),
 ):
     try:
         from app.services.validators import DataValidator
