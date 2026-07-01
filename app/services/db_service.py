@@ -227,6 +227,8 @@ class DBService:
         role: str = None,
         sucursal: str = None,
         email: str = None,
+        area: str = None,
+        empresa: str = None,
         branch_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> Optional[User]:
@@ -266,6 +268,12 @@ class DBService:
 
             if email is not None:
                 user.email = email
+
+            if area is not None:
+                user.area = area
+
+            if empresa is not None:
+                user.empresa = empresa
 
             user.updated_at = datetime.utcnow()
 

@@ -42,6 +42,8 @@ def user_to_dict(user):
         "updated_at": user.updated_at.isoformat() if user.updated_at else None,
         "sucursal": user.sucursal if hasattr(user, "sucursal") else None,
         "email": user.email if hasattr(user, "email") else None,
+        "area": user.area if hasattr(user, "area") else None,
+        "empresa": user.empresa if hasattr(user, "empresa") else None,
         "branch_id": getattr(user, "branch_id", None),
         "device_id": getattr(user, "device_id", None),
         "device_code": getattr(user, "device_code", None),
@@ -559,6 +561,8 @@ class UserProfileUpdate(BaseModel):
     role: Optional[str] = None
     sucursal: Optional[str] = None
     email: Optional[str] = None
+    area: Optional[str] = None
+    empresa: Optional[str] = None
     branch_id: Optional[int] = None
 
 
@@ -575,6 +579,9 @@ def update_user_profile(uid: int, payload: UserProfileUpdate):
         role=payload.role,
         sucursal=sucursal,
         email=payload.email,
+        area=payload.area,
+        empresa=payload.empresa,
+        branch_id=payload.branch_id,
     )
 
     if not user:
@@ -593,6 +600,8 @@ def update_user_profile(uid: int, payload: UserProfileUpdate):
             "role": user.role.value if hasattr(user.role, "value") else str(user.role),
             "sucursal": user.sucursal,
             "email": user.email,
+            "area": user.area,
+            "empresa": user.empresa,
             "branch_id": getattr(user, "branch_id", None),
         },
         message="Perfil de empleado actualizado correctamente"

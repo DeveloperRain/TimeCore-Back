@@ -1,4 +1,3 @@
-"""Modelo ORM para tabla de usuarios."""
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Enum as SQLEnum, ForeignKey
 from sqlalchemy.orm import relationship
@@ -31,6 +30,8 @@ class User(Base):
     status = Column(String(20), default="Activo")
     sucursal = Column(String(100), nullable=True)
     email = Column(String(150), nullable=True)
+    area = Column(String(100), nullable=True)
+    empresa = Column(String(100), nullable=True)
 
     branch = relationship("Branch", back_populates="users")
     attendance_records = relationship(
@@ -54,4 +55,6 @@ class User(Base):
             "status": self.status,
             "sucursal": self.sucursal,
             "email": self.email,
+            "area": self.area,
+            "empresa": self.empresa,
         }

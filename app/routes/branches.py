@@ -76,6 +76,8 @@ def user_to_dict(user):
         "name": getattr(user, "name", None),
         "role": getattr(user, "role", None),
         "email": getattr(user, "email", None),
+        "area": getattr(user, "area", None),
+        "empresa": getattr(user, "empresa", None),
         "sucursal": getattr(user, "sucursal", None),
         "branch_id": getattr(user, "branch_id", None),
         "status": getattr(user, "status", None),

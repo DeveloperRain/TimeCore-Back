@@ -3,7 +3,7 @@ import os
 from urllib.parse import quote_plus
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, pool
+from sqlalchemy import create_engine, inspect, pool, text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
@@ -56,3 +56,29 @@ def create_tables():
     from app.models.user import User
 
     Base.metadata.create_all(bind=engine)
+    ensure_user_profile_columns()
+
+
+def ensure_user_profile_columns():
+    """Agrega columnas nuevas de perfil si la tabla users ya existía."""
+    inspector = inspect(engine)
+
+    if "users" not in inspector.get_table_names():
+        return
+
+    existing_columns = {
+        column["name"]
+        for column in inspector.get_columns("users")
+    }
+
+    columns_to_add = {
+        "area": "VARCHAR(100)",
+        "empresa": "VARCHAR(100)",
+    }
+
+    with engine.begin() as connection:
+        for column_name, column_type in columns_to_add.items():
+            if column_name not in existing_columns:
+                connection.execute(
+                    text(f"ALTER TABLE users ADD COLUMN {column_name} {column_type}")
+                )
