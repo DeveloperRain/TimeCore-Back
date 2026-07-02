@@ -24977,3 +24977,960 @@ FROM users
 WHERE users.deleted_at IS NULL AND users.branch_id = %(branch_id_1)s::INTEGER ORDER BY users.name ASC]
 [parameters: {'branch_id_1': 1}]
 (Background on this error at: https://sqlalche.me/e/20/f405)
+2026-07-01 14:15:55 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-01 14:15:55 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-01 14:15:57 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-01 14:25:52 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-01 14:25:52 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-01 14:25:54 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-01 14:25:59 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-01 14:26:00 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-01 14:26:01 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-01 14:26:12 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-01 14:26:12 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-01 14:26:14 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-01 14:42:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-01 14:42:49 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-01 14:42:50 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-01 14:42:50 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-01 14:42:50 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-01 14:42:50 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-01 14:42:51 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-01 14:42:52 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-01 14:42:53 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-01 14:42:53 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-01 14:42:53 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-01 14:42:53 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-01 14:43:26 - app.services.db - INFO - Se guardaron 1 registros de asistencia en BD
+2026-07-02 08:48:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 08:48:17 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 08:48:19 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 10:35:00 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:35:00 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:35:01 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 10:35:01 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 10:35:01 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 10:35:02 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 10:35:03 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 10:35:03 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:35:04 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:35:37 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 10:36:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:36:05 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:36:06 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 10:36:07 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 10:36:08 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 10:36:09 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 10:36:09 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 10:36:09 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 10:36:09 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 10:36:09 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 10:36:09 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 10:36:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:36:09 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:36:43 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 10:41:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:41:17 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 10:41:19 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 10:41:20 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 10:41:21 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 10:41:21 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 10:41:21 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 10:41:21 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 10:41:21 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 10:41:21 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:41:21 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:41:54 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 10:49:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:49:19 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:49:20 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 10:49:20 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 10:49:20 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 10:49:20 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 10:49:20 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 10:49:21 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 10:49:22 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 10:49:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 10:49:23 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 10:49:55 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 10:49:56 - app.services.zk - INFO - Conectando al reloj 192.168.1.10:4370 por TCP
+2026-07-02 10:50:59 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 10:50:59 - app.services.zk - INFO - Conectando al reloj 192.168.1.10:4370 por TCP sin ping
+2026-07-02 10:52:01 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 10:52:01 - app.services.zk - INFO - Conectando al reloj 192.168.1.10:4370 por UDP
+2026-07-02 10:52:34 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 10:52:34 - app.services.zk - INFO - Conectando al reloj 192.168.1.10:4370 por UDP sin ping
+2026-07-02 10:53:04 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 10:53:04 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 10:53:04 - app.routes.sync - ERROR - Error al sincronizar todos los relojes: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 121, in sync_all_devices
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:04:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:04:49 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 11:04:51 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 11:04:52 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 11:04:53 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 11:04:53 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 11:04:53 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 11:04:53 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:04:53 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:05:25 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 11:05:26 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP
+2026-07-02 11:05:29 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:05:29 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP sin ping
+2026-07-02 11:06:30 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:06:30 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP
+2026-07-02 11:06:34 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:06:34 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP sin ping
+2026-07-02 11:07:04 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:07:04 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:07:05 - app.routes.sync - ERROR - Error al sincronizar reloj 3: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:07:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP
+2026-07-02 11:08:08 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 11:08:08 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP sin ping
+2026-07-02 11:09:10 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:09:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP
+2026-07-02 11:09:43 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 11:09:43 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP sin ping
+2026-07-02 11:10:13 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:10:13 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:10:13 - app.routes.sync - ERROR - Error al sincronizar reloj 4: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:11:03 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:11:03 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:11:04 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 11:11:05 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 11:11:06 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 11:11:07 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 11:11:07 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 11:11:07 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 11:11:07 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 11:11:07 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 11:11:07 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:11:07 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:11:40 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 11:11:40 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP
+2026-07-02 11:11:44 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:11:44 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP sin ping
+2026-07-02 11:12:45 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:12:45 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP
+2026-07-02 11:12:49 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:12:49 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP sin ping
+2026-07-02 11:13:19 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:13:19 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:13:19 - app.routes.sync - ERROR - Error al sincronizar reloj 3: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:13:19 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP
+2026-07-02 11:14:23 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 11:14:23 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP sin ping
+2026-07-02 11:15:24 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:15:24 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP
+2026-07-02 11:15:57 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 11:15:57 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP sin ping
+2026-07-02 11:16:27 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:16:27 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:16:28 - app.routes.sync - ERROR - Error al sincronizar reloj 4: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:19:38 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:19:38 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:19:39 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 11:19:40 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 11:19:41 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 11:19:42 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 11:19:42 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 11:19:42 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 11:19:42 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 11:19:42 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:19:42 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:20:15 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 11:20:16 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP
+2026-07-02 11:20:19 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:20:19 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP sin ping
+2026-07-02 11:21:20 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:21:20 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP
+2026-07-02 11:21:24 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:21:24 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP sin ping
+2026-07-02 11:21:54 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:21:54 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:21:55 - app.routes.sync - ERROR - Error al sincronizar reloj 3: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:21:55 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP
+2026-07-02 11:22:59 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 11:22:59 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP sin ping
+2026-07-02 11:24:00 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:24:00 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP
+2026-07-02 11:24:33 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 11:24:33 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP sin ping
+2026-07-02 11:25:03 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:25:03 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:25:03 - app.routes.sync - ERROR - Error al sincronizar reloj 4: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:41:48 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:41:48 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:41:49 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 11:41:50 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 11:41:51 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 11:41:52 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 11:41:52 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 11:41:52 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 11:41:52 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:41:52 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:42:26 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 11:42:26 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP
+2026-07-02 11:42:29 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:42:29 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP sin ping
+2026-07-02 11:43:30 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:43:30 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP
+2026-07-02 11:43:34 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:43:34 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP sin ping
+2026-07-02 11:44:04 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:44:04 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:44:05 - app.routes.sync - ERROR - Error al sincronizar reloj 3: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:44:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP
+2026-07-02 11:45:09 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 11:45:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP sin ping
+2026-07-02 11:46:10 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:46:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP
+2026-07-02 11:46:43 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 11:46:43 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP sin ping
+2026-07-02 11:47:13 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:47:13 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:47:13 - app.routes.sync - ERROR - Error al sincronizar reloj 4: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:50:01 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:50:02 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:50:03 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 11:50:03 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 11:50:03 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 11:50:03 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 11:50:04 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 11:50:05 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 11:50:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:50:06 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:50:38 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 11:50:38 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP
+2026-07-02 11:50:41 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:50:41 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por TCP sin ping
+2026-07-02 11:51:42 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:51:42 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP
+2026-07-02 11:51:46 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: can't reach device (ping 192.168.2.0)
+2026-07-02 11:51:46 - app.services.zk - INFO - Conectando al reloj 192.168.2.0:4370 por UDP sin ping
+2026-07-02 11:52:16 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:52:16 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:52:17 - app.routes.sync - ERROR - Error al sincronizar reloj 3: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+    results.append(sync_registered_device(device))
+                   ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:52:17 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP
+2026-07-02 11:53:21 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 11:53:21 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP sin ping
+2026-07-02 11:54:22 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 11:54:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP
+2026-07-02 11:54:55 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 11:54:55 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP sin ping
+2026-07-02 11:55:25 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 11:55:25 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 11:55:25 - app.routes.sync - ERROR - Error al sincronizar reloj 4: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 211, in sync_all_registered_devices
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 11:57:57 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:57:57 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:57:58 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 11:57:58 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 11:57:59 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 11:58:00 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 11:58:01 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 11:58:01 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 11:58:01 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 11:58:01 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 11:58:01 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 11:58:35 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 12:00:40 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:00:40 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:00:41 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 12:00:41 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 12:00:42 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 12:00:43 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 12:00:44 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 12:00:44 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 12:00:44 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:00:44 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:01:17 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 12:01:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:01:50 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:01:51 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 12:01:51 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 12:01:51 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 12:01:52 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 12:01:53 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 12:01:54 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 12:01:54 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 12:01:54 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 12:01:54 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:01:54 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:02:28 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 12:39:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:39:16 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:39:17 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 12:39:17 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 12:39:17 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 12:39:18 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 12:39:19 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 12:39:19 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:39:20 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:39:53 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 12:50:45 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:50:45 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:50:46 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 12:50:47 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 12:50:48 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 12:50:49 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 12:50:49 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 12:50:49 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 12:50:49 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 12:51:22 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:04:05 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP
+2026-07-02 13:04:24 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:04:25 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:04:26 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:04:26 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:04:26 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:04:26 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:04:26 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:04:27 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:04:28 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:04:28 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:04:29 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:05:02 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:05:09 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP: timed out
+2026-07-02 13:05:09 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por TCP sin ping
+2026-07-02 13:06:11 - app.services.zk - WARNING - No se pudo conectar al reloj por TCP sin ping: timed out
+2026-07-02 13:06:11 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP
+2026-07-02 13:06:44 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP: timed out
+2026-07-02 13:06:44 - app.services.zk - INFO - Conectando al reloj 192.168.1.40:4370 por UDP sin ping
+2026-07-02 13:07:14 - app.services.zk - WARNING - No se pudo conectar al reloj por UDP sin ping: timed out
+2026-07-02 13:07:14 - app.services.zk - ERROR - Error de conexion con el reloj: timed out
+NoneType: None
+2026-07-02 13:07:14 - app.routes.sync - ERROR - Error al sincronizar reloj por ID: Error de conexion: timed out
+Traceback (most recent call last):
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 164, in sync_device_by_id
+    result = sync_registered_device(device)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\routes\sync.py", line 17, in sync_registered_device
+    usuarios = ZKService.get_all_users(
+        ip=device.ip,
+        port=device.port
+    )
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 160, in get_all_users
+    conn = ZKService._create_connection(ip, port)
+  File "C:\Users\Sistemas-Apoyo\Documents\TimeCore-back\app\services\zk_service.py", line 117, in _create_connection
+    raise ConnectionError(f"Error de conexion: {str(last_error)}")
+ConnectionError: Error de conexion: timed out
+2026-07-02 13:14:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:14:10 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:14:12 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:14:12 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:14:12 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:14:12 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:14:12 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:14:12 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:14:13 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:14:14 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:14:15 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:14:15 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:14:15 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:14:15 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:14:49 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:16:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:16:22 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:16:23 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:16:24 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:16:25 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:16:26 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:16:26 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:16:26 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:16:26 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:16:26 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:16:59 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:22:28 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:22:29 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:22:30 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:22:30 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:22:30 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:22:30 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:22:30 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:22:31 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:22:32 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:22:33 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:22:33 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:22:33 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:23:06 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:36:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:36:18 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:36:19 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:36:20 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:36:21 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:36:22 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:36:22 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:36:22 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:36:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:36:22 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:36:55 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:37:18 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:37:19 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:37:20 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:37:20 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:37:20 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:37:20 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:37:20 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:37:21 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:37:22 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:37:22 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:37:23 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:37:57 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:44:06 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:44:06 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:44:07 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:44:07 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:44:08 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:44:09 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:44:10 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:44:10 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:44:10 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:44:10 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:44:10 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:44:44 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:50:27 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:50:27 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:50:28 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:50:28 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:50:28 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:50:29 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:50:30 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:50:31 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:50:31 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:50:31 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:51:05 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD
+2026-07-02 13:51:35 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:51:35 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:51:36 - app.services.db - INFO - Usuario UID 1 actualizado en BD
+2026-07-02 13:51:36 - app.services.db - INFO - Usuario UID 2 actualizado en BD
+2026-07-02 13:51:36 - app.services.db - INFO - Usuario UID 3 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 4 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 5 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 6 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 7 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 8 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 9 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 10 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 11 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 12 actualizado en BD
+2026-07-02 13:51:37 - app.services.db - INFO - Usuario UID 13 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 14 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 15 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 16 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 17 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 18 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 19 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 20 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 21 actualizado en BD
+2026-07-02 13:51:38 - app.services.db - INFO - Usuario UID 22 actualizado en BD
+2026-07-02 13:51:38 - app.services.zk - INFO - Conectando al reloj 192.168.1.50:4370 por TCP
+2026-07-02 13:51:39 - app.services.zk - INFO - Conexion establecida con el reloj por TCP
+2026-07-02 13:52:12 - app.services.db - INFO - Se guardaron 0 registros de asistencia en BD

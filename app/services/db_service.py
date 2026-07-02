@@ -907,7 +907,7 @@ class DBService:
             if existing:
                 raise DataValidationError(f"Ya existe una sucursal llamada {name}")
 
-            if status not in ("Activo", "Inactivo", "Baja"):
+            if status not in ("Activo", "Inactivo"):
                 status = "Activo" if is_active else "Inactivo"
 
             branch = Branch(
@@ -992,7 +992,7 @@ class DBService:
                 branch.address = address
 
             if status is not None:
-                if status not in ("Activo", "Inactivo", "Baja"):
+                if status not in ("Activo", "Inactivo"):
                     status = "Activo" if is_active else "Inactivo"
 
                 branch.status = status

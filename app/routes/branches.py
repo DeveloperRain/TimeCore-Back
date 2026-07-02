@@ -10,7 +10,7 @@ router = APIRouter(
     tags=["Sucursales"],
 )
 
-BranchStatus = Literal["Activo", "Inactivo", "Baja"]
+BranchStatus = Literal["Activo", "Inactivo"]
 
 
 class BranchCreate(BaseModel):
@@ -38,9 +38,6 @@ def normalize_branch_status(
 
         if status_clean == "inactivo":
             return "Inactivo"
-
-        if status_clean == "baja":
-            return "Baja"
 
     if is_active is True:
         return "Activo"
