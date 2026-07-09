@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy
+psycopg[binary]
+python-dotenv
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+openpyxl
+pyzk
