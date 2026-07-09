@@ -1,4 +1,6 @@
 # Configuración principal de FastAPI. Registra routers e inicializa tablas de BD.
+import asyncio
+from contextlib import asynccontextmanager
 from datetime import datetime
 
 from fastapi import FastAPI
@@ -8,6 +10,7 @@ from fastapi.openapi.utils import get_openapi
 from app.config.logger import setup_logger
 from app.database.connection import create_tables
 from app.middleware.error_handler import ErrorHandlerMiddleware
+from app.services.automatic_sync_service import automatic_sync_loop
 from app.routes.auth import router as auth_router
 from app.routes.branches import router as branches_router
 from app.routes.dashboard import router as dashboard_router
@@ -20,10 +23,27 @@ from app.utils.response import success
 
 logger = setup_logger()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Inicia y detiene la sincronización automática sin bloquear la API."""
+    sync_task = asyncio.create_task(automatic_sync_loop())
+
+    try:
+        yield
+    finally:
+        sync_task.cancel()
+        try:
+            await sync_task
+        except asyncio.CancelledError:
+            pass
+
+
 app = FastAPI(
     title="TIMECORE API",
     description="API para gestión de usuarios y asistencia del reloj biométrico ZKTeco/Steren",
     version="1.0.0",
+    lifespan=lifespan,
     license_info={
         "name": "MIT"
     }
