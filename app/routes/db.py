@@ -321,6 +321,15 @@ def attendance_to_excel_dict(record):
     }
 
 
+def utc_iso(value):
+    """Serializa fechas UTC para que el navegador las convierta a la hora local."""
+    if value is None:
+        return None
+
+    iso_value = value.isoformat()
+    return iso_value if iso_value.endswith("Z") else f"{iso_value}Z"
+
+
 def device_to_dict(device):
     return {
         "id": device.id,
@@ -342,11 +351,19 @@ def device_to_dict(device):
         "estado": device.status,
         "status": device.status,
         "branch_id": getattr(device, "branch_id", None),
-        "ultima_sincronizacion": device.last_connection.isoformat()
-        if device.last_connection
-        else None,
-        "created_at": device.created_at.isoformat() if device.created_at else None,
-        "updated_at": device.updated_at.isoformat() if device.updated_at else None,
+        "ultima_sincronizacion": utc_iso(device.last_sync_at or device.last_connection),
+        "last_sync_at": utc_iso(getattr(device, "last_sync_at", None)),
+        "auto_sync_enabled": bool(getattr(device, "auto_sync_enabled", True)),
+        "sync_interval_minutes": int(getattr(device, "sync_interval_minutes", 4) or 4),
+        "next_sync_at": utc_iso(
+            device.last_sync_at
+            + timedelta(minutes=int(getattr(device, "sync_interval_minutes", 4) or 4))
+            if bool(getattr(device, "auto_sync_enabled", True))
+            and getattr(device, "last_sync_at", None)
+            else None
+        ),
+        "created_at": utc_iso(device.created_at),
+        "updated_at": utc_iso(device.updated_at),
     }
 
 
@@ -796,6 +813,8 @@ class DeviceCreate(BaseModel):
     ubicacion: Optional[str] = None
     empresa: Optional[EmpresaDevice] = "FISMAN"
     branch_id: Optional[int] = None
+    auto_sync_enabled: bool = True
+    sync_interval_minutes: int = 4
 
 
 class DeviceUpdate(BaseModel):
@@ -808,6 +827,8 @@ class DeviceUpdate(BaseModel):
     empresa: Optional[EmpresaDevice] = None
     activo: Optional[bool] = None
     branch_id: Optional[int] = None
+    auto_sync_enabled: Optional[bool] = None
+    sync_interval_minutes: Optional[int] = None
 
 
 @router.get("/devices", summary="Obtener relojes registrados desde PostgreSQL")
@@ -873,6 +894,9 @@ def check_devices_status(
 
 @router.post("/devices", summary="Registrar reloj biométrico en PostgreSQL")
 def create_device(device: DeviceCreate):
+    if device.sync_interval_minutes < 1 or device.sync_interval_minutes > 60:
+        raise HTTPException(status_code=400, detail="El intervalo debe estar entre 1 y 60 minutos")
+
     if not device.password or not device.password.strip():
         raise HTTPException(status_code=400, detail="La contraseña del reloj es obligatoria")
 
@@ -891,6 +915,8 @@ def create_device(device: DeviceCreate):
         ubicacion=device.ubicacion,
         empresa=device.empresa,
         branch_id=device.branch_id,
+        auto_sync_enabled=device.auto_sync_enabled,
+        sync_interval_minutes=device.sync_interval_minutes,
     )
 
     DBService.create_log(
@@ -919,6 +945,9 @@ def get_device_by_id(device_id: int):
 
 @router.put("/devices/{device_id}", summary="Actualizar reloj biométrico")
 def update_device(device_id: int, device: DeviceUpdate):
+    if device.sync_interval_minutes is not None and not 1 <= device.sync_interval_minutes <= 60:
+        raise HTTPException(status_code=400, detail="El intervalo debe estar entre 1 y 60 minutos")
+
     if device.password is not None and not device.password.strip():
         raise HTTPException(status_code=400, detail="La contraseña del reloj no puede quedar vacía")
 
@@ -939,6 +968,8 @@ def update_device(device_id: int, device: DeviceUpdate):
         empresa=device.empresa,
         activo=device.activo,
         branch_id=device.branch_id,
+        auto_sync_enabled=device.auto_sync_enabled,
+        sync_interval_minutes=device.sync_interval_minutes,
     )
 
     if not updated:

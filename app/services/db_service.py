@@ -390,6 +390,8 @@ class DBService:
         ubicacion: str = None,
         empresa: str = "FISMAN",
         branch_id: Optional[int] = None,
+        auto_sync_enabled: bool = True,
+        sync_interval_minutes: int = 4,
         db: Optional[Session] = None,
     ) -> Device:
         """Guarda un nuevo reloj biométrico en la BD."""
@@ -426,6 +428,8 @@ class DBService:
                 description=ubicacion,
                 empresa=empresa,
                 is_active=True,
+                auto_sync_enabled=bool(auto_sync_enabled),
+                sync_interval_minutes=max(1, min(int(sync_interval_minutes or 4), 60)),
                 status="Desconectado",
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
@@ -507,6 +511,8 @@ class DBService:
         empresa: str = None,
         activo: bool = None,
         branch_id: Optional[int] = None,
+        auto_sync_enabled: Optional[bool] = None,
+        sync_interval_minutes: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> Optional[Device]:
         """Actualiza datos de un reloj registrado."""
@@ -559,6 +565,15 @@ class DBService:
 
             if empresa is not None:
                 device.empresa = empresa
+
+            if auto_sync_enabled is not None:
+                device.auto_sync_enabled = bool(auto_sync_enabled)
+
+            if sync_interval_minutes is not None:
+                interval = int(sync_interval_minutes)
+                if interval < 1 or interval > 60:
+                    raise DataValidationError("El intervalo debe estar entre 1 y 60 minutos")
+                device.sync_interval_minutes = interval
 
             if activo is not None:
                 device.is_active = activo
@@ -619,6 +634,41 @@ class DBService:
         except Exception as e:
             db.rollback()
             logger.error(f"Error al actualizar estado del reloj {device_id}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def update_device_sync_status(
+        device_id: int,
+        estado: str = "Conectado",
+        synced_at: datetime = None,
+        db: Optional[Session] = None,
+    ) -> Optional[Device]:
+        """Actualiza el estado y la última sincronización real del reloj."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            device = db.query(Device).filter(Device.id == device_id).first()
+            if not device:
+                return None
+
+            now = synced_at or datetime.utcnow()
+            device.status = estado
+            device.last_connection = now
+            device.last_sync_at = now
+            device.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(device)
+            return device
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar sincronización del reloj {device_id}: {str(e)}")
             raise
         finally:
             if close_db:

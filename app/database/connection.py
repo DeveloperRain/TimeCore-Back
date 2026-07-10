@@ -59,6 +59,7 @@ def create_tables():
     ensure_user_profile_columns()
     ensure_device_company_column()
     ensure_device_password_column()
+    ensure_device_auto_sync_columns()
     ensure_performance_indexes()
 
 
@@ -124,6 +125,40 @@ def ensure_device_password_column():
             connection.execute(
                 text("ALTER TABLE devices ADD COLUMN password VARCHAR(100) DEFAULT ''")
             )
+
+
+
+def ensure_device_auto_sync_columns():
+    """Agrega configuración de sincronización automática por reloj."""
+    inspector = inspect(engine)
+
+    if "devices" not in inspector.get_table_names():
+        return
+
+    existing_columns = {
+        column["name"]
+        for column in inspector.get_columns("devices")
+    }
+
+    columns_to_add = {
+        "auto_sync_enabled": "BOOLEAN NOT NULL DEFAULT TRUE",
+        "sync_interval_minutes": "INTEGER NOT NULL DEFAULT 4",
+        "last_sync_at": "TIMESTAMP NULL",
+    }
+
+    with engine.begin() as connection:
+        for column_name, column_type in columns_to_add.items():
+            if column_name not in existing_columns:
+                connection.execute(
+                    text(f"ALTER TABLE devices ADD COLUMN {column_name} {column_type}")
+                )
+
+        connection.execute(
+            text("UPDATE devices SET auto_sync_enabled = TRUE WHERE auto_sync_enabled IS NULL")
+        )
+        connection.execute(
+            text("UPDATE devices SET sync_interval_minutes = 4 WHERE sync_interval_minutes IS NULL OR sync_interval_minutes < 1")
+        )
 
 
 def ensure_performance_indexes():

@@ -28,6 +28,10 @@ class Device(Base):
     is_active = Column(Boolean, default=True)
 
     last_connection = Column(DateTime)
+    last_sync_at = Column(DateTime)
+
+    auto_sync_enabled = Column(Boolean, nullable=False, default=True)
+    sync_interval_minutes = Column(Integer, nullable=False, default=4)
 
     status = Column(String(20), default="Desconectado")
 
@@ -60,6 +64,9 @@ class Device(Base):
             "last_connection": self.last_connection.isoformat()
             if self.last_connection
             else None,
+            "last_sync_at": self.last_sync_at.isoformat() if self.last_sync_at else None,
+            "auto_sync_enabled": bool(self.auto_sync_enabled),
+            "sync_interval_minutes": int(self.sync_interval_minutes or 4),
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

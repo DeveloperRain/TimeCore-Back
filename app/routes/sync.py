@@ -40,10 +40,10 @@ def sync_registered_device(device):
     attendance_obtained = len(asistencias)
     attendance_count = DBService.save_bulk_attendance(asistencias)
 
-    DBService.update_device_status(
+    DBService.update_device_sync_status(
         device_id=device.id,
         estado="Conectado",
-        ultima_sincronizacion=datetime.utcnow()
+        synced_at=datetime.utcnow()
     )
 
     DBService.create_log(
