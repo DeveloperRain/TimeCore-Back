@@ -9,7 +9,7 @@ from fastapi.openapi.utils import get_openapi
 
 from app.config.logger import setup_logger
 from app.database.connection import create_tables
-from app.middleware.error_handler import ErrorHandlerMiddleware
+from app.middleware.error_handler import ErrorHandlerMiddleware, register_exception_handlers
 from app.services.automatic_sync_service import automatic_sync_loop
 from app.routes.auth import router as auth_router
 from app.routes.branches import router as branches_router
@@ -63,6 +63,7 @@ app.add_middleware(
 )
 
 app.add_middleware(ErrorHandlerMiddleware)
+register_exception_handlers(app)
 
 # Crear tablas en la base de datos al iniciar
 create_tables()

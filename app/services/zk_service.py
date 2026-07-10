@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 from zk import ZK
 
 from app.config.logger import get_logger, log_exception
+from app.exceptions import DeviceAuthenticationError, DeviceTimeoutError, DeviceUnavailableError
 
 IP_RELOJ = "192.168.1.50"
 PORT = 4370
@@ -88,11 +89,10 @@ class ZKService:
         for attempt in attempts:
             try:
                 logger.info(
-                    "Conectando al reloj %s:%s por %s con password=%s",
+                    "Conectando al reloj %s:%s por %s",
                     target_ip,
                     target_port,
                     attempt["label"],
-                    target_password,
                 )
 
                 zk = ZK(
@@ -120,16 +120,22 @@ class ZKService:
                 last_error = e
                 logger.warning("No se pudo conectar al reloj por %s: %s", attempt["label"], e)
 
-        if isinstance(last_error, socket.timeout):
+        error_text = str(last_error or "").lower()
+
+        if "unauthorized" in error_text or "password" in error_text:
+            log_exception(logger, last_error, "El reloj rechazó la contraseña de comunicación")
+            raise DeviceAuthenticationError()
+
+        if isinstance(last_error, socket.timeout) or "timed out" in error_text:
             log_exception(logger, last_error, "Tiempo agotado conectando al reloj")
-            raise TimeoutError("Conexion agotada con el dispositivo")
+            raise DeviceTimeoutError()
 
         if isinstance(last_error, ConnectionRefusedError):
-            log_exception(logger, last_error, "El reloj rechazo la conexion")
-            raise ConnectionError("El dispositivo rechazo la conexion")
+            log_exception(logger, last_error, "El reloj rechazó la conexión")
+            raise DeviceUnavailableError("El reloj rechazó la conexión")
 
-        log_exception(logger, last_error, "Error de conexion con el reloj")
-        raise ConnectionError(f"Error de conexion: {str(last_error)}")
+        log_exception(logger, last_error, "Error de conexión con el reloj")
+        raise DeviceUnavailableError("No fue posible comunicarse con el reloj")
 
     @staticmethod
     def _disconnect(conn):
