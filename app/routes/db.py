@@ -279,6 +279,7 @@ def build_payroll_excel_fallback(title: str, columns: list[str], rows_data: list
 
 def user_to_dict(user):
     return {
+        "id": user.id,
         "uid": user.uid,
         "user_id": user.user_id,
         "name": user.name,
@@ -1103,6 +1104,25 @@ class UserStatusUpdate(BaseModel):
     status: str
 
 
+@router.put("/users/by-id/{user_id}/status", summary="Actualizar estado por ID interno")
+def update_user_status_by_id(user_id: int, payload: UserStatusUpdate):
+    allowed = ["Activo", "Inactivo", "Baja"]
+    if payload.status not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail="Estado inválido. Usa Activo, Inactivo o Baja",
+        )
+
+    user = DBService.update_user_status_by_id(user_id, payload.status)
+    if not user:
+        raise HTTPException(status_code=404, detail="Empleado no encontrado")
+
+    return success(
+        data=user_to_dict(user),
+        message="Estado de empleado actualizado correctamente",
+    )
+
+
 @router.put("/users/{uid}/status", summary="Actualizar estado de empleado")
 def update_user_status(uid: int, payload: UserStatusUpdate):
     allowed = ["Activo", "Inactivo", "Baja"]
@@ -1141,6 +1161,31 @@ class UserProfileUpdate(BaseModel):
     area: Optional[str] = None
     empresa: Optional[str] = None
     branch_id: Optional[int] = None
+
+
+@router.put("/users/by-id/{user_id}/profile", summary="Actualizar perfil por ID interno")
+def update_user_profile_by_id(user_id: int, payload: UserProfileUpdate):
+    sucursal = payload.sucursal
+    if payload.branch_id is not None:
+        branch = get_branch_or_404(payload.branch_id)
+        sucursal = branch.name
+
+    user = DBService.update_user_profile_by_id(
+        user_id=user_id,
+        role=payload.role,
+        sucursal=sucursal,
+        email=payload.email,
+        area=payload.area,
+        empresa=payload.empresa,
+        branch_id=payload.branch_id,
+    )
+    if not user:
+        raise HTTPException(status_code=404, detail="Empleado no encontrado")
+
+    return success(
+        data=user_to_dict(user),
+        message="Perfil de empleado actualizado correctamente",
+    )
 
 
 @router.put("/users/{uid}/profile", summary="Actualizar perfil de empleado")

@@ -277,6 +277,116 @@ class DBService:
                 db.close()
 
     @staticmethod
+    def get_user_by_id(user_id: int, db: Optional[Session] = None) -> Optional[User]:
+        """Obtiene un empleado por la PK interna de PostgreSQL."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            return (
+                db.query(User)
+                .filter(User.id == user_id)
+                .filter(User.deleted_at.is_(None))
+                .first()
+            )
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def update_user_status_by_id(
+        user_id: int,
+        status: str,
+        db: Optional[Session] = None,
+    ) -> Optional[User]:
+        """Actualiza el estado usando la PK interna, no el UID del reloj."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            user = db.query(User).filter(User.id == user_id).first()
+            if not user:
+                return None
+
+            user.status = status
+            user.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(user)
+            return user
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar estado del usuario ID {user_id}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def update_user_profile_by_id(
+        user_id: int,
+        role: str = None,
+        sucursal: str = None,
+        email: str = None,
+        area: str = None,
+        empresa: str = None,
+        branch_id: Optional[int] = None,
+        db: Optional[Session] = None,
+    ) -> Optional[User]:
+        """Actualiza el perfil usando la PK interna de PostgreSQL."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            user = db.query(User).filter(User.id == user_id).first()
+            if not user:
+                return None
+
+            if role is not None:
+                user.role = UserRole(role) if role else UserRole.usuario
+
+            resolved_branch_id = DBService._resolve_branch_id(
+                db=db, branch_id=branch_id, sucursal=sucursal
+            )
+
+            if branch_id is not None:
+                branch = db.query(Branch).filter(Branch.id == branch_id).first()
+                if branch:
+                    user.branch_id = branch.id
+                    user.sucursal = branch.name
+            elif sucursal is not None:
+                user.sucursal = sucursal
+                if resolved_branch_id is not None:
+                    user.branch_id = resolved_branch_id
+
+            if email is not None:
+                user.email = email
+            if area is not None:
+                user.area = area
+            if empresa is not None:
+                user.empresa = empresa
+
+            user.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(user)
+            return user
+        except Exception as e:
+            db.rollback()
+            logger.error(f"Error al actualizar perfil del usuario ID {user_id}: {str(e)}")
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
     def update_user_status(uid: int, status: str, db: Optional[Session] = None) -> Optional[User]:
         if db is None:
             db = SessionLocal()

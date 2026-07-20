@@ -249,6 +249,88 @@ def create_user(
 
 
 @router.put(
+    "/by-id/{user_id:int}",
+    summary="Actualizar usuario por ID interno",
+    description="Actualiza el empleado exacto en su reloj asociado y en PostgreSQL",
+    tags=["Usuarios"],
+)
+def update_user_by_id(user_id: int, payload: UserUpdate):
+    if not payload.user_id and not payload.name and not payload.role:
+        raise HTTPException(
+            status_code=400,
+            detail="Al menos un campo debe ser proporcionado (user_id, name o role)",
+        )
+
+    db_user = DBService.get_user_by_id(user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="Empleado no encontrado")
+    if db_user.device_id is None:
+        raise HTTPException(
+            status_code=409,
+            detail="El empleado no tiene un reloj asociado",
+        )
+
+    device = DBService.get_device_by_id(db_user.device_id)
+    if not device or not bool(getattr(device, "is_active", True)):
+        raise HTTPException(
+            status_code=503,
+            detail="El reloj asociado no está disponible",
+        )
+
+    try:
+        result = ZKService.update_user(
+            uid=db_user.uid,
+            user_id=payload.user_id or db_user.user_id,
+            name=payload.name or db_user.name,
+            role=payload.role or (db_user.role.value if hasattr(db_user.role, "value") else str(db_user.role)),
+            ip=device.ip,
+            port=device.port,
+            password=str(getattr(device, "password", "0") or "0"),
+        )
+
+        # Actualiza exactamente la misma fila local.
+        from app.database.connection import SessionLocal
+        db = SessionLocal()
+        try:
+            current = db.query(type(db_user)).filter(type(db_user).id == user_id).first()
+            if not current:
+                raise HTTPException(status_code=404, detail="Empleado no encontrado")
+            if payload.user_id is not None:
+                current.user_id = payload.user_id
+            if payload.name is not None:
+                current.name = payload.name
+            if payload.role is not None:
+                from app.models.user import UserRole
+                current.role = UserRole(payload.role)
+            current.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(current)
+        finally:
+            db.close()
+
+        return success(
+            data={
+                "id": user_id,
+                "uid": db_user.uid,
+                "device_id": db_user.device_id,
+                "user": result.get("user"),
+            },
+            message=result.get("message") or "Usuario actualizado correctamente",
+        )
+    except HTTPException:
+        raise
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
+    except ConnectionError:
+        raise HTTPException(status_code=503, detail="El dispositivo no está disponible")
+    except Exception as e:
+        logger.exception("Error al actualizar usuario por ID interno")
+        raise HTTPException(status_code=500, detail=f"Error al actualizar usuario: {str(e)}")
+
+
+@router.put(
     "/{uid:int}",
     summary="Actualizar usuario",
     description="Actualiza los datos de un usuario en el reloj y sincroniza en BD",
