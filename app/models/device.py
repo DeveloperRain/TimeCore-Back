@@ -39,6 +39,12 @@ class Device(Base):
     updated_at = Column(DateTime)
 
     branch = relationship("Branch", back_populates="devices")
+    users = relationship("User", back_populates="device", passive_deletes=True)
+    attendance_records = relationship(
+        "AttendanceRecord",
+        back_populates="device",
+        passive_deletes=True,
+    )
 
     def to_dict(self):
         return {

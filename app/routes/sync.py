@@ -27,7 +27,11 @@ def sync_registered_device(device):
             uid=user["uid"],
             user_id=user["user_id"],
             name=user["name"],
-            role=user["role"]
+            role=user["role"],
+            branch_id=device.branch_id,
+            device_id=device.id,
+            sucursal=getattr(device, "location", None),
+            empresa=getattr(device, "empresa", None),
         )
         users_count += 1
 
@@ -38,7 +42,11 @@ def sync_registered_device(device):
     )
 
     attendance_obtained = len(asistencias)
-    attendance_count = DBService.save_bulk_attendance(asistencias)
+    attendance_count = DBService.save_bulk_attendance(
+        asistencias,
+        branch_id=device.branch_id,
+        device_id=device.id,
+    )
 
     DBService.update_device_sync_status(
         device_id=device.id,

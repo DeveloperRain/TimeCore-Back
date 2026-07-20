@@ -52,6 +52,10 @@ def sync_due_devices() -> dict:
                     port=device.port,
                     password=getattr(device, "password", ""),
                 )
+                for record in attendance:
+                    record["branch_id"] = device.branch_id
+                    record["device_id"] = device.id
+
                 new_records = int(DBService.save_bulk_attendance(attendance) or 0)
                 synced_at = datetime.utcnow()
                 DBService.update_device_sync_status(

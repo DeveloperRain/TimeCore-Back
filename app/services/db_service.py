@@ -51,8 +51,15 @@ class DBService:
         return branch.id if branch else None
 
     @staticmethod
-    def _resolve_user_branch_id(db: Session, uid: Optional[int], user_id: Optional[str]) -> Optional[int]:
+    def _resolve_user_branch_id(
+        db: Session,
+        uid: Optional[int],
+        user_id: Optional[str],
+        device_id: Optional[int] = None,
+    ) -> Optional[int]:
         query = db.query(User)
+        if device_id is not None:
+            query = query.filter(User.device_id == device_id)
 
         user = None
 
@@ -76,6 +83,8 @@ class DBService:
         role: str,
         sucursal: Optional[str] = None,
         branch_id: Optional[int] = None,
+        device_id: Optional[int] = None,
+        empresa: Optional[str] = None,
         db: Optional[Session] = None,
     ) -> User:
         """Guarda o actualiza un usuario en la BD."""
@@ -94,7 +103,23 @@ class DBService:
                 sucursal=sucursal,
             )
 
-            existing_user = db.query(User).filter(User.uid == uid).first()
+            existing_query = db.query(User).filter(User.uid == uid)
+            if device_id is not None:
+                existing_query = existing_query.filter(User.device_id == device_id)
+            existing_user = existing_query.first()
+
+            # Adopta registros antiguos sin device_id durante la primera sincronización.
+            if not existing_user and device_id is not None:
+                legacy_user = (
+                    db.query(User)
+                    .filter(User.device_id.is_(None))
+                    .filter(User.uid == uid)
+                    .filter(User.user_id == user_id)
+                    .first()
+                )
+                if legacy_user:
+                    legacy_user.device_id = device_id
+                    existing_user = legacy_user
 
             if existing_user:
                 existing_user.user_id = user_id
@@ -111,6 +136,12 @@ class DBService:
                 if resolved_branch_id is not None:
                     existing_user.branch_id = resolved_branch_id
 
+                if device_id is not None:
+                    existing_user.device_id = device_id
+
+                if empresa is not None:
+                    existing_user.empresa = empresa
+
                 existing_user.updated_at = datetime.utcnow()
 
                 db.commit()
@@ -126,6 +157,8 @@ class DBService:
                 role=UserRole(role) if role else UserRole.usuario,
                 sucursal=sucursal,
                 branch_id=resolved_branch_id,
+                device_id=device_id,
+                empresa=empresa,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -748,6 +781,7 @@ class DBService:
         timestamp: datetime,
         status: str,
         branch_id: Optional[int] = None,
+        device_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> AttendanceRecord:
         """Guarda un registro de asistencia en la BD."""
@@ -765,6 +799,7 @@ class DBService:
                     db=db,
                     uid=uid,
                     user_id=user_id,
+                    device_id=device_id,
                 )
 
             record = AttendanceRecord(
@@ -772,6 +807,7 @@ class DBService:
                 user_id=user_id,
                 name=name,
                 branch_id=resolved_branch_id,
+                device_id=device_id,
                 timestamp=timestamp,
                 status=status,
             )
@@ -792,7 +828,12 @@ class DBService:
                 db.close()
 
     @staticmethod
-    def save_bulk_attendance(records: List[Dict], db: Optional[Session] = None) -> int:
+    def save_bulk_attendance(
+        records: List[Dict],
+        branch_id: Optional[int] = None,
+        device_id: Optional[int] = None,
+        db: Optional[Session] = None,
+    ) -> int:
         """Guarda múltiples registros de asistencia. Evita duplicados."""
         if db is None:
             db = SessionLocal()
@@ -832,17 +873,20 @@ class DBService:
                 uid = record.get("uid")
                 user_id = record.get("user_id")
                 status = record.get("status")
-                branch_id = record.get("branch_id")
+                record_branch_id = record.get("branch_id", branch_id)
+                record_device_id = record.get("device_id", device_id)
 
-                if branch_id is None:
-                    branch_id = DBService._resolve_user_branch_id(
+                if record_branch_id is None:
+                    record_branch_id = DBService._resolve_user_branch_id(
                         db=db,
                         uid=uid,
                         user_id=user_id,
+                        device_id=record_device_id,
                     )
 
                 existing = db.query(AttendanceRecord).filter(
                     and_(
+                        AttendanceRecord.device_id == record_device_id,
                         AttendanceRecord.uid == uid,
                         AttendanceRecord.timestamp == timestamp,
                         AttendanceRecord.status == status,
@@ -854,7 +898,8 @@ class DBService:
                         uid=uid,
                         user_id=user_id,
                         name=record.get("name"),
-                        branch_id=branch_id,
+                        branch_id=record_branch_id,
+                        device_id=record_device_id,
                         timestamp=timestamp,
                         status=status,
                     )

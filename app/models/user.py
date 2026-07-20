@@ -16,11 +16,12 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    uid = Column(Integer, unique=True, nullable=False, index=True)
-    user_id = Column(String(50), unique=True, nullable=False, index=True)
+    uid = Column(Integer, nullable=False, index=True)
+    user_id = Column(String(50), nullable=False, index=True)
     name = Column(String(100), nullable=False)
     role = Column(SQLEnum(UserRole), default=UserRole.usuario, nullable=False)
 
+    device_id = Column(Integer, ForeignKey("devices.id", ondelete="SET NULL"), nullable=True, index=True)
     branch_id = Column(Integer, ForeignKey("branches.id", ondelete="SET NULL"), nullable=True, index=True)
 
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
@@ -34,11 +35,7 @@ class User(Base):
     empresa = Column(String(100), nullable=True)
 
     branch = relationship("Branch", back_populates="users")
-    attendance_records = relationship(
-        "AttendanceRecord",
-        back_populates="user",
-        cascade="all, delete-orphan",
-    )
+    device = relationship("Device", back_populates="users")
 
     def to_dict(self):
         """Convierte a diccionario."""
@@ -49,6 +46,7 @@ class User(Base):
             "name": self.name,
             "role": self.role.value if hasattr(self.role, "value") else str(self.role),
             "branch_id": self.branch_id,
+            "device_id": self.device_id,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
             "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
