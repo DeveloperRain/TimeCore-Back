@@ -250,6 +250,8 @@ def sync_all_registered_devices():
     users_total = sum(item["users_synced"] for item in results)
     attendance_total = sum(item["attendance_synced"] for item in results)
 
+    
+
     return success(
         data={
             "total_devices": len(devices),
