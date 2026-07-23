@@ -1,5 +1,7 @@
 """Servicio de operaciones en base de datos."""
 from typing import List, Dict, Optional
+import json
+import re
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -1219,9 +1221,16 @@ class DBService:
             query = (
                 db.query(PayrollIncident)
                 .filter(
-                    and_(
-                        PayrollIncident.fecha >= start_date,
-                        PayrollIncident.fecha <= end_date,
+                    or_(
+                        and_(
+                            PayrollIncident.fecha >= start_date,
+                            PayrollIncident.fecha <= end_date,
+                        ),
+                        and_(
+                            PayrollIncident.source_fecha.isnot(None),
+                            PayrollIncident.source_fecha >= start_date,
+                            PayrollIncident.source_fecha <= end_date,
+                        ),
                     )
                 )
             )
@@ -1250,9 +1259,11 @@ class DBService:
         hora,
         incidencia: str,
         descripcion: str = None,
+        color: str = "#BAE6FD",
+        incident_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> PayrollIncident:
-        """Crea o actualiza una incidencia por empleado, fecha y hora."""
+        """Crea o actualiza una incidencia y permite mover su asistencia en prenómina."""
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1263,36 +1274,94 @@ class DBService:
             clean_user_id = str(user_id).strip()
             clean_incidencia = str(incidencia or "").strip()
             clean_descripcion = str(descripcion).strip() if descripcion is not None else None
+            clean_color = str(color or "#BAE6FD").strip().upper()
 
+            if not re.fullmatch(r"#[0-9A-F]{6}", clean_color):
+                raise DataValidationError("El color debe estar en formato hexadecimal, por ejemplo #BAE6FD")
             if not clean_user_id:
                 raise DataValidationError("El empleado es obligatorio")
-
             if not clean_incidencia:
                 raise DataValidationError("La incidencia es obligatoria")
 
             user = db.query(User).filter(User.user_id == clean_user_id).first()
 
-            existing = (
-                db.query(PayrollIncident)
-                .filter(
-                    and_(
-                        PayrollIncident.user_id == clean_user_id,
-                        PayrollIncident.fecha == fecha,
-                        PayrollIncident.hora == hora,
-                    )
+            incident = None
+            if incident_id is not None:
+                incident = (
+                    db.query(PayrollIncident)
+                    .filter(PayrollIncident.id == incident_id)
+                    .first()
                 )
-                .first()
-            )
+                if not incident:
+                    raise DataValidationError("La incidencia que intentas editar ya no existe")
 
-            if existing:
-                existing.uid = user.uid if user else existing.uid
-                existing.incidencia = clean_incidencia
-                existing.descripcion = clean_descripcion
-                existing.updated_at = datetime.utcnow()
+            if incident is None:
+                incident = (
+                    db.query(PayrollIncident)
+                    .filter(
+                        and_(
+                            PayrollIncident.user_id == clean_user_id,
+                            PayrollIncident.fecha == fecha,
+                            PayrollIncident.hora == hora,
+                        )
+                    )
+                    .first()
+                )
 
+            if incident:
+                source_fecha = incident.source_fecha or incident.fecha
+                source_hora = incident.source_hora or incident.hora
+
+                is_moving = (
+                    clean_user_id != incident.user_id
+                    or fecha != incident.fecha
+                    or hora != incident.hora
+                )
+
+                if is_moving and not incident.moved_attendance:
+                    source_hour_start = datetime.combine(source_fecha, source_hora)
+                    source_hour_end = source_hour_start.replace(minute=59, second=59, microsecond=999999)
+
+                    attendance_query = db.query(AttendanceRecord).filter(
+                        AttendanceRecord.user_id == incident.user_id,
+                        AttendanceRecord.timestamp >= source_hour_start,
+                        AttendanceRecord.timestamp <= source_hour_end,
+                    )
+
+                    source_user = (
+                        db.query(User)
+                        .filter(User.user_id == incident.user_id)
+                        .first()
+                    )
+                    if source_user and source_user.device_id is not None:
+                        attendance_query = attendance_query.filter(
+                            AttendanceRecord.device_id == source_user.device_id
+                        )
+
+                    moved_values = [
+                        record.timestamp.strftime("%d/%m/%Y %H:%M")
+                        for record in attendance_query.order_by(AttendanceRecord.timestamp.asc()).all()
+                        if record.timestamp
+                    ]
+                    incident.moved_attendance = json.dumps(moved_values, ensure_ascii=False)
+
+                incident.uid = user.uid if user else incident.uid
+                incident.user_id = clean_user_id
+                incident.fecha = fecha
+                incident.hora = hora
+                incident.incidencia = clean_incidencia
+                incident.descripcion = clean_descripcion
+                incident.color = clean_color
+                incident.source_fecha = source_fecha
+                incident.source_hora = source_hora
+
+                if fecha == source_fecha and hora == source_hora and clean_user_id == incident.user_id:
+                    incident.moved_attendance = None
+
+                incident.updated_at = datetime.utcnow()
                 db.commit()
-                db.refresh(existing)
-                return existing
+                db.refresh(incident)
+                return incident
 
             incident = PayrollIncident(
                 uid=user.uid if user else None,
@@ -1301,6 +1370,10 @@ class DBService:
                 hora=hora,
                 incidencia=clean_incidencia,
                 descripcion=clean_descripcion,
+                color=clean_color,
+                source_fecha=fecha,
+                source_hora=hora,
+                moved_attendance=None,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -1308,7 +1381,6 @@ class DBService:
             db.add(incident)
             db.commit()
             db.refresh(incident)
-
             return incident
 
         except Exception as e:

@@ -196,58 +196,78 @@ def build_attendance_excel(records: List[Dict[str, Any]]) -> bytes:
 
 
 def build_payroll_excel(title: str, columns: List[str], rows_data: List[Dict[str, Any]]) -> bytes:
-    rows = [[title]]
-    rows.append(columns)
+    """Genera la prenómina en Excel, incluyendo incidencias y sus colores."""
+    from openpyxl import Workbook
+    from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+    from openpyxl.utils import get_column_letter
 
-    for record in rows_data:
-        rows.append([record.get(column, "") for column in columns])
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Prenomina"
 
-    files = {
-        "[Content_Types].xml": """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
-  <Default Extension="xml" ContentType="application/xml"/>
-  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
-  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
-  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
-</Types>""",
-        "_rels/.rels": """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
-</Relationships>""",
-        "xl/workbook.xml": """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-  <sheets>
-    <sheet name="Prenomina" sheetId="1" r:id="rId1"/>
-  </sheets>
-</workbook>""",
-        "xl/_rels/workbook.xml.rels": """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
-  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
-</Relationships>""",
-        "xl/styles.xml": """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <fonts count="2">
-    <font><sz val="11"/><name val="Calibri"/></font>
-    <font><b/><sz val="11"/><name val="Calibri"/></font>
-  </fonts>
-  <fills count="1"><fill><patternFill patternType="none"/></fill></fills>
-  <borders count="1"><border/></borders>
-  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-  <cellXfs count="2">
-    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
-    <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
-  </cellXfs>
-</styleSheet>""",
-        "xl/worksheets/sheet1.xml": build_sheet(rows),
-    }
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=len(columns))
+    title_cell = ws.cell(row=1, column=1, value=title)
+    title_cell.font = Font(bold=True, size=14)
+    title_cell.alignment = Alignment(horizontal="center", vertical="center")
+    ws.row_dimensions[1].height = 24
+
+    border = Border(
+        left=Side(style="thin", color="D1D5DB"),
+        right=Side(style="thin", color="D1D5DB"),
+        top=Side(style="thin", color="D1D5DB"),
+        bottom=Side(style="thin", color="D1D5DB"),
+    )
+    header_fill = PatternFill("solid", fgColor="E8EEF3")
+
+    for col_index, column in enumerate(columns, start=1):
+        cell = ws.cell(row=2, column=col_index, value=column)
+        cell.font = Font(bold=True)
+        cell.fill = header_fill
+        cell.border = border
+        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+    for row_index, record in enumerate(rows_data, start=3):
+        colors = record.get("__cell_colors__", {})
+        incidents = record.get("__incidents__", {})
+        max_lines = 1
+
+        for col_index, column in enumerate(columns, start=1):
+            value = record.get(column, "")
+            cell = ws.cell(row=row_index, column=col_index, value=value)
+            cell.border = border
+            cell.alignment = Alignment(
+                horizontal="left" if column in ("AREA", "TRABAJADOR", "EMPRESA") else "center",
+                vertical="top",
+                wrap_text=True,
+            )
+
+            color = colors.get(column)
+            if color:
+                clean_color = str(color).replace("#", "").upper()
+                if len(clean_color) == 6:
+                    cell.fill = PatternFill("solid", fgColor=clean_color)
+
+            if incidents.get(column):
+                cell.font = Font(bold=True)
+
+            max_lines = max(max_lines, str(value or "").count("\n") + 1)
+
+        ws.row_dimensions[row_index].height = max(22, min(90, 15 * max_lines))
+
+    for index, column in enumerate(columns, start=1):
+        if column == "AREA":
+            width = 18
+        elif column == "TRABAJADOR":
+            width = 28
+        elif column == "EMPRESA":
+            width = 14
+        else:
+            width = 24
+        ws.column_dimensions[get_column_letter(index)].width = width
+
+    ws.freeze_panes = "C3"
+    ws.auto_filter.ref = f"A2:{get_column_letter(len(columns))}{max(2, len(rows_data) + 2)}"
 
     output = BytesIO()
-
-    with ZipFile(output, "w", ZIP_DEFLATED) as workbook:
-        for path, content in files.items():
-            workbook.writestr(path, content)
-
+    wb.save(output)
     return output.getvalue()
-    

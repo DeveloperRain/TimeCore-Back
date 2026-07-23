@@ -1,7 +1,7 @@
 """Modelo ORM para incidencias manuales de prenomina."""
 from datetime import datetime
 
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Time, UniqueConstraint
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Time, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from app.database.connection import Base
@@ -27,6 +27,10 @@ class PayrollIncident(Base):
     hora = Column(Time, nullable=False)
     incidencia = Column(String(120), nullable=False)
     descripcion = Column(String(255), nullable=True)
+    color = Column(String(7), nullable=False, default="#BAE6FD")
+    source_fecha = Column(Date, nullable=True, index=True)
+    source_hora = Column(Time, nullable=True)
+    moved_attendance = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -42,6 +46,10 @@ class PayrollIncident(Base):
             "hora": self.hora.strftime("%H:%M") if self.hora else None,
             "incidencia": self.incidencia,
             "descripcion": self.descripcion,
+            "color": self.color or "#BAE6FD",
+            "source_fecha": self.source_fecha.isoformat() if self.source_fecha else None,
+            "source_hora": self.source_hora.strftime("%H:%M") if self.source_hora else None,
+            "moved_attendance": self.moved_attendance,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

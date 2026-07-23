@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import Optional, Literal
 from fastapi.responses import StreamingResponse
 from io import BytesIO
+import json
 import socket
 
 from app.services.db_service import DBService
@@ -100,6 +101,10 @@ def incident_to_dict(incident):
         "hora": incident.hora.strftime("%H:%M") if incident.hora else None,
         "incidencia": incident.incidencia,
         "descripcion": getattr(incident, "descripcion", None),
+        "color": getattr(incident, "color", None) or "#BAE6FD",
+        "source_fecha": incident.source_fecha.isoformat() if getattr(incident, "source_fecha", None) else None,
+        "source_hora": incident.source_hora.strftime("%H:%M") if getattr(incident, "source_hora", None) else None,
+        "moved_attendance": getattr(incident, "moved_attendance", None),
         "created_at": incident.created_at.isoformat() if getattr(incident, "created_at", None) else None,
         "updated_at": incident.updated_at.isoformat() if getattr(incident, "updated_at", None) else None,
     }
@@ -180,12 +185,34 @@ def build_payroll_data(
         attendance_by_user_date_hour.setdefault(map_key, []).append(value)
 
     incidents_by_user_date_hour = {}
+    suppressed_attendance_keys = set()
+    moved_attendance_by_destination = {}
 
     for incident in incidents:
         hour_key = f"{incident.hora.hour:02d}:00"
         date_key = incident.fecha.isoformat()
         map_key = (str(incident.user_id), date_key, hour_key)
         incidents_by_user_date_hour[map_key] = incident
+
+        source_fecha = getattr(incident, "source_fecha", None)
+        source_hora = getattr(incident, "source_hora", None)
+        moved_raw = getattr(incident, "moved_attendance", None)
+
+        if source_fecha and source_hora and moved_raw:
+            source_hour_key = f"{source_hora.hour:02d}:00"
+            source_key = (str(incident.user_id), source_fecha.isoformat(), source_hour_key)
+
+            if source_key != map_key:
+                suppressed_attendance_keys.add(source_key)
+                try:
+                    moved_values = json.loads(moved_raw)
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    moved_values = []
+
+                if isinstance(moved_values, list):
+                    moved_attendance_by_destination[map_key] = [
+                        str(value) for value in moved_values if str(value).strip()
+                    ]
 
     hour_labels = [f"{hour:02d}:00" for hour in range(6, 19)]
     day_payload = [
@@ -207,7 +234,12 @@ def build_payroll_data(
                 date_key = day.isoformat()
                 map_key = (str(user.user_id), date_key, hour_label)
 
-                values = attendance_by_user_date_hour.get(map_key, []).copy()
+                values = [] if map_key in suppressed_attendance_keys else attendance_by_user_date_hour.get(map_key, []).copy()
+                moved_values = moved_attendance_by_destination.get(map_key, [])
+                for moved_value in moved_values:
+                    if moved_value not in values:
+                        values.append(moved_value)
+
                 incident = incidents_by_user_date_hour.get(map_key)
 
                 if incident:
@@ -659,11 +691,13 @@ def get_week_attendance(
 
 
 class PayrollIncidentCreate(BaseModel):
+    id: Optional[int] = None
     user_id: str
     fecha: str
     hora: str
     incidencia: str
     descripcion: Optional[str] = None
+    color: str = "#BAE6FD"
 
 
 @router.get("/prenomina", summary="Obtener prenómina con asistencias e incidencias")
@@ -703,6 +737,8 @@ def save_payroll_incident(payload: PayrollIncidentCreate):
             hora=parse_hour(payload.hora),
             incidencia=payload.incidencia,
             descripcion=payload.descripcion,
+            color=payload.color,
+            incident_id=payload.id,
         )
     except AttributeError:
         raise HTTPException(
@@ -770,24 +806,55 @@ def download_payroll_report(
         user_ids=parse_user_ids(user_ids),
     )
 
-    columns = ["AREA", "TRABAJADOR", "HORA"]
+    columns = ["AREA", "TRABAJADOR"]
     columns.extend(day["label"] for day in report["days"])
     columns.append("EMPRESA")
 
-    rows = []
+    grouped = {}
 
     for row in report["rows"]:
-        excel_row = {
-            "AREA": row["area"],
-            "TRABAJADOR": row["trabajador"],
-            "HORA": row["hora"],
-            "EMPRESA": row["empresa"],
-        }
+        key = (str(row.get("UID", "")), row.get("empresa", ""))
+        current = grouped.setdefault(key, {
+            "AREA": row.get("area", ""),
+            "TRABAJADOR": row.get("trabajador", ""),
+            "EMPRESA": row.get("empresa", ""),
+            "__cell_colors__": {},
+            "__incidents__": {},
+        })
 
         for day in report["days"]:
-            excel_row[day["label"]] = row["cells"].get(day["date"], "")
+            date_key = day["date"]
+            column = day["label"]
+            value = str(row.get("cells", {}).get(date_key, "") or "").strip()
+            incident = row.get("incidents", {}).get(date_key)
 
-        rows.append(excel_row)
+            attendance_values = []
+            for item in value.split(" / "):
+                item = item.strip()
+                if not item:
+                    continue
+                if incident and item.upper() == str(incident.get("incidencia", "")).strip().upper():
+                    continue
+                if item not in attendance_values:
+                    attendance_values.append(item)
+
+            if incident:
+                incident_name = str(incident.get("incidencia", "INCIDENCIA")).strip().upper()
+                details = [f"• {item}" for item in attendance_values]
+                cell_text = "\n".join([incident_name, *details])
+                current["__cell_colors__"][column] = incident.get("color") or "#BAE6FD"
+                current["__incidents__"][column] = True
+            else:
+                cell_text = "\n".join(attendance_values)
+
+            if cell_text:
+                existing = str(current.get(column, "") or "").strip()
+                if not existing:
+                    current[column] = cell_text
+                elif cell_text not in existing:
+                    current[column] = f"{existing}\n{cell_text}"
+
+    rows = list(grouped.values())
 
     builder = build_payroll_excel or build_payroll_excel_fallback
     excel_bytes = builder(
