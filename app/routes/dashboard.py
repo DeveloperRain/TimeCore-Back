@@ -48,10 +48,7 @@ def dashboard_summary(
             if not branch:
                 raise HTTPException(status_code=404, detail="Sucursal no encontrada")
 
-            total_users = db.query(User).filter(
-                User.deleted_at.is_(None),
-                User.branch_id == branch_id,
-            ).count()
+            total_users = db.query(User).filter(User.branch_id == branch_id).count()
             total_devices = db.query(Device).filter(Device.branch_id == branch_id).count()
             connected_devices = db.query(Device).filter(
                 Device.branch_id == branch_id,
@@ -80,7 +77,7 @@ def dashboard_summary(
                 message=f"Resumen del dashboard de {branch.name} obtenido correctamente"
             )
 
-        total_users = db.query(User).filter(User.deleted_at.is_(None)).count()
+        total_users = db.query(User).count()
 
         total_devices = db.query(Device).count()
 
@@ -97,7 +94,7 @@ def dashboard_summary(
 
         employee_counts = dict(
             db.query(User.branch_id, func.count(User.id))
-            .filter(User.deleted_at.is_(None), User.branch_id.is_not(None))
+            .filter(User.branch_id.is_not(None))
             .group_by(User.branch_id)
             .all()
         )

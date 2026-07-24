@@ -58,13 +58,22 @@ def get_safe_end_datetime(parsed_end_date):
     return datetime.combine(parsed_end_date, time.max)
 
 
-def get_target_device(branch_id: Optional[int] = None):
-    """
-    Obtiene el reloj activo que se usará para crear/editar/eliminar empleados.
+def get_target_device(
+    branch_id: Optional[int] = None,
+    device_id: Optional[int] = None,
+):
+    """Obtiene el reloj exacto solicitado o el primero activo de la sucursal."""
+    if device_id is not None:
+        device = DBService.get_device_by_id(device_id)
 
-    Si llega branch_id, busca un reloj activo de esa sucursal.
-    Si no llega branch_id, usa el primer reloj activo disponible.
-    """
+        if not device:
+            return None
+
+        if branch_id is not None and getattr(device, "branch_id", None) != branch_id:
+            return None
+
+        return device if bool(getattr(device, "is_active", True)) else None
+
     devices = (
         DBService.get_devices_by_branch(branch_id)
         if branch_id is not None
@@ -184,6 +193,55 @@ def get_users(
         raise HTTPException(status_code=500, detail=f"Error al obtener usuarios: {str(e)}")
 
 
+@router.get(
+    "/device/{device_id:int}/next-uid",
+    summary="Obtener siguiente UID disponible del reloj",
+    tags=["Usuarios"],
+)
+def get_next_uid_for_device(device_id: int):
+    device = DBService.get_device_by_id(device_id)
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    if not bool(getattr(device, "is_active", True)):
+        raise HTTPException(status_code=409, detail="El reloj está inactivo")
+
+    try:
+        users = ZKService.get_all_users(
+            ip=device.ip,
+            port=device.port,
+            password=str(getattr(device, "password", "0") or "0"),
+        )
+
+        max_uid = max(
+            (int(item.get("uid") or 0) for item in users),
+            default=0,
+        )
+
+        return success(
+            data={
+                "device_id": device.id,
+                "device_name": device.name,
+                "next_uid": max_uid + 1,
+                "users_count": len(users),
+            },
+            message="Siguiente UID calculada correctamente",
+        )
+    except TimeoutError:
+        raise HTTPException(status_code=504, detail="Conexión agotada con el dispositivo")
+    except ConnectionError:
+        raise HTTPException(status_code=503, detail="El dispositivo no está disponible")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Error calculando la siguiente UID")
+        raise HTTPException(
+            status_code=500,
+            detail=f"No se pudo calcular la siguiente UID: {str(e)}",
+        )
+
+
 @router.post(
     "/",
     summary="Crear nuevo usuario",
@@ -194,16 +252,20 @@ def create_user(
     user: UserCreate,
     branch_id: Optional[int] = Query(
         None,
-        description="ID de sucursal para usar el reloj y contraseña correctos",
+        description="ID de sucursal del reloj seleccionado",
+    ),
+    device_id: Optional[int] = Query(
+        None,
+        description="ID del reloj físico donde se creará el empleado",
     ),
 ):
     try:
-        device = get_target_device(branch_id)
+        device = get_target_device(branch_id=branch_id, device_id=device_id)
 
         if not device:
             raise HTTPException(
                 status_code=503,
-                detail="No hay un reloj activo disponible para crear el empleado",
+                detail="El reloj seleccionado no existe, está inactivo o no pertenece a la sucursal",
             )
 
         user_id = str(user.uid)
@@ -218,20 +280,31 @@ def create_user(
             password=str(getattr(device, "password", "0") or "0"),
         )
 
+        saved_user = None
+
         try:
-            DBService.save_user(
+            saved_user = DBService.save_user(
                 uid=user.uid,
                 user_id=user_id,
                 name=user.name,
                 role=user.role,
                 sucursal=getattr(device, "location", None),
                 branch_id=getattr(device, "branch_id", None),
+                device_id=device.id,
+                empresa=getattr(device, "empresa", None),
             )
         except Exception as e:
             logger.warning(f"Error al sincronizar usuario {user.uid} en BD: {str(e)}")
 
         return success(
-            data=result["user"],
+            data={
+                **result["user"],
+                "id": getattr(saved_user, "id", None),
+                "device_id": device.id,
+                "device_name": device.name,
+                "branch_id": getattr(device, "branch_id", None),
+                "empresa": getattr(device, "empresa", None),
+            },
             message=result["message"],
         )
 
@@ -401,7 +474,7 @@ def update_user(
 @router.delete(
     "/{uid:int}",
     summary="Eliminar usuario",
-    description="Elimina un usuario del reloj biométrico y marca como eliminado en BD",
+    description="Elimina un usuario del reloj biométrico, pero conserva su ficha y asistencias en BD",
     tags=["Usuarios"],
 )
 def delete_user(
@@ -428,7 +501,7 @@ def delete_user(
         )
 
         try:
-            DBService.delete_user(uid)
+            DBService.delete_user(uid, device_id=device.id)
         except Exception as e:
             logger.warning(f"Error al eliminar usuario {uid} en BD: {str(e)}")
 

@@ -21,8 +21,10 @@ def sync_registered_device(device):
     )
 
     users_count = 0
+    present_uids = []
 
     for user in usuarios:
+        present_uids.append(int(user["uid"]))
         DBService.save_user(
             uid=user["uid"],
             user_id=user["user_id"],
@@ -34,6 +36,13 @@ def sync_registered_device(device):
             empresa=getattr(device, "empresa", None),
         )
         users_count += 1
+
+    # Los empleados borrados del reloj no se eliminan de PostgreSQL:
+    # se conservan como inactivos junto con todas sus asistencias.
+    missing_users = DBService.mark_missing_device_users(
+        device_id=device.id,
+        present_uids=present_uids,
+    )
 
     asistencias = ZKService.get_attendance_records(
         ip=device.ip,
@@ -64,6 +73,7 @@ def sync_registered_device(device):
         "device_name": device.name,
         "ip": device.ip,
         "users_synced": users_count,
+        "users_marked_inactive": missing_users,
         "attendance_obtained": attendance_obtained,
         "attendance_synced": attendance_count,
     }

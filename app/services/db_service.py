@@ -144,6 +144,10 @@ class DBService:
                 if empresa is not None:
                     existing_user.empresa = empresa
 
+                # Si el empleado vuelve a aparecer en el reloj, se reactiva
+                # sin perder su historial ni su perfil local.
+                existing_user.status = "Activo"
+                existing_user.deleted_at = None
                 existing_user.updated_at = datetime.utcnow()
 
                 db.commit()
@@ -161,6 +165,8 @@ class DBService:
                 branch_id=resolved_branch_id,
                 device_id=device_id,
                 empresa=empresa,
+                status="Activo",
+                deleted_at=None,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -198,7 +204,6 @@ class DBService:
         try:
             return (
                 db.query(User)
-                .filter(User.deleted_at.is_(None))
                 .order_by(User.name.asc())
                 .all()
             )
@@ -218,7 +223,6 @@ class DBService:
         try:
             return (
                 db.query(User)
-                .filter(User.deleted_at.is_(None))
                 .filter(User.branch_id == branch_id)
                 .order_by(User.name.asc())
                 .all()
@@ -244,7 +248,7 @@ class DBService:
             close_db = False
 
         try:
-            query = db.query(User).filter(User.deleted_at.is_(None))
+            query = db.query(User)
 
             if branch_id is not None:
                 query = query.filter(User.branch_id == branch_id)
@@ -291,7 +295,6 @@ class DBService:
             return (
                 db.query(User)
                 .filter(User.id == user_id)
-                .filter(User.deleted_at.is_(None))
                 .first()
             )
         finally:
@@ -488,8 +491,16 @@ class DBService:
                 db.close()
 
     @staticmethod
-    def delete_user(uid: int, db: Optional[Session] = None) -> bool:
-        """Elimina un usuario de la BD conservando sus asistencias históricas."""
+    def mark_missing_device_users(
+        device_id: int,
+        present_uids: List[int],
+        db: Optional[Session] = None,
+    ) -> int:
+        """Marca como inactivos a los empleados que ya no están en el reloj.
+
+        No elimina filas ni asistencias. Si el empleado vuelve a aparecer en una
+        sincronización posterior, save_user() lo reactiva automáticamente.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -497,25 +508,84 @@ class DBService:
             close_db = False
 
         try:
-            user = db.query(User).filter(User.uid == uid).first()
+            normalized_uids = [int(uid) for uid in present_uids]
+            query = db.query(User).filter(User.device_id == device_id)
 
-            if user:
-                db.query(AttendanceRecord).filter(AttendanceRecord.uid == uid).update(
-                    {AttendanceRecord.uid: None},
-                    synchronize_session=False,
+            if normalized_uids:
+                query = query.filter(~User.uid.in_(normalized_uids))
+
+            missing_users = query.all()
+            now = datetime.utcnow()
+
+            for user in missing_users:
+                user.status = "Inactivo"
+                user.deleted_at = None
+                user.updated_at = now
+
+            db.commit()
+
+            if missing_users:
+                logger.info(
+                    "Se marcaron %s empleados como inactivos para el reloj %s",
+                    len(missing_users),
+                    device_id,
                 )
 
-                db.delete(user)
-                db.commit()
+            return len(missing_users)
+        except Exception as e:
+            db.rollback()
+            logger.error(
+                "Error al conservar empleados ausentes del reloj %s: %s",
+                device_id,
+                str(e),
+            )
+            raise
+        finally:
+            if close_db:
+                db.close()
 
-                logger.info(f"Usuario UID {uid} eliminado de BD")
-                return True
+    @staticmethod
+    def delete_user(
+        uid: int,
+        device_id: Optional[int] = None,
+        db: Optional[Session] = None,
+    ) -> bool:
+        """Conserva al empleado en BD y sólo lo marca como inactivo.
 
-            return False
+        Las asistencias históricas permanecen intactas.
+        """
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            query = db.query(User).filter(User.uid == uid)
+            if device_id is not None:
+                query = query.filter(User.device_id == device_id)
+
+            user = query.first()
+
+            if not user:
+                return False
+
+            user.status = "Inactivo"
+            user.deleted_at = None
+            user.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(user)
+
+            logger.info(
+                "Usuario UID %s del reloj %s conservado en BD como inactivo",
+                uid,
+                device_id,
+            )
+            return True
 
         except Exception as e:
             db.rollback()
-            logger.error(f"Error al eliminar usuario {uid}: {str(e)}")
+            logger.error(f"Error al conservar usuario {uid}: {str(e)}")
             raise
         finally:
             if close_db:
