@@ -1,4 +1,6 @@
 import socket
+import threading
+from contextlib import contextmanager
 from typing import Any, Dict, List
 
 from zk import ZK
@@ -43,6 +45,30 @@ def normalize_user_id(user_id) -> str:
     return str(user_id).strip()
 
 
+def normalize_attendance_status(status, punch=None) -> str:
+    """Normaliza el tipo de marcación reportado por distintos modelos ZKTeco.
+
+    Algunos equipos colocan el valor útil en ``punch`` y devuelven 255 o None
+    en ``status``. Se usa ``status`` cuando es reconocido y, si no, ``punch``.
+    """
+    for value in (status, punch):
+        try:
+            numeric = int(value)
+        except (TypeError, ValueError):
+            continue
+
+        if numeric in ATTENDANCE_STATUS:
+            return ATTENDANCE_STATUS[numeric]
+
+    logger.warning(
+        "Estado de asistencia no reconocido (status=%s, punch=%s). "
+        "Se conservará como check_in para no perder la marcación.",
+        status,
+        punch,
+    )
+    return "check_in"
+
+
 def call_if_available(conn, method_name: str, default: str = "Desconocido"):
     method = getattr(conn, method_name, None)
 
@@ -58,14 +84,49 @@ def call_if_available(conn, method_name: str, default: str = "Desconocido"):
 
 
 class ZKService:
+    _device_locks: Dict[str, threading.RLock] = {}
+    _device_locks_guard = threading.Lock()
+
+    @staticmethod
+    def _device_key(ip: str = None, port: int = None) -> str:
+        return f"{ip or IP_RELOJ}:{int(port or PORT)}"
+
+    @staticmethod
+    def _get_device_lock(ip: str = None, port: int = None) -> threading.RLock:
+        key = ZKService._device_key(ip, port)
+        with ZKService._device_locks_guard:
+            lock = ZKService._device_locks.get(key)
+            if lock is None:
+                lock = threading.RLock()
+                ZKService._device_locks[key] = lock
+            return lock
+
+    @staticmethod
+    @contextmanager
+    def _locked_device(ip: str = None, port: int = None):
+        lock = ZKService._get_device_lock(ip, port)
+        lock.acquire()
+        try:
+            yield
+        finally:
+            lock.release()
+
     @staticmethod
     def check_device_status(ip: str, port: int = PORT, timeout: int = 2) -> bool:
+        # No se abre otra conexión mientras el mismo reloj está sincronizando.
+        # Si el candado está ocupado, la sincronización ya confirmó comunicación.
+        lock = ZKService._get_device_lock(ip, port)
+        if not lock.acquire(blocking=False):
+            return True
+
         try:
             with socket.create_connection((ip, port or PORT), timeout=timeout):
                 return True
         except Exception as e:
             logger.warning("Reloj %s:%s sin conexion: %s", ip, port, e)
             return False
+        finally:
+            lock.release()
 
     @staticmethod
     def _create_connection(ip: str = None, port: int = None, password: str = None):
@@ -98,7 +159,7 @@ class ZKService:
                 zk = ZK(
                     target_ip,
                     port=target_port,
-                    timeout=10,
+                    timeout=TIMEOUT,
                     password=target_password,
                     force_udp=attempt["force_udp"],
                     ommit_ping=attempt["ommit_ping"],
@@ -177,23 +238,141 @@ class ZKService:
     def get_all_users(ip: str = None, port: int = None, password: str = None) -> List[Dict[str, Any]]:
         conn = None
 
-        try:
-            conn = ZKService._create_connection(ip, port, password)
-            usuarios = conn.get_users()
+        with ZKService._locked_device(ip, port):
+            try:
+                conn = ZKService._create_connection(ip, port, password)
+                usuarios = conn.get_users() or []
 
-            return [
-                {
-                    "uid": u.uid,
-                    "user_id": normalize_user_id(u.user_id),
-                    "name": u.name,
-                    "role": privilege_to_role(getattr(u, "privilege", 0)),
-                }
-                for u in usuarios
-            ]
+                return [
+                    {
+                        "uid": int(u.uid),
+                        "user_id": normalize_user_id(u.user_id),
+                        "name": str(u.name or "").strip() or f"Usuario {u.uid}",
+                        "role": privilege_to_role(getattr(u, "privilege", 0)),
+                    }
+                    for u in usuarios
+                ]
+            finally:
+                if conn:
+                    ZKService._disconnect(conn)
 
-        finally:
-            if conn:
-                ZKService._disconnect(conn)
+    @staticmethod
+    def get_sync_snapshot(
+        ip: str = None,
+        port: int = None,
+        password: str = None,
+    ) -> Dict[str, List[Dict[str, Any]]]:
+        """Lee usuarios y asistencias usando una sola sesión del reloj.
+
+        Evita abrir dos conexiones consecutivas durante una sincronización y
+        bloquea los sondeos de estado del mismo reloj mientras se descargan los
+        datos. Esto es importante porque varios modelos ZKTeco toleran una sola
+        sesión estable a la vez.
+        """
+        conn = None
+        disabled = False
+
+        with ZKService._locked_device(ip, port):
+            try:
+                conn = ZKService._create_connection(ip, port, password)
+
+                try:
+                    conn.disable_device()
+                    disabled = True
+                except Exception as e:
+                    logger.warning(
+                        "No se pudo bloquear temporalmente el reloj para lectura: %s",
+                        e,
+                    )
+
+                # get_attendance() de pyzk ya consulta internamente los usuarios.
+                # Se lee primero para obtener el log más reciente y después se
+                # consulta la lista de usuarios para enriquecer nombre y UID.
+                attendance_objects = conn.get_attendance() or []
+                user_objects = conn.get_users() or []
+
+                users = [
+                    {
+                        "uid": int(u.uid),
+                        "user_id": normalize_user_id(u.user_id),
+                        "name": str(u.name or "").strip() or f"Usuario {u.uid}",
+                        "role": privilege_to_role(getattr(u, "privilege", 0)),
+                    }
+                    for u in user_objects
+                ]
+
+                users_by_id = {user["user_id"]: user for user in users}
+                users_by_uid = {int(user["uid"]): user for user in users}
+                attendance: List[Dict[str, Any]] = []
+
+                for item in attendance_objects:
+                    user_id = normalize_user_id(getattr(item, "user_id", ""))
+                    raw_uid = getattr(item, "uid", None)
+                    uid = None
+
+                    try:
+                        uid = int(raw_uid) if raw_uid not in (None, "") else None
+                    except (TypeError, ValueError):
+                        uid = None
+
+                    linked_user = users_by_id.get(user_id)
+                    if linked_user is None and uid is not None:
+                        linked_user = users_by_uid.get(uid)
+
+                    if linked_user is not None:
+                        uid = int(linked_user["uid"])
+                        user_id = linked_user["user_id"]
+                        name = linked_user["name"]
+                    else:
+                        name = f"Usuario {user_id or uid or 'desconocido'}"
+
+                    timestamp = getattr(item, "timestamp", None)
+                    if timestamp is None:
+                        logger.warning("Marcación sin timestamp descartada: %r", item)
+                        continue
+
+                    attendance.append(
+                        {
+                            "uid": uid,
+                            "user_id": user_id or str(uid or ""),
+                            "name": name,
+                            "timestamp": timestamp,
+                            "status": normalize_attendance_status(
+                                getattr(item, "status", None),
+                                getattr(item, "punch", None),
+                            ),
+                        }
+                    )
+
+                latest = sorted(
+                    attendance,
+                    key=lambda value: value.get("timestamp"),
+                )[-5:]
+                logger.info(
+                    "Lectura del reloj %s:%s: %s usuarios, %s asistencias. Últimas: %s",
+                    ip or IP_RELOJ,
+                    int(port or PORT),
+                    len(users),
+                    len(attendance),
+                    latest,
+                )
+
+                return {"users": users, "attendance": attendance}
+
+            except Exception as e:
+                log_exception(logger, e, "Error al obtener datos del reloj")
+                raise
+            finally:
+                if conn:
+                    if disabled:
+                        try:
+                            conn.enable_device()
+                        except Exception as e:
+                            logger.warning(
+                                "No se pudo reactivar el reloj después de leer: %s",
+                                e,
+                            )
+                    ZKService._disconnect(conn)
 
     @staticmethod
     def create_user(
@@ -280,6 +459,86 @@ class ZKService:
                     logger.warning("No se pudo cerrar la conexión, se ignora: %s", e)
 
     @staticmethod
+    def create_user_with_next_uid(
+        name: str,
+        role: str = "usuario",
+        minimum_uid: int = 1,
+        ip: str = None,
+        port: int = None,
+        password: str = None,
+    ) -> Dict[str, Any]:
+        """Crea un usuario usando la siguiente UID real del reloj.
+
+        Consulta los usuarios y crea la nueva asignacion dentro de la misma
+        conexion para reducir colisiones y sesiones simultaneas.
+        """
+        conn = None
+
+        try:
+            conn = ZKService._create_connection(ip, port, password)
+            usuarios = conn.get_users()
+
+            used_uids = {int(usuario.uid) for usuario in usuarios}
+            used_user_ids = {
+                normalize_user_id(usuario.user_id) for usuario in usuarios
+            }
+
+            highest_uid = max(used_uids, default=0)
+            next_uid = max(highest_uid + 1, int(minimum_uid or 1))
+
+            while (
+                next_uid in used_uids
+                or str(next_uid) in used_user_ids
+            ):
+                next_uid += 1
+
+            user_id = str(next_uid)
+            privilege = role_to_privilege(role)
+
+            logger.info(
+                "Creando copia de usuario en reloj: uid=%s name=%s role=%s",
+                next_uid,
+                name,
+                role,
+            )
+
+            conn.set_user(
+                uid=next_uid,
+                name=str(name),
+                privilege=privilege,
+                password="",
+                group_id="",
+                user_id=user_id,
+            )
+
+            try:
+                conn.refresh_data()
+            except Exception as e:
+                logger.warning(
+                    "No se pudo refrescar datos del reloj tras copiar usuario: %s",
+                    e,
+                )
+
+            return {
+                "message": f"Usuario '{name}' creado exitosamente",
+                "user": {
+                    "uid": next_uid,
+                    "user_id": user_id,
+                    "name": name,
+                    "role": role,
+                },
+            }
+        finally:
+            if conn:
+                try:
+                    ZKService._disconnect(conn)
+                except Exception as e:
+                    logger.warning(
+                        "No se pudo cerrar la conexion tras copiar usuario: %s",
+                        e,
+                    )
+
+    @staticmethod
     def update_user(
         uid: int,
         user_id: str = None,
@@ -362,39 +621,5 @@ class ZKService:
 
     @staticmethod
     def get_attendance_records(ip: str = None, port: int = None, password: str = None) -> List[Dict[str, Any]]:
-        conn = None
-
-        try:
-            conn = ZKService._create_connection(ip, port, password)
-            usuarios = conn.get_users()
-            asistencias = conn.get_attendance()
-
-            users_by_id = {
-                normalize_user_id(usuario.user_id): {
-                    "uid": usuario.uid,
-                    "name": usuario.name,
-                }
-                for usuario in usuarios
-            }
-
-            return [
-                {
-                    "uid": users_by_id.get(normalize_user_id(a.user_id), {}).get("uid"),
-                    "user_id": normalize_user_id(a.user_id),
-                    "name": users_by_id.get(
-                        normalize_user_id(a.user_id),
-                        {},
-                    ).get("name", "Desconocido"),
-                    "timestamp": str(a.timestamp),
-                    "status": ATTENDANCE_STATUS.get(a.status, str(a.status)),
-                }
-                for a in asistencias
-            ]
-
-        except Exception as e:
-            log_exception(logger, e, "Error al obtener asistencias del reloj")
-            raise
-
-        finally:
-            if conn:
-                ZKService._disconnect(conn)
+        snapshot = ZKService.get_sync_snapshot(ip, port, password)
+        return snapshot["attendance"]

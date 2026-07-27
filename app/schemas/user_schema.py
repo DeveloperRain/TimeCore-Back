@@ -61,6 +61,19 @@ class UserUpdate(BaseModel):
         }]
 
 
+class UserCopyToDevice(BaseModel):
+    """Solicitud para crear otra asignacion del empleado en otro reloj."""
+
+    target_device_id: int = Field(
+        ...,
+        gt=0,
+        description="ID del reloj fisico donde se creara la nueva asignacion",
+    )
+
+    class Config:
+        examples = [{"target_device_id": 6}]
+
+
 class UserResponse(BaseModel):
     uid: int = Field(..., description="ID unico del usuario")
     user_id: str = Field(..., description="ID del usuario en el reloj")

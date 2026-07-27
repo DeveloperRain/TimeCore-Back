@@ -14,11 +14,14 @@ router = APIRouter(
 
 
 def sync_registered_device(device):
-    usuarios = ZKService.get_all_users(
+    snapshot = ZKService.get_sync_snapshot(
         ip=device.ip,
         port=device.port,
-        password=getattr(device, "password", "")
+        password=getattr(device, "password", ""),
     )
+
+    usuarios = snapshot["users"]
+    asistencias = snapshot["attendance"]
 
     users_count = 0
     present_uids = []
@@ -44,12 +47,6 @@ def sync_registered_device(device):
         present_uids=present_uids,
     )
 
-    asistencias = ZKService.get_attendance_records(
-        ip=device.ip,
-        port=device.port,
-        password=getattr(device, "password", "")
-    )
-
     attendance_obtained = len(asistencias)
     attendance_count = DBService.save_bulk_attendance(
         asistencias,
@@ -57,15 +54,33 @@ def sync_registered_device(device):
         device_id=device.id,
     )
 
+    latest_attendance = sorted(
+        asistencias,
+        key=lambda item: item.get("timestamp"),
+    )[-5:]
+
+    logger.info(
+        "Sincronización %s (device_id=%s): obtenidas=%s, nuevas=%s, últimas=%s",
+        device.name,
+        device.id,
+        attendance_obtained,
+        attendance_count,
+        latest_attendance,
+    )
+
     DBService.update_device_sync_status(
         device_id=device.id,
         estado="Conectado",
-        synced_at=datetime.utcnow()
+        synced_at=datetime.utcnow(),
     )
 
     DBService.create_log(
         accion="Sincronización de reloj",
-        detalle=f"Se sincronizó {device.name} ({device.ip}). Usuarios: {users_count}, asistencias nuevas: {attendance_count}"
+        detalle=(
+            f"Se sincronizó {device.name} ({device.ip}). "
+            f"Usuarios: {users_count}, asistencias obtenidas: {attendance_obtained}, "
+            f"asistencias nuevas: {attendance_count}"
+        ),
     )
 
     return {
@@ -76,6 +91,7 @@ def sync_registered_device(device):
         "users_marked_inactive": missing_users,
         "attendance_obtained": attendance_obtained,
         "attendance_synced": attendance_count,
+        "latest_attendance": latest_attendance,
     }
 
 

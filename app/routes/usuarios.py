@@ -8,7 +8,7 @@ from app.services.zk_service import ZKService
 from app.services.db_service import DBService
 from app.services.excel_service import build_attendance_excel
 from app.exceptions import DataValidationError, DuplicateUserError
-from app.schemas.user_schema import UserCreate, UserUpdate, ErrorResponse
+from app.schemas.user_schema import UserCreate, UserUpdate, UserCopyToDevice, ErrorResponse
 from app.utils.response import success, paginated
 
 logger = get_logger("routes.usuarios")
@@ -208,23 +208,13 @@ def get_next_uid_for_device(device_id: int):
         raise HTTPException(status_code=409, detail="El reloj está inactivo")
 
     try:
-        users = ZKService.get_all_users(
-            ip=device.ip,
-            port=device.port,
-            password=str(getattr(device, "password", "0") or "0"),
-        )
-
-        max_uid = max(
-            (int(item.get("uid") or 0) for item in users),
-            default=0,
-        )
+        next_uid = DBService.get_next_uid_for_device(device.id)
 
         return success(
             data={
                 "device_id": device.id,
                 "device_name": device.name,
-                "next_uid": max_uid + 1,
-                "users_count": len(users),
+                "next_uid": next_uid,
             },
             message="Siguiente UID calculada correctamente",
         )
@@ -239,6 +229,110 @@ def get_next_uid_for_device(device_id: int):
         raise HTTPException(
             status_code=500,
             detail=f"No se pudo calcular la siguiente UID: {str(e)}",
+        )
+
+
+@router.post(
+    "/by-id/{source_user_id:int}/copy-to-device",
+    summary="Crear otra asignacion del empleado en otro reloj",
+    description=(
+        "Crea al empleado fisicamente en el reloj destino y genera una nueva "
+        "fila independiente en PostgreSQL. La asignacion original y sus "
+        "asistencias historicas permanecen intactas."
+    ),
+    tags=["Usuarios"],
+)
+def copy_user_to_device(
+    source_user_id: int,
+    payload: UserCopyToDevice,
+):
+    source_user = DBService.get_user_by_id(source_user_id)
+    if not source_user:
+        raise HTTPException(status_code=404, detail="Empleado de origen no encontrado")
+
+    target_device = DBService.get_device_by_id(payload.target_device_id)
+    if not target_device:
+        raise HTTPException(status_code=404, detail="Reloj destino no encontrado")
+
+    if not bool(getattr(target_device, "is_active", True)):
+        raise HTTPException(status_code=409, detail="El reloj destino esta inactivo")
+
+    if source_user.device_id == target_device.id:
+        raise HTTPException(
+            status_code=409,
+            detail="Selecciona un reloj diferente al reloj de origen",
+        )
+
+    source_role = (
+        source_user.role.value
+        if hasattr(source_user.role, "value")
+        else str(source_user.role or "usuario")
+    )
+
+    minimum_uid = DBService.get_next_uid_for_device(target_device.id)
+    created_uid = None
+
+    try:
+        clock_result = ZKService.create_user_with_next_uid(
+            name=source_user.name,
+            role=source_role,
+            minimum_uid=minimum_uid,
+            ip=target_device.ip,
+            port=target_device.port,
+            password=str(getattr(target_device, "password", "0") or "0"),
+        )
+
+        created_user_data = clock_result.get("user", {})
+        created_uid = int(created_user_data["uid"])
+        created_user_id = str(created_user_data.get("user_id") or created_uid)
+
+        copied_user = DBService.create_user_assignment_copy(
+            source_user_id=source_user_id,
+            target_device_id=target_device.id,
+            uid=created_uid,
+            user_id=created_user_id,
+        )
+
+        return success(
+            data={
+                "source_user_id": source_user_id,
+                "new_assignment": copied_user.to_dict(),
+                "target_device": {
+                    "id": target_device.id,
+                    "name": target_device.name,
+                    "branch_id": target_device.branch_id,
+                    "empresa": target_device.empresa,
+                },
+            },
+            message=(
+                "Empleado creado en el reloj destino. La asignacion original "
+                "y sus asistencias se conservaron"
+            ),
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Si la escritura fisica funciono pero fallo PostgreSQL, se intenta
+        # revertir el alta en el reloj para no dejar una asignacion huerfana.
+        if created_uid is not None:
+            try:
+                ZKService.delete_user(
+                    created_uid,
+                    ip=target_device.ip,
+                    port=target_device.port,
+                    password=str(getattr(target_device, "password", "0") or "0"),
+                )
+            except Exception as rollback_error:
+                logger.error(
+                    "No se pudo revertir el usuario UID %s del reloj destino: %s",
+                    created_uid,
+                    rollback_error,
+                )
+
+        logger.exception("Error creando asignacion en otro reloj")
+        raise HTTPException(
+            status_code=500,
+            detail=f"No se pudo crear al empleado en el reloj destino: {str(e)}",
         )
 
 

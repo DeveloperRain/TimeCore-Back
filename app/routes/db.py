@@ -8,6 +8,7 @@ import json
 import socket
 
 from app.services.db_service import DBService
+from app.services.zk_service import ZKService
 from app.utils.response import success
 from app.services.excel_service import build_attendance_excel
 
@@ -401,11 +402,13 @@ def device_to_dict(device):
 
 
 def test_device_connection(ip: str, port: int, timeout: float = 2.0) -> bool:
-    try:
-        with socket.create_connection((ip, int(port)), timeout=timeout):
-            return True
-    except Exception:
-        return False
+    # Usa el mismo candado de ZKService para no abrir sondeos TCP mientras el
+    # reloj está descargando usuarios o asistencias.
+    return ZKService.check_device_status(
+        ip=ip,
+        port=int(port),
+        timeout=max(1, int(timeout)),
+    )
 
 
 def update_device_status_safely(device, status: str):

@@ -302,6 +302,117 @@ class DBService:
                 db.close()
 
     @staticmethod
+    def get_next_uid_for_device(
+        device_id: int,
+        db: Optional[Session] = None,
+    ) -> int:
+        """Obtiene la siguiente UID local disponible para un reloj."""
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            max_uid = (
+                db.query(func.max(User.uid))
+                .filter(User.device_id == device_id)
+                .scalar()
+            )
+            return int(max_uid or 0) + 1
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
+    def create_user_assignment_copy(
+        source_user_id: int,
+        target_device_id: int,
+        uid: int,
+        user_id: str,
+        db: Optional[Session] = None,
+    ) -> User:
+        """Crea una asignacion independiente en otro reloj.
+
+        La fila original no se modifica y sus asistencias historicas conservan
+        el UID y device_id de origen.
+        """
+        if db is None:
+            db = SessionLocal()
+            close_db = True
+        else:
+            close_db = False
+
+        try:
+            source = db.query(User).filter(User.id == source_user_id).first()
+            if not source:
+                raise ValueError("Empleado de origen no encontrado")
+
+            target_device = (
+                db.query(Device)
+                .filter(Device.id == target_device_id)
+                .first()
+            )
+            if not target_device:
+                raise ValueError("Reloj destino no encontrado")
+
+            if source.device_id == target_device_id:
+                raise ValueError(
+                    "El empleado ya pertenece a ese reloj. Selecciona otro reloj destino"
+                )
+
+            existing = (
+                db.query(User)
+                .filter(User.device_id == target_device_id)
+                .filter(User.uid == uid)
+                .first()
+            )
+            if existing:
+                raise ValueError(
+                    f"La UID {uid} ya esta registrada en el reloj destino"
+                )
+
+            target_branch = None
+            if target_device.branch_id is not None:
+                target_branch = (
+                    db.query(Branch)
+                    .filter(Branch.id == target_device.branch_id)
+                    .first()
+                )
+
+            new_user = User(
+                uid=int(uid),
+                user_id=str(user_id),
+                name=source.name,
+                role=source.role,
+                device_id=target_device.id,
+                branch_id=target_device.branch_id,
+                sucursal=(
+                    target_branch.name
+                    if target_branch
+                    else target_device.location
+                ),
+                email=source.email,
+                area=source.area,
+                empresa=target_device.empresa,
+                status="Activo",
+                deleted_at=None,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
+
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+            return new_user
+        except Exception:
+            db.rollback()
+            raise
+        finally:
+            if close_db:
+                db.close()
+
+    @staticmethod
     def update_user_status_by_id(
         user_id: int,
         status: str,
@@ -1016,47 +1127,97 @@ class DBService:
         device_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> int:
-        """Guarda múltiples registros de asistencia. Evita duplicados."""
+        """Guarda múltiples asistencias sin mezclar relojes.
+
+        La identidad de una marcación se determina por:
+        ``device_id + uid/user_id + timestamp + status``. También normaliza UID,
+        recupera nombre/UID desde la asignación local cuando el reloj no los
+        devuelve y registra un resumen útil de descartes y duplicados.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
         else:
             close_db = False
 
-        try:
-            count = 0
+        inserted = 0
+        duplicates = 0
+        invalid = 0
 
-            for record in records:
+        try:
+            for raw_record in records:
+                record = dict(raw_record or {})
                 timestamp = record.get("timestamp")
 
                 if not timestamp:
-                    logger.warning(f"timestamp faltante en registro: {record}")
+                    invalid += 1
+                    logger.warning("timestamp faltante en registro: %s", record)
                     continue
 
                 if isinstance(timestamp, str):
                     try:
-                        timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                        timestamp = datetime.fromisoformat(
+                            timestamp.replace("Z", "+00:00")
+                        )
                     except ValueError:
-                        logger.warning(f"Formato de timestamp inválido: {timestamp}")
+                        invalid += 1
+                        logger.warning("Formato de timestamp inválido: %s", timestamp)
                         continue
+
+                # PostgreSQL usa timestamp sin zona; se conserva la hora local
+                # reportada por el reloj y se elimina tzinfo si viniera presente.
+                if getattr(timestamp, "tzinfo", None) is not None:
+                    timestamp = timestamp.replace(tzinfo=None)
+
+                record_device_id = record.get("device_id", device_id)
+                record_branch_id = record.get("branch_id", branch_id)
+                user_id = str(record.get("user_id") or "").strip()
+                uid = record.get("uid")
+
+                try:
+                    uid = int(uid) if uid not in (None, "") else None
+                except (TypeError, ValueError):
+                    uid = None
+
+                linked_user = None
+                if record_device_id is not None:
+                    user_query = db.query(User).filter(
+                        User.device_id == record_device_id
+                    )
+                    if user_id:
+                        linked_user = user_query.filter(User.user_id == user_id).first()
+                    if linked_user is None and uid is not None:
+                        linked_user = user_query.filter(User.uid == uid).first()
+
+                if linked_user is not None:
+                    uid = int(linked_user.uid)
+                    user_id = str(linked_user.user_id)
+                    name = str(record.get("name") or linked_user.name or "").strip()
+                    if not name or name.lower() == "desconocido":
+                        name = linked_user.name
+                    if record_branch_id is None:
+                        record_branch_id = linked_user.branch_id
+                else:
+                    name = str(record.get("name") or "").strip()
+
+                status = str(record.get("status") or "check_in").strip()
 
                 try:
                     DataValidator.validate_attendance(
-                        record.get("uid"),
-                        record.get("user_id"),
-                        record.get("name"),
+                        uid,
+                        user_id,
+                        name,
                         timestamp,
-                        record.get("status"),
+                        status,
                     )
-                except DataValidationError as e:
-                    logger.warning(f"Registro de asistencia inválido descartado: {e}")
+                except (DataValidationError, TypeError, ValueError) as e:
+                    invalid += 1
+                    logger.warning(
+                        "Registro de asistencia inválido descartado: %s | %s",
+                        e,
+                        record,
+                    )
                     continue
-
-                uid = record.get("uid")
-                user_id = record.get("user_id")
-                status = record.get("status")
-                record_branch_id = record.get("branch_id", branch_id)
-                record_device_id = record.get("device_id", device_id)
 
                 if record_branch_id is None:
                     record_branch_id = DBService._resolve_user_branch_id(
@@ -1066,40 +1227,54 @@ class DBService:
                         device_id=record_device_id,
                     )
 
-                existing = db.query(AttendanceRecord).filter(
-                    and_(
-                        AttendanceRecord.device_id == record_device_id,
-                        AttendanceRecord.uid == uid,
-                        AttendanceRecord.timestamp == timestamp,
-                        AttendanceRecord.status == status,
-                    )
-                ).first()
+                identity_filters = [
+                    AttendanceRecord.device_id == record_device_id,
+                    AttendanceRecord.timestamp == timestamp,
+                    AttendanceRecord.status == status,
+                ]
+                if uid is not None:
+                    identity_filters.append(AttendanceRecord.uid == uid)
+                else:
+                    identity_filters.append(AttendanceRecord.user_id == user_id)
 
-                if not existing:
-                    att = AttendanceRecord(
+                existing = (
+                    db.query(AttendanceRecord)
+                    .filter(and_(*identity_filters))
+                    .first()
+                )
+
+                if existing:
+                    duplicates += 1
+                    continue
+
+                db.add(
+                    AttendanceRecord(
                         uid=uid,
                         user_id=user_id,
-                        name=record.get("name"),
+                        name=name or f"Usuario {user_id}",
                         branch_id=record_branch_id,
                         device_id=record_device_id,
                         timestamp=timestamp,
                         status=status,
                     )
-
-                    db.add(att)
-                    count += 1
+                )
+                inserted += 1
 
             db.commit()
 
-            logger.info(f"Se guardaron {count} registros de asistencia en BD")
-            return count
+            logger.info(
+                "Asistencias procesadas: recibidas=%s, nuevas=%s, duplicadas=%s, inválidas=%s, device_id=%s",
+                len(records),
+                inserted,
+                duplicates,
+                invalid,
+                device_id,
+            )
+            return inserted
 
-        except DataValidationError:
-            db.rollback()
-            raise
         except Exception as e:
             db.rollback()
-            logger.error(f"Error al guardar asistencias en bulk: {str(e)}")
+            logger.error("Error al guardar asistencias en bulk: %s", e)
             raise
         finally:
             if close_db:
