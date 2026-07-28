@@ -9,6 +9,7 @@ import socket
 
 from app.services.db_service import DBService
 from app.services.zk_service import ZKService
+from app.exceptions import DeviceClockDriftError
 from app.utils.response import success
 from app.services.excel_service import build_attendance_excel
 
@@ -70,6 +71,54 @@ def parse_user_ids(value: Optional[str]):
     ]
 
 
+def make_assignment_key(device_id, user_id) -> str:
+    """Crea una clave única por reloj y código de empleado."""
+    clean_device_id = int(device_id) if device_id is not None else 0
+    return f"{clean_device_id}:{str(user_id or '').strip()}"
+
+
+def parse_assignment_key(value: str):
+    raw = str(value or "").strip()
+    if ":" not in raw:
+        return None
+
+    device_raw, user_id = raw.split(":", 1)
+    try:
+        device_id = int(device_raw)
+    except (TypeError, ValueError):
+        return None
+
+    user_id = user_id.strip()
+    if not user_id:
+        return None
+
+    return device_id, user_id
+
+
+def matches_assignment(entity, selected_values: set[str]) -> bool:
+    """Admite claves device_id:user_id y, por compatibilidad, UIDs simples."""
+    if not selected_values:
+        return True
+
+    entity_device_id = getattr(entity, "device_id", None)
+    entity_user_id = str(getattr(entity, "user_id", "") or "").strip()
+    entity_uid = str(getattr(entity, "uid", "") or "").strip()
+
+    for selected in selected_values:
+        parsed = parse_assignment_key(selected)
+        if parsed:
+            device_id, user_id = parsed
+            if (
+                entity_device_id == device_id
+                and user_id in {entity_user_id, entity_uid}
+            ):
+                return True
+        elif selected in {entity_user_id, entity_uid}:
+            return True
+
+    return False
+
+
 def get_date_range_days(start_date: str, end_date: str):
     start = parse_date(start_date)
     end = parse_date(end_date)
@@ -97,6 +146,11 @@ def incident_to_dict(incident):
     return {
         "id": incident.id,
         "uid": getattr(incident, "uid", None),
+        "device_id": getattr(incident, "device_id", None),
+        "assignment_key": make_assignment_key(
+            getattr(incident, "device_id", None),
+            incident.user_id,
+        ),
         "user_id": incident.user_id,
         "fecha": incident.fecha.isoformat() if incident.fecha else None,
         "hora": incident.hora.strftime("%H:%M") if incident.hora else None,
@@ -117,7 +171,13 @@ def build_payroll_data(
     branch_id: Optional[int] = None,
     user_ids: Optional[list[str]] = None,
 ):
-    selected_user_ids = set(user_ids or [])
+    """
+    Genera la prenómina separando cada asignación por device_id + user_id.
+
+    Una UID puede repetirse en distintos relojes; nunca se deben mezclar sus
+    asistencias, incidencias, empresa o área.
+    """
+    selected_assignments = set(user_ids or [])
 
     days = get_date_range_days(start_date, end_date)
     start_datetime = datetime.combine(days[0], time.min)
@@ -130,15 +190,16 @@ def build_payroll_data(
         users = DBService.get_all_users_from_db()
 
     users = [
-        user for user in users
+        user
+        for user in users
         if str(getattr(user, "status", "Activo")).lower() == "activo"
     ]
 
-    if selected_user_ids:
+    if selected_assignments:
         users = [
-            user for user in users
-            if str(getattr(user, "user_id", "")) in selected_user_ids
-            or str(getattr(user, "uid", "")) in selected_user_ids
+            user
+            for user in users
+            if matches_assignment(user, selected_assignments)
         ]
 
     records = get_attendance_records(
@@ -147,11 +208,11 @@ def build_payroll_data(
         branch_id=branch_id,
     )
 
-    if selected_user_ids:
+    if selected_assignments:
         records = [
-            record for record in records
-            if str(getattr(record, "user_id", "")) in selected_user_ids
-            or str(getattr(record, "uid", "")) in selected_user_ids
+            record
+            for record in records
+            if matches_assignment(record, selected_assignments)
         ]
 
     try:
@@ -163,57 +224,75 @@ def build_payroll_data(
     except AttributeError:
         raise HTTPException(
             status_code=500,
-            detail="Falta DBService.get_payroll_incidents_by_range en el backend"
+            detail="Falta DBService.get_payroll_incidents_by_range en el backend",
         )
 
-    if selected_user_ids:
+    if selected_assignments:
         incidents = [
-            incident for incident in incidents
-            if str(getattr(incident, "user_id", "")) in selected_user_ids
+            incident
+            for incident in incidents
+            if matches_assignment(incident, selected_assignments)
         ]
 
-    attendance_by_user_date_hour = {}
+    user_assignments_by_code = {}
+    for user in users:
+        code = str(
+            getattr(user, "user_id", None)
+            or getattr(user, "uid", None)
+            or ""
+        ).strip()
+        if not code:
+            continue
+        user_assignments_by_code.setdefault(code, []).append(user)
+
+    attendance_by_assignment_date_hour = {}
 
     for record in records:
         if not record.timestamp:
             continue
 
+        record_user_id = str(
+            getattr(record, "user_id", None)
+            or getattr(record, "uid", None)
+            or ""
+        ).strip()
+        if not record_user_id:
+            continue
+
+        assignment_key = make_assignment_key(
+            getattr(record, "device_id", None),
+            record_user_id,
+        )
         hour_key = f"{record.timestamp.hour:02d}:00"
         date_key = record.timestamp.date().isoformat()
-        map_key = (str(record.user_id), date_key, hour_key)
+        map_key = (assignment_key, date_key, hour_key)
         value = record.timestamp.strftime("%d/%m/%Y %H:%M")
 
-        attendance_by_user_date_hour.setdefault(map_key, []).append(value)
+        attendance_by_assignment_date_hour.setdefault(map_key, []).append(value)
 
-    incidents_by_user_date_hour = {}
-    suppressed_attendance_keys = set()
-    moved_attendance_by_destination = {}
+    incidents_by_assignment_date_hour = {}
 
     for incident in incidents:
+        incident_user_id = str(
+            getattr(incident, "user_id", "") or ""
+        ).strip()
+        incident_device_id = getattr(incident, "device_id", None)
+
+        # Compatibilidad con incidencias antiguas sin device_id: sólo se
+        # recuperan automáticamente cuando el código pertenece a un único reloj.
+        if incident_device_id is None:
+            candidates = user_assignments_by_code.get(incident_user_id, [])
+            if len(candidates) == 1:
+                incident_device_id = getattr(candidates[0], "device_id", None)
+
+        assignment_key = make_assignment_key(
+            incident_device_id,
+            incident_user_id,
+        )
         hour_key = f"{incident.hora.hour:02d}:00"
         date_key = incident.fecha.isoformat()
-        map_key = (str(incident.user_id), date_key, hour_key)
-        incidents_by_user_date_hour[map_key] = incident
-
-        source_fecha = getattr(incident, "source_fecha", None)
-        source_hora = getattr(incident, "source_hora", None)
-        moved_raw = getattr(incident, "moved_attendance", None)
-
-        if source_fecha and source_hora and moved_raw:
-            source_hour_key = f"{source_hora.hour:02d}:00"
-            source_key = (str(incident.user_id), source_fecha.isoformat(), source_hour_key)
-
-            if source_key != map_key:
-                suppressed_attendance_keys.add(source_key)
-                try:
-                    moved_values = json.loads(moved_raw)
-                except (TypeError, ValueError, json.JSONDecodeError):
-                    moved_values = []
-
-                if isinstance(moved_values, list):
-                    moved_attendance_by_destination[map_key] = [
-                        str(value) for value in moved_values if str(value).strip()
-                    ]
+        map_key = (assignment_key, date_key, hour_key)
+        incidents_by_assignment_date_hour[map_key] = incident
 
     hour_labels = [f"{hour:02d}:00" for hour in range(6, 19)]
     day_payload = [
@@ -227,37 +306,51 @@ def build_payroll_data(
     rows = []
 
     for user in users:
+        user_code = str(
+            getattr(user, "user_id", None)
+            or getattr(user, "uid", None)
+            or ""
+        ).strip()
+        assignment_key = make_assignment_key(
+            getattr(user, "device_id", None),
+            user_code,
+        )
+
         for hour_label in hour_labels:
             cells = {}
             incident_cells = {}
 
             for day in days:
                 date_key = day.isoformat()
-                map_key = (str(user.user_id), date_key, hour_label)
+                map_key = (assignment_key, date_key, hour_label)
 
-                values = [] if map_key in suppressed_attendance_keys else attendance_by_user_date_hour.get(map_key, []).copy()
-                moved_values = moved_attendance_by_destination.get(map_key, [])
-                for moved_value in moved_values:
-                    if moved_value not in values:
-                        values.append(moved_value)
-
-                incident = incidents_by_user_date_hour.get(map_key)
+                values = list(
+                    dict.fromkeys(
+                        attendance_by_assignment_date_hour.get(map_key, [])
+                    )
+                )
+                incident = incidents_by_assignment_date_hour.get(map_key)
 
                 if incident:
-                    values.append(incident.incidencia)
                     incident_cells[date_key] = incident_to_dict(incident)
 
                 cells[date_key] = " / ".join(values)
 
-            rows.append({
-                "area": getattr(user, "area", None) or "",
-                "trabajador": user.name,
-                "UID": str(user.user_id),
-                "hora": hour_label,
-                "empresa": getattr(user, "empresa", None) or "",
-                "cells": cells,
-                "incidents": incident_cells,
-            })
+            rows.append(
+                {
+                    "area": getattr(user, "area", None) or "",
+                    "trabajador": user.name,
+                    "UID": user_code,
+                    "uid": getattr(user, "uid", None),
+                    "user_id": user_code,
+                    "device_id": getattr(user, "device_id", None),
+                    "assignment_key": assignment_key,
+                    "hora": hour_label,
+                    "empresa": getattr(user, "empresa", None) or "",
+                    "cells": cells,
+                    "incidents": incident_cells,
+                }
+            )
 
     return {
         "days": day_payload,
@@ -695,6 +788,7 @@ def get_week_attendance(
 
 class PayrollIncidentCreate(BaseModel):
     id: Optional[int] = None
+    device_id: int
     user_id: str
     fecha: str
     hora: str
@@ -742,6 +836,7 @@ def save_payroll_incident(payload: PayrollIncidentCreate):
             descripcion=payload.descripcion,
             color=payload.color,
             incident_id=payload.id,
+            device_id=payload.device_id,
         )
     except AttributeError:
         raise HTTPException(
@@ -809,14 +904,19 @@ def download_payroll_report(
         user_ids=parse_user_ids(user_ids),
     )
 
-    columns = ["AREA", "TRABAJADOR"]
+    columns = ["EMPRESA", "AREA", "TRABAJADOR"]
     columns.extend(day["label"] for day in report["days"])
-    columns.append("EMPRESA")
 
     grouped = {}
 
     for row in report["rows"]:
-        key = (str(row.get("UID", "")), row.get("empresa", ""))
+        key = (
+            row.get("assignment_key")
+            or make_assignment_key(
+                row.get("device_id"),
+                row.get("user_id") or row.get("UID", ""),
+            )
+        )
         current = grouped.setdefault(key, {
             "AREA": row.get("area", ""),
             "TRABAJADOR": row.get("trabajador", ""),
@@ -1011,6 +1111,78 @@ def get_device_by_id(device_id: int):
     return success(
         data=device_to_dict(device),
         message="Reloj obtenido correctamente"
+    )
+
+
+@router.get(
+    "/devices/{device_id}/time-status",
+    summary="Comparar fecha y hora del reloj con el servidor",
+)
+def get_device_time_status(device_id: int):
+    device = DBService.get_device_by_id(device_id)
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    clock_status = ZKService.get_device_time_status(
+        ip=device.ip,
+        port=device.port,
+        password=getattr(device, "password", ""),
+    )
+
+    return success(
+        data={
+            "device_id": device.id,
+            "device_name": device.name,
+            "ip": device.ip,
+            **clock_status,
+        },
+        message=(
+            "La fecha y hora del reloj son correctas"
+            if clock_status["in_sync"]
+            else "La fecha y hora del reloj están desfasadas"
+        ),
+    )
+
+
+@router.post(
+    "/devices/{device_id}/sync-time",
+    summary="Ajustar fecha y hora del reloj con la hora del servidor",
+)
+def sync_device_time(device_id: int):
+    device = DBService.get_device_by_id(device_id)
+
+    if not device:
+        raise HTTPException(status_code=404, detail="Reloj no encontrado")
+
+    clock_status = ZKService.sync_device_time(
+        ip=device.ip,
+        port=device.port,
+        password=getattr(device, "password", ""),
+    )
+
+    if not clock_status.get("in_sync", False):
+        raise DeviceClockDriftError(
+            message="El reloj no confirmó el ajuste de fecha y hora.",
+            details=clock_status,
+        )
+
+    DBService.create_log(
+        accion="Hora de reloj actualizada",
+        detalle=(
+            f"Se ajustó la fecha y hora de {device.name} ({device.ip}) "
+            f"con la hora del servidor"
+        ),
+    )
+
+    return success(
+        data={
+            "device_id": device.id,
+            "device_name": device.name,
+            "ip": device.ip,
+            **clock_status,
+        },
+        message="Fecha y hora del reloj actualizadas correctamente",
     )
 
 

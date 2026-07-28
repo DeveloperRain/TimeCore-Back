@@ -13,15 +13,22 @@ class PayrollIncident(Base):
     __tablename__ = "payroll_incidents"
     __table_args__ = (
         UniqueConstraint(
+            "device_id",
             "user_id",
             "fecha",
             "hora",
-            name="uq_payroll_incident_user_date_hour",
+            name="uq_payroll_incident_device_user_date_hour",
         ),
     )
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     uid = Column(Integer, ForeignKey("users.uid", ondelete="CASCADE"), nullable=True, index=True)
+    device_id = Column(
+        Integer,
+        ForeignKey("devices.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     user_id = Column(String(50), nullable=False, index=True)
     fecha = Column(Date, nullable=False, index=True)
     hora = Column(Time, nullable=False)
@@ -41,6 +48,8 @@ class PayrollIncident(Base):
         return {
             "id": self.id,
             "uid": self.uid,
+            "device_id": self.device_id,
+            "assignment_key": f"{self.device_id or 0}:{self.user_id}",
             "user_id": self.user_id,
             "fecha": self.fecha.isoformat() if self.fecha else None,
             "hora": self.hora.strftime("%H:%M") if self.hora else None,

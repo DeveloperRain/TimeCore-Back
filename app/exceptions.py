@@ -91,6 +91,15 @@ class DeviceTimeoutError(TimeCoreError):
     default_message = "El reloj tardó demasiado en responder"
 
 
+class DeviceClockDriftError(TimeCoreError):
+    status_code = 409
+    code = "DEVICE_CLOCK_DRIFT"
+    default_message = (
+        "La fecha y hora del reloj no coinciden con el servidor. "
+        "Corrige la hora antes de sincronizar asistencias."
+    )
+
+
 class ZKError(DeviceUnavailableError):
     code = "ZK_COMMUNICATION_ERROR"
     default_message = "Ocurrió un error de comunicación con el reloj"

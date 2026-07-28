@@ -21,6 +21,26 @@ from app.services.validators import DataValidator
 logger = get_logger("services.db")
 
 
+
+def _parse_assignment_filter(value: str):
+    """Devuelve (device_id, user_id) para claves como '6:23'."""
+    raw = str(value or "").strip()
+    if not raw or ":" not in raw:
+        return None
+
+    device_raw, user_id = raw.split(":", 1)
+    try:
+        device_id = int(device_raw)
+    except (TypeError, ValueError):
+        return None
+
+    user_id = user_id.strip()
+    if not user_id:
+        return None
+
+    return device_id, user_id
+
+
 class DBService:
     """Servicio de persistencia en PostgreSQL."""
 
@@ -1307,9 +1327,34 @@ class DBService:
             if branch_id is not None:
                 query = query.filter(AttendanceRecord.branch_id == branch_id)
             if user_ids:
-                normalized = [str(value) for value in user_ids if str(value).strip()]
-                if normalized:
-                    query = query.filter(AttendanceRecord.user_id.in_(normalized))
+                assignment_filters = []
+                legacy_user_ids = []
+
+                for value in user_ids:
+                    raw = str(value or "").strip()
+                    if not raw:
+                        continue
+
+                    parsed = _parse_assignment_filter(raw)
+                    if parsed:
+                        selected_device_id, selected_user_id = parsed
+                        assignment_filters.append(
+                            and_(
+                                AttendanceRecord.device_id == selected_device_id,
+                                AttendanceRecord.user_id == selected_user_id,
+                            )
+                        )
+                    else:
+                        legacy_user_ids.append(raw)
+
+                filters = list(assignment_filters)
+                if legacy_user_ids:
+                    filters.append(
+                        AttendanceRecord.user_id.in_(legacy_user_ids)
+                    )
+
+                if filters:
+                    query = query.filter(or_(*filters))
 
             total = query.count()
             items = (
@@ -1455,7 +1500,7 @@ class DBService:
         branch_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> List[PayrollIncident]:
-        """Obtiene incidencias de prenómina en un rango de fechas."""
+        """Obtiene incidencias distinguiendo cada asignación por reloj + usuario."""
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1481,15 +1526,31 @@ class DBService:
             )
 
             if branch_id is not None:
-                query = query.join(
-                    User,
-                    PayrollIncident.user_id == User.user_id,
-                    isouter=True,
-                ).filter(User.branch_id == branch_id)
+                branch_device_ids = (
+                    db.query(Device.id)
+                    .filter(Device.branch_id == branch_id)
+                    .subquery()
+                )
+                branch_user_ids = (
+                    db.query(User.user_id)
+                    .filter(User.branch_id == branch_id)
+                    .subquery()
+                )
+
+                query = query.filter(
+                    or_(
+                        PayrollIncident.device_id.in_(branch_device_ids),
+                        and_(
+                            PayrollIncident.device_id.is_(None),
+                            PayrollIncident.user_id.in_(branch_user_ids),
+                        ),
+                    )
+                )
 
             return query.order_by(
                 PayrollIncident.fecha.asc(),
                 PayrollIncident.hora.asc(),
+                PayrollIncident.device_id.asc().nullsfirst(),
                 PayrollIncident.user_id.asc(),
             ).all()
 
@@ -1506,9 +1567,15 @@ class DBService:
         descripcion: str = None,
         color: str = "#BAE6FD",
         incident_id: Optional[int] = None,
+        device_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> PayrollIncident:
-        """Crea o actualiza una incidencia y permite mover su asistencia en prenómina."""
+        """
+        Crea o actualiza una incidencia para una asignación concreta.
+
+        La identidad del empleado es device_id + user_id. Cambiar la fecha de
+        la incidencia no mueve ni copia registros biométricos.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1518,17 +1585,40 @@ class DBService:
         try:
             clean_user_id = str(user_id).strip()
             clean_incidencia = str(incidencia or "").strip()
-            clean_descripcion = str(descripcion).strip() if descripcion is not None else None
+            clean_descripcion = (
+                str(descripcion).strip() if descripcion is not None else None
+            )
             clean_color = str(color or "#BAE6FD").strip().upper()
 
             if not re.fullmatch(r"#[0-9A-F]{6}", clean_color):
-                raise DataValidationError("El color debe estar en formato hexadecimal, por ejemplo #BAE6FD")
+                raise DataValidationError(
+                    "El color debe estar en formato hexadecimal, por ejemplo #BAE6FD"
+                )
             if not clean_user_id:
                 raise DataValidationError("El empleado es obligatorio")
             if not clean_incidencia:
                 raise DataValidationError("La incidencia es obligatoria")
+            if device_id is None:
+                raise DataValidationError(
+                    "El reloj del empleado es obligatorio para guardar la incidencia"
+                )
 
-            user = db.query(User).filter(User.user_id == clean_user_id).first()
+            device = db.query(Device).filter(Device.id == device_id).first()
+            if not device:
+                raise DataValidationError("El reloj seleccionado no existe")
+
+            user = (
+                db.query(User)
+                .filter(
+                    User.device_id == device_id,
+                    User.user_id == clean_user_id,
+                )
+                .first()
+            )
+            if not user:
+                raise DataValidationError(
+                    "No existe ese empleado en el reloj seleccionado"
+                )
 
             incident = None
             if incident_id is not None:
@@ -1538,78 +1628,45 @@ class DBService:
                     .first()
                 )
                 if not incident:
-                    raise DataValidationError("La incidencia que intentas editar ya no existe")
+                    raise DataValidationError(
+                        "La incidencia que intentas editar ya no existe"
+                    )
 
             if incident is None:
                 incident = (
                     db.query(PayrollIncident)
                     .filter(
-                        and_(
-                            PayrollIncident.user_id == clean_user_id,
-                            PayrollIncident.fecha == fecha,
-                            PayrollIncident.hora == hora,
-                        )
+                        PayrollIncident.device_id == device_id,
+                        PayrollIncident.user_id == clean_user_id,
+                        PayrollIncident.fecha == fecha,
+                        PayrollIncident.hora == hora,
                     )
                     .first()
                 )
 
             if incident:
-                source_fecha = incident.source_fecha or incident.fecha
-                source_hora = incident.source_hora or incident.hora
-
-                is_moving = (
-                    clean_user_id != incident.user_id
-                    or fecha != incident.fecha
-                    or hora != incident.hora
-                )
-
-                if is_moving and not incident.moved_attendance:
-                    source_hour_start = datetime.combine(source_fecha, source_hora)
-                    source_hour_end = source_hour_start.replace(minute=59, second=59, microsecond=999999)
-
-                    attendance_query = db.query(AttendanceRecord).filter(
-                        AttendanceRecord.user_id == incident.user_id,
-                        AttendanceRecord.timestamp >= source_hour_start,
-                        AttendanceRecord.timestamp <= source_hour_end,
-                    )
-
-                    source_user = (
-                        db.query(User)
-                        .filter(User.user_id == incident.user_id)
-                        .first()
-                    )
-                    if source_user and source_user.device_id is not None:
-                        attendance_query = attendance_query.filter(
-                            AttendanceRecord.device_id == source_user.device_id
-                        )
-
-                    moved_values = [
-                        record.timestamp.strftime("%d/%m/%Y %H:%M")
-                        for record in attendance_query.order_by(AttendanceRecord.timestamp.asc()).all()
-                        if record.timestamp
-                    ]
-                    incident.moved_attendance = json.dumps(moved_values, ensure_ascii=False)
-
-                incident.uid = user.uid if user else incident.uid
+                incident.uid = user.uid
+                incident.device_id = device_id
                 incident.user_id = clean_user_id
                 incident.fecha = fecha
                 incident.hora = hora
                 incident.incidencia = clean_incidencia
                 incident.descripcion = clean_descripcion
                 incident.color = clean_color
-                incident.source_fecha = source_fecha
-                incident.source_hora = source_hora
 
-                if fecha == source_fecha and hora == source_hora and clean_user_id == incident.user_id:
-                    incident.moved_attendance = None
-
+                # La incidencia cambia de lugar, pero la asistencia nunca.
+                incident.source_fecha = fecha
+                incident.source_hora = hora
+                incident.moved_attendance = None
                 incident.updated_at = datetime.utcnow()
+
                 db.commit()
                 db.refresh(incident)
                 return incident
 
             incident = PayrollIncident(
-                uid=user.uid if user else None,
+                uid=user.uid,
+                device_id=device_id,
                 user_id=clean_user_id,
                 fecha=fecha,
                 hora=hora,
@@ -1630,7 +1687,12 @@ class DBService:
 
         except Exception as e:
             db.rollback()
-            logger.error(f"Error al guardar incidencia de prenómina {user_id}: {str(e)}")
+            logger.error(
+                "Error al guardar incidencia de prenómina device_id=%s user_id=%s: %s",
+                device_id,
+                user_id,
+                str(e),
+            )
             raise
         finally:
             if close_db:

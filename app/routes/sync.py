@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.services.zk_service import ZKService
 from app.services.db_service import DBService
+from app.exceptions import DeviceClockDriftError
 from app.utils.response import success
 from app.config.logger import get_logger, log_exception
 from datetime import datetime
@@ -22,6 +23,7 @@ def sync_registered_device(device):
 
     usuarios = snapshot["users"]
     asistencias = snapshot["attendance"]
+    clock_status = snapshot.get("clock")
 
     users_count = 0
     present_uids = []
@@ -92,6 +94,7 @@ def sync_registered_device(device):
         "attendance_obtained": attendance_obtained,
         "attendance_synced": attendance_count,
         "latest_attendance": latest_attendance,
+        "clock_status": clock_status,
     }
 
 
@@ -149,7 +152,6 @@ def sync_attendance():
             detail=f"Error al sincronizar asistencias: {str(e)}"
         )
 
-
 @router.post("/all", summary="Sincronizar usuarios y asistencias")
 def sync_all():
     try:
@@ -206,6 +208,24 @@ def sync_device_by_id(device_id: int):
             message="Reloj sincronizado correctamente"
         )
 
+    except DeviceClockDriftError as e:
+        try:
+            DBService.update_device_status(
+                device_id=device_id,
+                estado="Conectado",
+            )
+            DBService.create_log(
+                accion="Sincronización bloqueada por hora incorrecta",
+                detalle=(
+                    f"No se sincronizó el reloj ID {device_id}: {e.message}. "
+                    f"Detalles: {e.details}"
+                ),
+            )
+        except Exception:
+            pass
+
+        raise
+
     except HTTPException:
         raise
 
@@ -251,15 +271,21 @@ def sync_all_registered_devices():
         try:
             results.append(sync_registered_device(device))
         except Exception as e:
+            is_clock_drift = isinstance(e, DeviceClockDriftError)
+
             try:
                 DBService.update_device_status(
                     device_id=device.id,
-                    estado="Desconectado"
+                    estado="Conectado" if is_clock_drift else "Desconectado",
                 )
 
                 DBService.create_log(
-                    accion="Error de sincronización",
-                    detalle=f"No se pudo sincronizar {device.name} ({device.ip}): {str(e)}"
+                    accion=(
+                        "Sincronización bloqueada por hora incorrecta"
+                        if is_clock_drift
+                        else "Error de sincronización"
+                    ),
+                    detalle=f"No se pudo sincronizar {device.name} ({device.ip}): {str(e)}",
                 )
             except Exception:
                 pass
@@ -269,6 +295,8 @@ def sync_all_registered_devices():
                 "device_name": device.name,
                 "ip": device.ip,
                 "error": str(e),
+                "code": getattr(e, "code", "SYNC_ERROR"),
+                "details": getattr(e, "details", None),
             })
 
             log_exception(logger, e, f"Error al sincronizar reloj {device.id}")

@@ -1,17 +1,25 @@
 import socket
 import threading
+import time as time_module
 from contextlib import contextmanager
+from datetime import datetime
 from typing import Any, Dict, List
 
 from zk import ZK
 
 from app.config.logger import get_logger, log_exception
-from app.exceptions import DeviceAuthenticationError, DeviceTimeoutError, DeviceUnavailableError
+from app.exceptions import (
+    DeviceAuthenticationError,
+    DeviceClockDriftError,
+    DeviceTimeoutError,
+    DeviceUnavailableError,
+)
 
 IP_RELOJ = "192.168.1.50"
 PORT = 4370
 TIMEOUT = 30
 PASSWORD = 10
+MAX_CLOCK_DRIFT_SECONDS = 300
 
 logger = get_logger("services.zk")
 
@@ -206,6 +214,188 @@ class ZKService:
             logger.warning("No se pudo cerrar la conexion con el reloj: %s", e)
 
     @staticmethod
+    def _build_clock_status(
+        device_time,
+        server_time: datetime = None,
+        max_drift_seconds: int = MAX_CLOCK_DRIFT_SECONDS,
+    ) -> Dict[str, Any]:
+        if not isinstance(device_time, datetime):
+            raise DeviceUnavailableError(
+                "El reloj no devolvió una fecha y hora válidas"
+            )
+
+        current_server_time = server_time or datetime.now()
+
+        # PyZK normalmente devuelve datetimes sin zona horaria. Se compara contra
+        # la hora local del servidor que ejecuta TimeCore.
+        if device_time.tzinfo is not None and current_server_time.tzinfo is None:
+            device_time = device_time.replace(tzinfo=None)
+        elif device_time.tzinfo is None and current_server_time.tzinfo is not None:
+            current_server_time = current_server_time.replace(tzinfo=None)
+
+        drift_seconds = int((device_time - current_server_time).total_seconds())
+        absolute_drift_seconds = abs(drift_seconds)
+        threshold = max(1, int(max_drift_seconds))
+
+        return {
+            "device_time": device_time.isoformat(),
+            "server_time": current_server_time.isoformat(),
+            "drift_seconds": drift_seconds,
+            "absolute_drift_seconds": absolute_drift_seconds,
+            "drift_minutes": round(drift_seconds / 60, 2),
+            "in_sync": absolute_drift_seconds <= threshold,
+            "max_drift_seconds": threshold,
+        }
+
+    @staticmethod
+    def get_device_time_status(
+        ip: str = None,
+        port: int = None,
+        password: str = None,
+        max_drift_seconds: int = MAX_CLOCK_DRIFT_SECONDS,
+    ) -> Dict[str, Any]:
+        conn = None
+
+        with ZKService._locked_device(ip, port):
+            try:
+                conn = ZKService._create_connection(ip, port, password)
+                device_time = conn.get_time()
+
+                return ZKService._build_clock_status(
+                    device_time=device_time,
+                    server_time=datetime.now(),
+                    max_drift_seconds=max_drift_seconds,
+                )
+            finally:
+                if conn:
+                    ZKService._disconnect(conn)
+
+    @staticmethod
+    def sync_device_time(
+        ip: str = None,
+        port: int = None,
+        password: str = None,
+        max_drift_seconds: int = MAX_CLOCK_DRIFT_SECONDS,
+    ) -> Dict[str, Any]:
+        """Ajusta la hora del reloj y verifica el cambio con una conexión nueva.
+
+        Algunos modelos ZKTeco aceptan ``set_time`` sin devolver error, pero la
+        lectura inmediata en la misma sesión puede conservar un valor anterior.
+        Por eso se escribe, se cierra la sesión y se vuelve a conectar para
+        comprobar que el cambio quedó realmente aplicado en el dispositivo.
+        """
+        target_ip = ip or IP_RELOJ
+        target_port = int(port or PORT)
+        last_status: Dict[str, Any] | None = None
+
+        with ZKService._locked_device(ip, port):
+            for attempt_number in range(1, 3):
+                conn = None
+                disabled = False
+                target_time = datetime.now().replace(microsecond=0)
+
+                try:
+                    conn = ZKService._create_connection(ip, port, password)
+
+                    try:
+                        conn.disable_device()
+                        disabled = True
+                    except Exception as e:
+                        logger.warning(
+                            "No se pudo bloquear temporalmente el reloj antes de ajustar la hora: %s",
+                            e,
+                        )
+
+                    set_result = conn.set_time(target_time)
+
+                    if set_result is False:
+                        logger.warning(
+                            "El reloj %s:%s respondió False al intentar ajustar la hora",
+                            target_ip,
+                            target_port,
+                        )
+
+                    try:
+                        conn.refresh_data()
+                    except Exception as e:
+                        logger.warning(
+                            "No se pudo refrescar el reloj después de ajustar la hora: %s",
+                            e,
+                        )
+                finally:
+                    if conn:
+                        if disabled:
+                            try:
+                                conn.enable_device()
+                            except Exception as e:
+                                logger.warning(
+                                    "No se pudo reactivar el reloj después de ajustar la hora: %s",
+                                    e,
+                                )
+                        ZKService._disconnect(conn)
+
+                # Da tiempo al dispositivo para persistir el cambio y verifica
+                # desde una sesión nueva, evitando lecturas almacenadas en caché.
+                time_module.sleep(1.0)
+
+                verify_conn = None
+                try:
+                    verify_conn = ZKService._create_connection(ip, port, password)
+                    verified_time = verify_conn.get_time()
+                    server_time = datetime.now().replace(microsecond=0)
+
+                    last_status = ZKService._build_clock_status(
+                        device_time=verified_time,
+                        server_time=server_time,
+                        max_drift_seconds=max_drift_seconds,
+                    )
+                    last_status.update(
+                        {
+                            "adjusted_to": target_time.isoformat(),
+                            "attempt": attempt_number,
+                            "verified_after_reconnect": True,
+                        }
+                    )
+                finally:
+                    if verify_conn:
+                        ZKService._disconnect(verify_conn)
+
+                if last_status["in_sync"]:
+                    logger.info(
+                        "Hora ajustada y verificada en reloj %s:%s. "
+                        "Reloj=%s, servidor=%s, desfase=%ss, intento=%s",
+                        target_ip,
+                        target_port,
+                        last_status["device_time"],
+                        last_status["server_time"],
+                        last_status["drift_seconds"],
+                        attempt_number,
+                    )
+                    return last_status
+
+                logger.warning(
+                    "El reloj %s:%s siguió desfasado después del intento %s: %ss",
+                    target_ip,
+                    target_port,
+                    attempt_number,
+                    last_status["drift_seconds"],
+                )
+
+            raise DeviceClockDriftError(
+                message=(
+                    "El reloj recibió la orden de ajuste, pero conservó una fecha "
+                    "y hora incorrectas. Revisa la configuración de fecha del "
+                    "dispositivo o ajústala directamente desde su menú."
+                ),
+                details={
+                    **(last_status or {}),
+                    "ip": target_ip,
+                    "port": target_port,
+                    "attempts": 2,
+                },
+            )
+
+    @staticmethod
     def get_device_info(ip: str = None, port: int = None, password: str = None) -> Dict[str, Any]:
         conn = None
         target_ip = ip or IP_RELOJ
@@ -261,7 +451,7 @@ class ZKService:
         ip: str = None,
         port: int = None,
         password: str = None,
-    ) -> Dict[str, List[Dict[str, Any]]]:
+    ) -> Dict[str, Any]:
         """Lee usuarios y asistencias usando una sola sesión del reloj.
 
         Evita abrir dos conexiones consecutivas durante una sincronización y
@@ -275,6 +465,22 @@ class ZKService:
         with ZKService._locked_device(ip, port):
             try:
                 conn = ZKService._create_connection(ip, port, password)
+
+                device_time = conn.get_time()
+                clock_status = ZKService._build_clock_status(
+                    device_time=device_time,
+                    server_time=datetime.now(),
+                    max_drift_seconds=MAX_CLOCK_DRIFT_SECONDS,
+                )
+
+                if not clock_status["in_sync"]:
+                    raise DeviceClockDriftError(
+                        details={
+                            **clock_status,
+                            "ip": ip or IP_RELOJ,
+                            "port": int(port or PORT),
+                        }
+                    )
 
                 try:
                     conn.disable_device()
@@ -357,7 +563,11 @@ class ZKService:
                     latest,
                 )
 
-                return {"users": users, "attendance": attendance}
+                return {
+                    "users": users,
+                    "attendance": attendance,
+                    "clock": clock_status,
+                }
 
             except Exception as e:
                 log_exception(logger, e, "Error al obtener datos del reloj")
