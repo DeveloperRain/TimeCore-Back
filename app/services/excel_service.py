@@ -236,7 +236,7 @@ def build_payroll_excel(title: str, columns: List[str], rows_data: List[Dict[str
             cell = ws.cell(row=row_index, column=col_index, value=value)
             cell.border = border
             cell.alignment = Alignment(
-                horizontal="left" if column in ("AREA", "TRABAJADOR", "EMPRESA") else "center",
+                horizontal="left" if column in ("AREA", "SUCURSAL", "TRABAJADOR", "EMPRESA") else "center",
                 vertical="top",
                 wrap_text=True,
             )
@@ -257,6 +257,8 @@ def build_payroll_excel(title: str, columns: List[str], rows_data: List[Dict[str
     for index, column in enumerate(columns, start=1):
         if column == "AREA":
             width = 18
+        elif column == "SUCURSAL":
+            width = 22
         elif column == "TRABAJADOR":
             width = 28
         elif column == "EMPRESA":
@@ -265,7 +267,7 @@ def build_payroll_excel(title: str, columns: List[str], rows_data: List[Dict[str
             width = 24
         ws.column_dimensions[get_column_letter(index)].width = width
 
-    ws.freeze_panes = "C3"
+    ws.freeze_panes = "E3"
     ws.auto_filter.ref = f"A2:{get_column_letter(len(columns))}{max(2, len(rows_data) + 2)}"
 
     output = BytesIO()

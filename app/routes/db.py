@@ -292,7 +292,7 @@ def build_payroll_data(
         hour_key = f"{incident.hora.hour:02d}:00"
         date_key = incident.fecha.isoformat()
         map_key = (assignment_key, date_key, hour_key)
-        incidents_by_assignment_date_hour[map_key] = incident
+        incidents_by_assignment_date_hour.setdefault(map_key, []).append(incident)
 
     hour_labels = [f"{hour:02d}:00" for hour in range(6, 19)]
     day_payload = [
@@ -329,16 +329,24 @@ def build_payroll_data(
                         attendance_by_assignment_date_hour.get(map_key, [])
                     )
                 )
-                incident = incidents_by_assignment_date_hour.get(map_key)
+                incident_list = incidents_by_assignment_date_hour.get(map_key, [])
 
-                if incident:
-                    incident_cells[date_key] = incident_to_dict(incident)
+                if incident_list:
+                    incident_cells[date_key] = [
+                        incident_to_dict(incident)
+                        for incident in incident_list
+                    ]
 
                 cells[date_key] = " / ".join(values)
 
             rows.append(
                 {
                     "area": getattr(user, "area", None) or "",
+                    "sucursal": (
+                        getattr(user, "sucursal", None)
+                        or getattr(getattr(user, "branch", None), "name", None)
+                        or ""
+                    ),
                     "trabajador": user.name,
                     "UID": user_code,
                     "uid": getattr(user, "uid", None),
@@ -904,7 +912,7 @@ def download_payroll_report(
         user_ids=parse_user_ids(user_ids),
     )
 
-    columns = ["EMPRESA", "AREA", "TRABAJADOR"]
+    columns = ["EMPRESA", "AREA", "SUCURSAL", "TRABAJADOR"]
     columns.extend(day["label"] for day in report["days"])
 
     grouped = {}
@@ -919,6 +927,7 @@ def download_payroll_report(
         )
         current = grouped.setdefault(key, {
             "AREA": row.get("area", ""),
+            "SUCURSAL": row.get("sucursal", ""),
             "TRABAJADOR": row.get("trabajador", ""),
             "EMPRESA": row.get("empresa", ""),
             "__cell_colors__": {},
@@ -929,23 +938,54 @@ def download_payroll_report(
             date_key = day["date"]
             column = day["label"]
             value = str(row.get("cells", {}).get(date_key, "") or "").strip()
-            incident = row.get("incidents", {}).get(date_key)
+            raw_incidents = row.get("incidents", {}).get(date_key, [])
+            incident_list = (
+                raw_incidents
+                if isinstance(raw_incidents, list)
+                else [raw_incidents] if raw_incidents else []
+            )
 
             attendance_values = []
             for item in value.split(" / "):
                 item = item.strip()
-                if not item:
-                    continue
-                if incident and item.upper() == str(incident.get("incidencia", "")).strip().upper():
-                    continue
-                if item not in attendance_values:
+                if item and item not in attendance_values:
                     attendance_values.append(item)
 
-            if incident:
-                incident_name = str(incident.get("incidencia", "INCIDENCIA")).strip().upper()
-                details = [f"• {item}" for item in attendance_values]
-                cell_text = "\n".join([incident_name, *details])
-                current["__cell_colors__"][column] = incident.get("color") or "#BAE6FD"
+            if incident_list:
+                incident_lines = []
+                incident_colors = []
+
+                for incident in incident_list:
+                    incident_name = str(
+                        incident.get("incidencia", "INCIDENCIA")
+                    ).strip().upper()
+                    incident_hour = str(incident.get("hora", "") or "").strip()
+                    incident_lines.append(
+                        f"{incident_name} ({incident_hour})"
+                        if incident_hour
+                        else incident_name
+                    )
+
+                    incident_color = incident.get("color") or "#BAE6FD"
+                    if incident_color not in incident_colors:
+                        incident_colors.append(incident_color)
+
+                attendance_lines = [
+                    f"• {item}" for item in attendance_values
+                ]
+                cell_text = "\n".join([
+                    *incident_lines,
+                    *attendance_lines,
+                ])
+
+                # Una celda de Excel sólo admite un color de fondo. Si todas
+                # las incidencias usan el mismo, se conserva; si son distintos,
+                # se usa un gris neutro y se muestran todas en forma de lista.
+                current["__cell_colors__"][column] = (
+                    incident_colors[0]
+                    if len(incident_colors) == 1
+                    else "#E5E7EB"
+                )
                 current["__incidents__"][column] = True
             else:
                 cell_text = "\n".join(attendance_values)

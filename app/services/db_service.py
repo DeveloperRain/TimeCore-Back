@@ -1552,6 +1552,7 @@ class DBService:
                 PayrollIncident.hora.asc(),
                 PayrollIncident.device_id.asc().nullsfirst(),
                 PayrollIncident.user_id.asc(),
+                PayrollIncident.id.asc(),
             ).all()
 
         finally:
@@ -1620,7 +1621,6 @@ class DBService:
                     "No existe ese empleado en el reloj seleccionado"
                 )
 
-            incident = None
             if incident_id is not None:
                 incident = (
                     db.query(PayrollIncident)
@@ -1632,19 +1632,6 @@ class DBService:
                         "La incidencia que intentas editar ya no existe"
                     )
 
-            if incident is None:
-                incident = (
-                    db.query(PayrollIncident)
-                    .filter(
-                        PayrollIncident.device_id == device_id,
-                        PayrollIncident.user_id == clean_user_id,
-                        PayrollIncident.fecha == fecha,
-                        PayrollIncident.hora == hora,
-                    )
-                    .first()
-                )
-
-            if incident:
                 incident.uid = user.uid
                 incident.device_id = device_id
                 incident.user_id = clean_user_id
@@ -1654,7 +1641,8 @@ class DBService:
                 incident.descripcion = clean_descripcion
                 incident.color = clean_color
 
-                # La incidencia cambia de lugar, pero la asistencia nunca.
+                # Sólo cambia la incidencia elegida por su id. Las demás
+                # incidencias del mismo día y hora permanecen intactas.
                 incident.source_fecha = fecha
                 incident.source_hora = hora
                 incident.moved_attendance = None
@@ -1664,6 +1652,8 @@ class DBService:
                 db.refresh(incident)
                 return incident
 
+            # Sin id siempre se inserta una incidencia nueva. Ya no se busca ni
+            # se reemplaza otra por device_id + user_id + fecha + hora.
             incident = PayrollIncident(
                 uid=user.uid,
                 device_id=device_id,

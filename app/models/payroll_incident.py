@@ -1,7 +1,7 @@
 """Modelo ORM para incidencias manuales de prenomina."""
 from datetime import datetime
 
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Time, UniqueConstraint
+from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Time
 from sqlalchemy.orm import relationship
 
 from app.database.connection import Base
@@ -11,15 +11,6 @@ class PayrollIncident(Base):
     """Incidencia manual capturada para la vista de prenomina."""
 
     __tablename__ = "payroll_incidents"
-    __table_args__ = (
-        UniqueConstraint(
-            "device_id",
-            "user_id",
-            "fecha",
-            "hora",
-            name="uq_payroll_incident_device_user_date_hour",
-        ),
-    )
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     uid = Column(Integer, ForeignKey("users.uid", ondelete="CASCADE"), nullable=True, index=True)
