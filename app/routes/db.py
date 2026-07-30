@@ -153,9 +153,11 @@ def incident_to_dict(incident):
         ),
         "user_id": incident.user_id,
         "fecha": incident.fecha.isoformat() if incident.fecha else None,
-        "hora": incident.hora.strftime("%H:%M") if incident.hora else None,
+        # Compatibilidad con el frontend: ya no existe una columna `hora`
+        # ni una columna `descripcion` en payroll_incidents.
+        "hora": None,
         "incidencia": incident.incidencia,
-        "descripcion": getattr(incident, "descripcion", None),
+        "descripcion": None,
         "color": getattr(incident, "color", None) or "#BAE6FD",
         "source_fecha": incident.source_fecha.isoformat() if getattr(incident, "source_fecha", None) else None,
         "source_hora": incident.source_hora.strftime("%H:%M") if getattr(incident, "source_hora", None) else None,
@@ -289,7 +291,11 @@ def build_payroll_data(
             incident_device_id,
             incident_user_id,
         )
-        hour_key = f"{incident.hora.hour:02d}:00"
+        # La incidencia ya no tiene una hora propia. Para conservar la
+        # estructura horaria de la prenómina se usa source_hora cuando existe;
+        # de lo contrario se ancla a la primera fila (06:00).
+        incident_hour = getattr(incident, "source_hora", None) or time(6, 0)
+        hour_key = f"{incident_hour.hour:02d}:00"
         date_key = incident.fecha.isoformat()
         map_key = (assignment_key, date_key, hour_key)
         incidents_by_assignment_date_hour.setdefault(map_key, []).append(incident)
@@ -466,6 +472,7 @@ def utc_iso(value):
 
 
 def device_to_dict(device):
+    sync_state = ZKService.get_sync_state(device.ip, device.port)
     return {
         "id": device.id,
         "nombre": device.name,
@@ -485,6 +492,10 @@ def device_to_dict(device):
         "is_active": device.is_active,
         "estado": device.status,
         "status": device.status,
+        "sync_in_progress": bool(sync_state and sync_state.get("active")),
+        "sync_connected": sync_state.get("connected") if sync_state else None,
+        "sync_cancelled": bool(sync_state and sync_state.get("cancelled")),
+        "sync_error": sync_state.get("reason") if sync_state else None,
         "branch_id": getattr(device, "branch_id", None),
         "ultima_sincronizacion": utc_iso(device.last_sync_at or device.last_connection),
         "last_sync_at": utc_iso(getattr(device, "last_sync_at", None)),
@@ -799,7 +810,7 @@ class PayrollIncidentCreate(BaseModel):
     device_id: int
     user_id: str
     fecha: str
-    hora: str
+    hora: Optional[str] = None
     incidencia: str
     descripcion: Optional[str] = None
     color: str = "#BAE6FD"
@@ -839,9 +850,8 @@ def save_payroll_incident(payload: PayrollIncidentCreate):
         incident = DBService.save_payroll_incident(
             user_id=payload.user_id,
             fecha=parse_date(payload.fecha),
-            hora=parse_hour(payload.hora),
+            hora=parse_hour(payload.hora) if payload.hora else None,
             incidencia=payload.incidencia,
-            descripcion=payload.descripcion,
             color=payload.color,
             incident_id=payload.id,
             device_id=payload.device_id,
@@ -858,8 +868,8 @@ def save_payroll_incident(payload: PayrollIncidentCreate):
         DBService.create_log(
             accion="Incidencia de prenómina guardada",
             detalle=(
-                f"Empleado {incident.user_id} - {incident.fecha} "
-                f"{incident.hora}: {incident.incidencia}"
+                f"Empleado {incident.user_id} - {incident.fecha}: "
+                f"{incident.incidencia}"
             )
         )
     except Exception:
@@ -1084,7 +1094,16 @@ def check_devices_status(
         if not is_active:
             status = "Inactivo"
         else:
-            connected = test_device_connection(device.ip, device.port)
+            sync_state = ZKService.get_sync_state(device.ip, device.port)
+            if sync_state is not None:
+                connected = bool(sync_state.get("connected"))
+            else:
+                connected = test_device_connection(device.ip, device.port)
+            # Una desconexión detectada durante sincronización queda fijada
+            # hasta confirmar recuperación con dos sondeos reales. Esto también
+            # descarta resultados atrasados que terminaron antes del watchdog.
+            if connected and ZKService.is_disconnect_latched(device.ip, device.port):
+                connected = False
             status = "Conectado" if connected else "Desconectado"
 
         update_device_status_safely(device, status)

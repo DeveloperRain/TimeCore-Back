@@ -1549,7 +1549,7 @@ class DBService:
 
             return query.order_by(
                 PayrollIncident.fecha.asc(),
-                PayrollIncident.hora.asc(),
+                PayrollIncident.source_hora.asc().nullsfirst(),
                 PayrollIncident.device_id.asc().nullsfirst(),
                 PayrollIncident.user_id.asc(),
                 PayrollIncident.id.asc(),
@@ -1563,8 +1563,8 @@ class DBService:
     def save_payroll_incident(
         user_id: str,
         fecha,
-        hora,
-        incidencia: str,
+        hora=None,
+        incidencia: str = "",
         descripcion: str = None,
         color: str = "#BAE6FD",
         incident_id: Optional[int] = None,
@@ -1586,9 +1586,6 @@ class DBService:
         try:
             clean_user_id = str(user_id).strip()
             clean_incidencia = str(incidencia or "").strip()
-            clean_descripcion = (
-                str(descripcion).strip() if descripcion is not None else None
-            )
             clean_color = str(color or "#BAE6FD").strip().upper()
 
             if not re.fullmatch(r"#[0-9A-F]{6}", clean_color):
@@ -1636,13 +1633,11 @@ class DBService:
                 incident.device_id = device_id
                 incident.user_id = clean_user_id
                 incident.fecha = fecha
-                incident.hora = hora
                 incident.incidencia = clean_incidencia
-                incident.descripcion = clean_descripcion
                 incident.color = clean_color
 
                 # Sólo cambia la incidencia elegida por su id. Las demás
-                # incidencias del mismo día y hora permanecen intactas.
+                # incidencias del mismo día permanecen intactas.
                 incident.source_fecha = fecha
                 incident.source_hora = hora
                 incident.moved_attendance = None
@@ -1653,15 +1648,13 @@ class DBService:
                 return incident
 
             # Sin id siempre se inserta una incidencia nueva. Ya no se busca ni
-            # se reemplaza otra por device_id + user_id + fecha + hora.
+            # se reemplaza otra por device_id + user_id + fecha.
             incident = PayrollIncident(
                 uid=user.uid,
                 device_id=device_id,
                 user_id=clean_user_id,
                 fecha=fecha,
-                hora=hora,
                 incidencia=clean_incidencia,
-                descripcion=clean_descripcion,
                 color=clean_color,
                 source_fecha=fecha,
                 source_hora=hora,

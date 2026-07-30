@@ -22,9 +22,7 @@ class PayrollIncident(Base):
     )
     user_id = Column(String(50), nullable=False, index=True)
     fecha = Column(Date, nullable=False, index=True)
-    hora = Column(Time, nullable=False)
     incidencia = Column(String(120), nullable=False)
-    descripcion = Column(String(255), nullable=True)
     color = Column(String(7), nullable=False, default="#BAE6FD")
     source_fecha = Column(Date, nullable=True, index=True)
     source_hora = Column(Time, nullable=True)
@@ -43,9 +41,11 @@ class PayrollIncident(Base):
             "assignment_key": f"{self.device_id or 0}:{self.user_id}",
             "user_id": self.user_id,
             "fecha": self.fecha.isoformat() if self.fecha else None,
-            "hora": self.hora.strftime("%H:%M") if self.hora else None,
+            # Se conserva la clave por compatibilidad con el frontend,
+            # pero la incidencia ya no tiene una hora propia en la BD.
+            "hora": None,
             "incidencia": self.incidencia,
-            "descripcion": self.descripcion,
+            "descripcion": None,
             "color": self.color or "#BAE6FD",
             "source_fecha": self.source_fecha.isoformat() if self.source_fecha else None,
             "source_hora": self.source_hora.strftime("%H:%M") if self.source_hora else None,

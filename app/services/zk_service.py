@@ -1,9 +1,12 @@
+import platform
 import socket
+import subprocess
 import threading
 import time as time_module
 from contextlib import contextmanager
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 from zk import ZK
 
@@ -11,6 +14,7 @@ from app.config.logger import get_logger, log_exception
 from app.exceptions import (
     DeviceAuthenticationError,
     DeviceClockDriftError,
+    DeviceDisconnectedDuringSyncError,
     DeviceTimeoutError,
     DeviceUnavailableError,
 )
@@ -18,8 +22,15 @@ from app.exceptions import (
 IP_RELOJ = "192.168.1.50"
 PORT = 4370
 TIMEOUT = 30
+FAST_FAIL_CONNECTION_TIMEOUT = 3
 PASSWORD = 10
 MAX_CLOCK_DRIFT_SECONDS = 300
+SYNC_MONITOR_INTERVAL_SECONDS = 0.75
+SYNC_MONITOR_FAILURE_LIMIT = 2
+SYNC_MONITOR_PROBE_TIMEOUT_SECONDS = 1.0
+DISCONNECT_HOLD_SECONDS = 4.0
+DISCONNECT_RECOVERY_SUCCESS_LIMIT = 2
+STATUS_CACHE_TTL_SECONDS = 10.0
 
 logger = get_logger("services.zk")
 
@@ -77,6 +88,31 @@ def normalize_attendance_status(status, punch=None) -> str:
     return "check_in"
 
 
+@dataclass
+class _DisconnectLatch:
+    disconnected_at: float = field(default_factory=time_module.monotonic)
+    recovery_successes: int = 0
+    reason: Optional[str] = None
+
+
+@dataclass
+class _SyncMonitorState:
+    key: str
+    ip: str
+    port: int
+    conn: Any
+    on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None
+    stop_event: threading.Event = field(default_factory=threading.Event)
+    cancel_event: threading.Event = field(default_factory=threading.Event)
+    connected: bool = True
+    reason: Optional[str] = None
+    probe_mode: str = "ping"
+    consecutive_failures: int = 0
+    started_at: datetime = field(default_factory=datetime.utcnow)
+    last_probe_at: Optional[datetime] = None
+    thread: Optional[threading.Thread] = None
+
+
 def call_if_available(conn, method_name: str, default: str = "Desconocido"):
     method = getattr(conn, method_name, None)
 
@@ -94,6 +130,11 @@ def call_if_available(conn, method_name: str, default: str = "Desconocido"):
 class ZKService:
     _device_locks: Dict[str, threading.RLock] = {}
     _device_locks_guard = threading.Lock()
+    _sync_states: Dict[str, _SyncMonitorState] = {}
+    _sync_states_guard = threading.Lock()
+    _disconnect_latches: Dict[str, _DisconnectLatch] = {}
+    _status_cache: Dict[str, tuple[bool, float]] = {}
+    _status_guard = threading.RLock()
 
     @staticmethod
     def _device_key(ip: str = None, port: int = None) -> str:
@@ -120,24 +161,393 @@ class ZKService:
             lock.release()
 
     @staticmethod
-    def check_device_status(ip: str, port: int = PORT, timeout: int = 2) -> bool:
-        # No se abre otra conexión mientras el mismo reloj está sincronizando.
-        # Si el candado está ocupado, la sincronización ya confirmó comunicación.
-        lock = ZKService._get_device_lock(ip, port)
-        if not lock.acquire(blocking=False):
-            return True
+    def mark_device_disconnected(
+        ip: str = None,
+        port: int = None,
+        reason: Optional[str] = None,
+    ) -> None:
+        """Fija un estado desconectado estable hasta confirmar recuperación.
+
+        Evita que una respuesta vieja, un socket ocupado o un único sondeo TCP
+        exitoso vuelvan a publicar ``Conectado`` inmediatamente después de que
+        el watchdog canceló una sincronización.
+        """
+        key = ZKService._device_key(ip, port)
+        now = time_module.monotonic()
+        with ZKService._status_guard:
+            ZKService._disconnect_latches[key] = _DisconnectLatch(
+                disconnected_at=now,
+                recovery_successes=0,
+                reason=reason,
+            )
+            ZKService._status_cache[key] = (False, now)
+
+    @staticmethod
+    def mark_device_connected(ip: str = None, port: int = None) -> None:
+        """Confirma conexión mediante una operación real completada."""
+        key = ZKService._device_key(ip, port)
+        now = time_module.monotonic()
+        with ZKService._status_guard:
+            ZKService._disconnect_latches.pop(key, None)
+            ZKService._status_cache[key] = (True, now)
+
+    @staticmethod
+    def is_disconnect_latched(ip: str = None, port: int = None) -> bool:
+        key = ZKService._device_key(ip, port)
+        with ZKService._status_guard:
+            return key in ZKService._disconnect_latches
+
+    @staticmethod
+    def _get_cached_status(ip: str = None, port: int = None) -> Optional[bool]:
+        key = ZKService._device_key(ip, port)
+        now = time_module.monotonic()
+        with ZKService._status_guard:
+            cached = ZKService._status_cache.get(key)
+            if cached is None:
+                return None
+            value, checked_at = cached
+            if now - checked_at > STATUS_CACHE_TTL_SECONDS:
+                return None
+            return bool(value)
+
+    @staticmethod
+    def _get_sync_state(ip: str = None, port: int = None) -> Optional[_SyncMonitorState]:
+        key = ZKService._device_key(ip, port)
+        with ZKService._sync_states_guard:
+            return ZKService._sync_states.get(key)
+
+    @staticmethod
+    def get_sync_state(ip: str = None, port: int = None) -> Optional[Dict[str, Any]]:
+        state = ZKService._get_sync_state(ip, port)
+        if state is None:
+            return None
+
+        return {
+            "active": not state.stop_event.is_set(),
+            "connected": bool(state.connected and not state.cancel_event.is_set()),
+            "cancelled": state.cancel_event.is_set(),
+            "reason": state.reason,
+            "probe_mode": state.probe_mode,
+            "started_at": state.started_at.isoformat(),
+            "last_probe_at": state.last_probe_at.isoformat()
+            if state.last_probe_at
+            else None,
+        }
+
+    @staticmethod
+    def _ping_device(ip: str, timeout: float = SYNC_MONITOR_PROBE_TIMEOUT_SECONDS) -> bool:
+        system = platform.system().lower()
+        timeout = max(0.25, float(timeout))
+
+        if system == "windows":
+            command = ["ping", "-n", "1", "-w", str(max(250, int(timeout * 1000))), ip]
+        else:
+            command = ["ping", "-c", "1", "-W", str(max(1, int(round(timeout)))), ip]
 
         try:
-            with socket.create_connection((ip, port or PORT), timeout=timeout):
-                return True
-        except Exception as e:
-            logger.warning("Reloj %s:%s sin conexion: %s", ip, port, e)
+            result = subprocess.run(
+                command,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=timeout + 1.0,
+                check=False,
+            )
+            return result.returncode == 0
+        except (OSError, subprocess.SubprocessError):
             return False
+
+    @staticmethod
+    def _tcp_probe(ip: str, port: int, timeout: float = SYNC_MONITOR_PROBE_TIMEOUT_SECONDS) -> bool:
+        try:
+            with socket.create_connection((ip, int(port or PORT)), timeout=max(0.25, timeout)):
+                return True
+        except OSError:
+            return False
+
+    @staticmethod
+    def _force_close_connection(conn) -> None:
+        """Cierra el socket interno de PyZK sin enviar CMD_EXIT.
+
+        Se usa únicamente cuando el watchdog detecta que el cable o la red se
+        perdieron. Al cerrar el socket, cualquier ``recv`` bloqueado de PyZK
+        termina de inmediato y la sincronización se cancela.
+        """
+        if conn is None:
+            return
+
+        sock = getattr(conn, "_ZK__sock", None)
+        if sock is not None:
+            try:
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+            try:
+                sock.close()
+            except OSError:
+                pass
+
+        try:
+            conn.is_connect = False
+        except Exception:
+            pass
+
+    @staticmethod
+    def _configure_socket_keepalive(conn) -> None:
+        sock = getattr(conn, "_ZK__sock", None)
+        if sock is None or not bool(getattr(conn, "tcp", False)):
+            return
+
+        try:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            if platform.system().lower() == "windows" and hasattr(socket, "SIO_KEEPALIVE_VALS"):
+                sock.ioctl(socket.SIO_KEEPALIVE_VALS, (1, 1000, 1000))
+            else:
+                if hasattr(socket, "TCP_KEEPIDLE"):
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 2)
+                if hasattr(socket, "TCP_KEEPINTVL"):
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 1)
+                if hasattr(socket, "TCP_KEEPCNT"):
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 2)
+        except OSError as exc:
+            logger.debug("No se pudo configurar keepalive para %s: %s", conn, exc)
+
+    @staticmethod
+    def _start_sync_monitor(
+        ip: str,
+        port: int,
+        conn,
+        on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None,
+        fail_fast: bool = False,
+    ) -> _SyncMonitorState:
+        key = ZKService._device_key(ip, port)
+        ping_available = ZKService._ping_device(ip)
+        tcp_probe_available = (
+            False
+            if ping_available
+            else ZKService._tcp_probe(ip, int(port or PORT))
+        )
+        probe_mode = (
+            "ping"
+            if ping_available
+            else "tcp"
+            if tcp_probe_available
+            else "keepalive"
+        )
+        state = _SyncMonitorState(
+            key=key,
+            ip=ip,
+            port=int(port or PORT),
+            conn=conn,
+            on_disconnect=on_disconnect,
+            probe_mode=probe_mode,
+        )
+
+        with ZKService._sync_states_guard:
+            ZKService._sync_states[key] = state
+
+        def monitor() -> None:
+            while not state.stop_event.wait(SYNC_MONITOR_INTERVAL_SECONDS):
+                if state.probe_mode == "ping":
+                    reachable = ZKService._ping_device(
+                        state.ip,
+                        SYNC_MONITOR_PROBE_TIMEOUT_SECONDS,
+                    )
+                elif state.probe_mode == "tcp":
+                    reachable = ZKService._tcp_probe(
+                        state.ip,
+                        state.port,
+                        SYNC_MONITOR_PROBE_TIMEOUT_SECONDS,
+                    )
+                else:
+                    # Si el dispositivo no admite ping ni una segunda conexión
+                    # TCP, el socket principal queda protegido por keepalive y
+                    # cualquier error de lectura se convierte en desconexión.
+                    continue
+
+                state.last_probe_at = datetime.utcnow()
+
+                if reachable:
+                    state.connected = True
+                    state.consecutive_failures = 0
+                    continue
+
+                state.consecutive_failures += 1
+                failure_limit = 1 if fail_fast else SYNC_MONITOR_FAILURE_LIMIT
+                if state.consecutive_failures < failure_limit:
+                    continue
+
+                state.connected = False
+                state.reason = "Se perdió la comunicación de red con el reloj durante la sincronización"
+                state.cancel_event.set()
+                ZKService.mark_device_disconnected(
+                    state.ip,
+                    state.port,
+                    reason=state.reason,
+                )
+
+                details = {
+                    "ip": state.ip,
+                    "port": state.port,
+                    "stage": "network_watchdog",
+                    "probe_mode": state.probe_mode,
+                    "detected_at": datetime.utcnow().isoformat(),
+                }
+
+                # Primero se corta el socket para desbloquear PyZK de inmediato;
+                # la actualización de BD se realiza después y no retrasa la cancelación.
+                ZKService._force_close_connection(state.conn)
+
+                if state.on_disconnect is not None:
+                    try:
+                        state.on_disconnect(details)
+                    except Exception as exc:
+                        logger.warning(
+                            "No se pudo notificar la desconexión de %s:%s: %s",
+                            state.ip,
+                            state.port,
+                            exc,
+                        )
+
+                logger.error(
+                    "Se canceló la sincronización de %s:%s porque el reloj fue desconectado",
+                    state.ip,
+                    state.port,
+                )
+                return
+
+        state.thread = threading.Thread(
+            target=monitor,
+            name=f"timecore-watchdog-{ip}-{port}",
+            daemon=True,
+        )
+        state.thread.start()
+        return state
+
+    @staticmethod
+    def _stop_sync_monitor(state: Optional[_SyncMonitorState]) -> None:
+        if state is None:
+            return
+
+        state.stop_event.set()
+        if state.thread and state.thread.is_alive() and state.thread is not threading.current_thread():
+            state.thread.join(timeout=2.0)
+
+        with ZKService._sync_states_guard:
+            if ZKService._sync_states.get(state.key) is state:
+                ZKService._sync_states.pop(state.key, None)
+
+    @staticmethod
+    def _raise_if_sync_cancelled(
+        state: Optional[_SyncMonitorState],
+        stage: str,
+    ) -> None:
+        if state is None or not state.cancel_event.is_set():
+            return
+
+        raise DeviceDisconnectedDuringSyncError(
+            details={
+                "ip": state.ip,
+                "port": state.port,
+                "stage": stage,
+                "reason": state.reason,
+                "probe_mode": state.probe_mode,
+            }
+        )
+
+    @staticmethod
+    def check_device_status(ip: str, port: int = PORT, timeout: int = 2) -> bool:
+        target_port = int(port or PORT)
+        key = ZKService._device_key(ip, target_port)
+
+        # Si hay una sincronización vigilada, su watchdog es la fuente de verdad.
+        sync_state = ZKService._get_sync_state(ip, target_port)
+        if sync_state is not None:
+            connected = bool(
+                sync_state.connected
+                and not sync_state.cancel_event.is_set()
+            )
+            if not connected:
+                ZKService.mark_device_disconnected(
+                    ip,
+                    target_port,
+                    reason=sync_state.reason,
+                )
+            else:
+                with ZKService._status_guard:
+                    ZKService._status_cache[key] = (
+                        True,
+                        time_module.monotonic(),
+                    )
+            return connected
+
+        now = time_module.monotonic()
+        with ZKService._status_guard:
+            latch = ZKService._disconnect_latches.get(key)
+            if latch is not None and now - latch.disconnected_at < DISCONNECT_HOLD_SECONDS:
+                ZKService._status_cache[key] = (False, now)
+                return False
+
+        lock = ZKService._get_device_lock(ip, target_port)
+        if not lock.acquire(blocking=False):
+            # Nunca asumir conectado solamente porque otra operación tiene el
+            # candado. Se conserva el último resultado estable; tras una
+            # desconexión el latch siempre domina y devuelve False.
+            cached = ZKService._get_cached_status(ip, target_port)
+            return bool(cached) if cached is not None else False
+
+        try:
+            try:
+                with socket.create_connection(
+                    (ip, target_port),
+                    timeout=max(1, int(timeout)),
+                ):
+                    reachable = True
+            except Exception as exc:
+                logger.warning(
+                    "Reloj %s:%s sin conexion: %s",
+                    ip,
+                    target_port,
+                    exc,
+                )
+                reachable = False
         finally:
             lock.release()
 
+        now = time_module.monotonic()
+        with ZKService._status_guard:
+            latch = ZKService._disconnect_latches.get(key)
+
+            if not reachable:
+                if latch is None:
+                    latch = _DisconnectLatch(
+                        disconnected_at=now,
+                        reason="El sondeo de conectividad no respondió",
+                    )
+                    ZKService._disconnect_latches[key] = latch
+                else:
+                    latch.recovery_successes = 0
+                ZKService._status_cache[key] = (False, now)
+                return False
+
+            if latch is not None:
+                latch.recovery_successes += 1
+                if latch.recovery_successes < DISCONNECT_RECOVERY_SUCCESS_LIMIT:
+                    # Un único éxito puede ser un resultado transitorio del
+                    # sistema operativo. Se requieren dos confirmaciones.
+                    ZKService._status_cache[key] = (False, now)
+                    return False
+                ZKService._disconnect_latches.pop(key, None)
+
+            ZKService._status_cache[key] = (True, now)
+            return True
+
     @staticmethod
-    def _create_connection(ip: str = None, port: int = None, password: str = None):
+    def _create_connection(
+        ip: str = None,
+        port: int = None,
+        password: str = None,
+        fail_fast: bool = False,
+    ):
         target_ip = ip or IP_RELOJ
         target_port = int(port or PORT)
 
@@ -146,12 +556,27 @@ class ZKService:
         except (TypeError, ValueError):
             target_password = 0
 
+        # En sincronización masiva se usa fail_fast=True: sólo se hace el
+        # intento principal TCP. Si falla o el reloj ya está marcado como
+        # desconectado, no se prueban variantes TCP/UDP y el flujo continúa
+        # inmediatamente con el siguiente reloj.
+        if fail_fast and ZKService.is_disconnect_latched(target_ip, target_port):
+            raise DeviceUnavailableError(
+                "El reloj está marcado como desconectado; se omitieron los reintentos de conexión"
+            )
+
         attempts = [
             {"force_udp": False, "ommit_ping": False, "label": "TCP"},
-            {"force_udp": False, "ommit_ping": True, "label": "TCP sin ping"},
-            {"force_udp": True, "ommit_ping": False, "label": "UDP"},
-            {"force_udp": True, "ommit_ping": True, "label": "UDP sin ping"},
         ]
+
+        if not fail_fast:
+            attempts.extend(
+                [
+                    {"force_udp": False, "ommit_ping": True, "label": "TCP sin ping"},
+                    {"force_udp": True, "ommit_ping": False, "label": "UDP"},
+                    {"force_udp": True, "ommit_ping": True, "label": "UDP sin ping"},
+                ]
+            )
 
         last_error = None
 
@@ -167,13 +592,14 @@ class ZKService:
                 zk = ZK(
                     target_ip,
                     port=target_port,
-                    timeout=TIMEOUT,
+                    timeout=(FAST_FAIL_CONNECTION_TIMEOUT if fail_fast else TIMEOUT),
                     password=target_password,
                     force_udp=attempt["force_udp"],
                     ommit_ping=attempt["ommit_ping"],
                 )
 
                 conn = zk.connect()
+                ZKService._configure_socket_keepalive(conn)
                 logger.info("Conexion establecida con el reloj por %s", attempt["label"])
                 return conn
 
@@ -451,22 +877,40 @@ class ZKService:
         ip: str = None,
         port: int = None,
         password: str = None,
+        on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None,
+        fail_fast: bool = False,
     ) -> Dict[str, Any]:
-        """Lee usuarios y asistencias usando una sola sesión del reloj.
+        """Lee usuarios y asistencias usando una sola sesión vigilada.
 
-        Evita abrir dos conexiones consecutivas durante una sincronización y
-        bloquea los sondeos de estado del mismo reloj mientras se descargan los
-        datos. Esto es importante porque varios modelos ZKTeco toleran una sola
-        sesión estable a la vez.
+        Un watchdog independiente comprueba la conectividad mientras PyZK lee
+        los datos. Si el reloj se desconecta, el watchdog cierra el socket para
+        interrumpir cualquier lectura bloqueada y lanza un error controlado.
         """
         conn = None
-        disabled = False
+        monitor_state: Optional[_SyncMonitorState] = None
+        target_ip = ip or IP_RELOJ
+        target_port = int(port or PORT)
 
         with ZKService._locked_device(ip, port):
             try:
-                conn = ZKService._create_connection(ip, port, password)
+                conn = ZKService._create_connection(
+                    ip,
+                    port,
+                    password,
+                    fail_fast=fail_fast,
+                )
+                monitor_state = ZKService._start_sync_monitor(
+                    target_ip,
+                    target_port,
+                    conn,
+                    on_disconnect=on_disconnect,
+                    fail_fast=fail_fast,
+                )
 
+                ZKService._raise_if_sync_cancelled(monitor_state, "connected")
                 device_time = conn.get_time()
+                ZKService._raise_if_sync_cancelled(monitor_state, "clock_read")
+
                 clock_status = ZKService._build_clock_status(
                     device_time=device_time,
                     server_time=datetime.now(),
@@ -474,28 +918,23 @@ class ZKService:
                 )
 
                 if not clock_status["in_sync"]:
+                    ZKService.mark_device_connected(target_ip, target_port)
                     raise DeviceClockDriftError(
                         details={
                             **clock_status,
-                            "ip": ip or IP_RELOJ,
-                            "port": int(port or PORT),
+                            "ip": target_ip,
+                            "port": target_port,
                         }
                     )
 
-                try:
-                    conn.disable_device()
-                    disabled = True
-                except Exception as e:
-                    logger.warning(
-                        "No se pudo bloquear temporalmente el reloj para lectura: %s",
-                        e,
-                    )
-
-                # get_attendance() de pyzk ya consulta internamente los usuarios.
-                # Se lee primero para obtener el log más reciente y después se
-                # consulta la lista de usuarios para enriquecer nombre y UID.
+                # Esta operación solo lee información. No se deshabilita el
+                # dispositivo porque, si se pierde la red, podría quedar
+                # bloqueado sin poder ejecutar enable_device().
                 attendance_objects = conn.get_attendance() or []
+                ZKService._raise_if_sync_cancelled(monitor_state, "attendance_read")
+
                 user_objects = conn.get_users() or []
+                ZKService._raise_if_sync_cancelled(monitor_state, "users_read")
 
                 users = [
                     {
@@ -512,6 +951,7 @@ class ZKService:
                 attendance: List[Dict[str, Any]] = []
 
                 for item in attendance_objects:
+                    ZKService._raise_if_sync_cancelled(monitor_state, "attendance_processing")
                     user_id = normalize_user_id(getattr(item, "user_id", ""))
                     raw_uid = getattr(item, "uid", None)
                     uid = None
@@ -550,38 +990,99 @@ class ZKService:
                         }
                     )
 
+                ZKService._raise_if_sync_cancelled(monitor_state, "snapshot_complete")
                 latest = sorted(
                     attendance,
                     key=lambda value: value.get("timestamp"),
                 )[-5:]
                 logger.info(
                     "Lectura del reloj %s:%s: %s usuarios, %s asistencias. Últimas: %s",
-                    ip or IP_RELOJ,
-                    int(port or PORT),
+                    target_ip,
+                    target_port,
                     len(users),
                     len(attendance),
                     latest,
                 )
 
+                ZKService.mark_device_connected(target_ip, target_port)
                 return {
                     "users": users,
                     "attendance": attendance,
                     "clock": clock_status,
                 }
 
+            except DeviceDisconnectedDuringSyncError:
+                raise
             except Exception as e:
+                error_text = str(e).lower()
+                looks_like_network_loss = isinstance(
+                    e,
+                    (OSError, socket.timeout, ConnectionError),
+                ) or any(
+                    token in error_text
+                    for token in (
+                        "timed out",
+                        "timeout",
+                        "socket",
+                        "connection",
+                        "network",
+                        "unreachable",
+                        "closed",
+                        "reset",
+                        "broken pipe",
+                    )
+                )
+
+                if monitor_state is not None and (
+                    monitor_state.cancel_event.is_set() or looks_like_network_loss
+                ):
+                    if not monitor_state.cancel_event.is_set():
+                        monitor_state.connected = False
+                        monitor_state.reason = (
+                            "Se perdió la comunicación con el reloj durante la sincronización"
+                        )
+                        monitor_state.cancel_event.set()
+                        ZKService.mark_device_disconnected(
+                            target_ip,
+                            target_port,
+                            reason=monitor_state.reason,
+                        )
+                        ZKService._force_close_connection(monitor_state.conn)
+                        if monitor_state.on_disconnect is not None:
+                            try:
+                                monitor_state.on_disconnect(
+                                    {
+                                        "ip": target_ip,
+                                        "port": target_port,
+                                        "stage": "device_read",
+                                        "probe_mode": monitor_state.probe_mode,
+                                        "detected_at": datetime.utcnow().isoformat(),
+                                    }
+                                )
+                            except Exception as callback_error:
+                                logger.warning(
+                                    "No se pudo registrar la desconexión de %s:%s: %s",
+                                    target_ip,
+                                    target_port,
+                                    callback_error,
+                                )
+
+                    raise DeviceDisconnectedDuringSyncError(
+                        details={
+                            "ip": target_ip,
+                            "port": target_port,
+                            "stage": "device_read",
+                            "reason": monitor_state.reason,
+                            "probe_mode": monitor_state.probe_mode,
+                            "original_error": str(e),
+                        }
+                    ) from e
+
                 log_exception(logger, e, "Error al obtener datos del reloj")
                 raise
             finally:
+                ZKService._stop_sync_monitor(monitor_state)
                 if conn:
-                    if disabled:
-                        try:
-                            conn.enable_device()
-                        except Exception as e:
-                            logger.warning(
-                                "No se pudo reactivar el reloj después de leer: %s",
-                                e,
-                            )
                     ZKService._disconnect(conn)
 
     @staticmethod
@@ -830,6 +1331,16 @@ class ZKService:
                 ZKService._disconnect(conn)
 
     @staticmethod
-    def get_attendance_records(ip: str = None, port: int = None, password: str = None) -> List[Dict[str, Any]]:
-        snapshot = ZKService.get_sync_snapshot(ip, port, password)
+    def get_attendance_records(
+        ip: str = None,
+        port: int = None,
+        password: str = None,
+        on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None,
+    ) -> List[Dict[str, Any]]:
+        snapshot = ZKService.get_sync_snapshot(
+            ip,
+            port,
+            password,
+            on_disconnect=on_disconnect,
+        )
         return snapshot["attendance"]

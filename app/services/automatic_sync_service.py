@@ -51,6 +51,17 @@ def sync_due_devices() -> dict:
                     ip=device.ip,
                     port=device.port,
                     password=getattr(device, "password", ""),
+                    on_disconnect=lambda _details, device_id=device.id, ip=device.ip, port=device.port: (
+                        ZKService.mark_device_disconnected(
+                            ip,
+                            port,
+                            reason="Desconectado durante sincronización automática",
+                        ),
+                        DBService.update_device_status(
+                            device_id=device_id,
+                            estado="Desconectado",
+                        ),
+                    ),
                 )
                 for record in attendance:
                     record["branch_id"] = device.branch_id
@@ -58,6 +69,7 @@ def sync_due_devices() -> dict:
 
                 new_records = int(DBService.save_bulk_attendance(attendance) or 0)
                 synced_at = datetime.utcnow()
+                ZKService.mark_device_connected(device.ip, device.port)
                 DBService.update_device_sync_status(
                     device_id=device.id,
                     estado="Conectado",
@@ -75,6 +87,11 @@ def sync_due_devices() -> dict:
             except Exception as exc:
                 devices_failed += 1
                 try:
+                    ZKService.mark_device_disconnected(
+                        device.ip,
+                        device.port,
+                        reason=str(exc),
+                    )
                     DBService.update_device_status(device_id=device.id, estado="Desconectado")
                 except Exception:
                     pass

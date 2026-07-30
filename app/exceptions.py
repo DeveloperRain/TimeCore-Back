@@ -91,6 +91,14 @@ class DeviceTimeoutError(TimeCoreError):
     default_message = "El reloj tardó demasiado en responder"
 
 
+class DeviceDisconnectedDuringSyncError(TimeCoreError):
+    status_code = 503
+    code = "DEVICE_DISCONNECTED_DURING_SYNC"
+    default_message = (
+        "La sincronización fue cancelada porque el reloj fue desconectado."
+    )
+
+
 class DeviceClockDriftError(TimeCoreError):
     status_code = 409
     code = "DEVICE_CLOCK_DRIFT"

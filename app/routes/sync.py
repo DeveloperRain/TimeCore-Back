@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from app.services.zk_service import ZKService
 from app.services.db_service import DBService
-from app.exceptions import DeviceClockDriftError
+from app.exceptions import (
+    DeviceClockDriftError,
+    DeviceDisconnectedDuringSyncError,
+    SyncError,
+    TimeCoreError,
+)
 from app.utils.response import success
 from app.config.logger import get_logger, log_exception
 from datetime import datetime
@@ -14,11 +19,39 @@ router = APIRouter(
 )
 
 
-def sync_registered_device(device):
+def sync_registered_device(device, fail_fast: bool = False):
+    disconnect_notified = False
+
+    def mark_disconnected(details=None):
+        nonlocal disconnect_notified
+        if disconnect_notified:
+            return
+        disconnect_notified = True
+        ZKService.mark_device_disconnected(
+            device.ip,
+            device.port,
+            reason=(details or {}).get("reason")
+            if isinstance(details, dict)
+            else None,
+        )
+        DBService.update_device_status(
+            device_id=device.id,
+            estado="Desconectado",
+        )
+        DBService.create_log(
+            accion="Reloj desconectado durante sincronización",
+            detalle=(
+                f"La sincronización de {device.name} ({device.ip}) fue cancelada "
+                f"porque se perdió la comunicación. Detalles: {details or {}}"
+            ),
+        )
+
     snapshot = ZKService.get_sync_snapshot(
         ip=device.ip,
         port=device.port,
         password=getattr(device, "password", ""),
+        on_disconnect=mark_disconnected,
+        fail_fast=fail_fast,
     )
 
     usuarios = snapshot["users"]
@@ -70,6 +103,7 @@ def sync_registered_device(device):
         latest_attendance,
     )
 
+    ZKService.mark_device_connected(device.ip, device.port)
     DBService.update_device_sync_status(
         device_id=device.id,
         estado="Conectado",
@@ -194,14 +228,14 @@ def sync_all():
         )
     
 @router.post("/device/{device_id}", summary="Sincronizar reloj seleccionado por ID")
-def sync_device_by_id(device_id: int):
+def sync_device_by_id(device_id: int, fail_fast: bool = False):
     try:
         device = DBService.get_device_by_id(device_id)
 
         if not device:
             raise HTTPException(status_code=404, detail="Reloj no encontrado")
 
-        result = sync_registered_device(device)
+        result = sync_registered_device(device, fail_fast=fail_fast)
 
         return success(
             data=result,
@@ -210,6 +244,12 @@ def sync_device_by_id(device_id: int):
 
     except DeviceClockDriftError as e:
         try:
+            current_device = DBService.get_device_by_id(device_id)
+            if current_device:
+                ZKService.mark_device_connected(
+                    current_device.ip,
+                    current_device.port,
+                )
             DBService.update_device_status(
                 device_id=device_id,
                 estado="Conectado",
@@ -226,30 +266,72 @@ def sync_device_by_id(device_id: int):
 
         raise
 
+    except DeviceDisconnectedDuringSyncError as e:
+        try:
+            current_device = DBService.get_device_by_id(device_id)
+            if current_device:
+                ZKService.mark_device_disconnected(
+                    current_device.ip,
+                    current_device.port,
+                    reason=e.message,
+                )
+            DBService.update_device_status(
+                device_id=device_id,
+                estado="Desconectado",
+            )
+        except Exception:
+            pass
+        raise
+
     except HTTPException:
+        raise
+
+    except TimeCoreError as e:
+        try:
+            current_device = DBService.get_device_by_id(device_id)
+            if current_device:
+                ZKService.mark_device_disconnected(
+                    current_device.ip,
+                    current_device.port,
+                    reason=e.message,
+                )
+            DBService.update_device_status(
+                device_id=device_id,
+                estado="Desconectado",
+            )
+            DBService.create_log(
+                accion="Error de sincronización",
+                detalle=f"No se pudo sincronizar el reloj ID {device_id}: {e.message}",
+            )
+        except Exception:
+            pass
         raise
 
     except Exception as e:
         try:
+            current_device = DBService.get_device_by_id(device_id)
+            if current_device:
+                ZKService.mark_device_disconnected(
+                    current_device.ip,
+                    current_device.port,
+                    reason=str(e),
+                )
             DBService.update_device_status(
                 device_id=device_id,
-                estado="Desconectado"
+                estado="Desconectado",
             )
-
             DBService.create_log(
                 accion="Error de sincronización",
-                detalle=f"No se pudo sincronizar el reloj ID {device_id}: {str(e)}"
+                detalle=f"No se pudo sincronizar el reloj ID {device_id}: {str(e)}",
             )
-
         except Exception:
             pass
 
         log_exception(logger, e, "Error al sincronizar reloj por ID")
-
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error al sincronizar reloj: {str(e)}"
-        )
+        raise SyncError(
+            "No se pudo completar la sincronización del reloj",
+            details={"device_id": device_id, "original_error": str(e)},
+        ) from e
 
 
 @router.post("/devices/all", summary="Sincronizar todos los relojes registrados")
@@ -269,11 +351,19 @@ def sync_all_registered_devices():
 
     for device in active_devices:
         try:
-            results.append(sync_registered_device(device))
+            results.append(sync_registered_device(device, fail_fast=True))
         except Exception as e:
             is_clock_drift = isinstance(e, DeviceClockDriftError)
 
             try:
+                if is_clock_drift:
+                    ZKService.mark_device_connected(device.ip, device.port)
+                else:
+                    ZKService.mark_device_disconnected(
+                        device.ip,
+                        device.port,
+                        reason=str(e),
+                    )
                 DBService.update_device_status(
                     device_id=device.id,
                     estado="Conectado" if is_clock_drift else "Desconectado",
