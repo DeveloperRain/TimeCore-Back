@@ -10,7 +10,18 @@ Documentación técnica del backend de TIMECORE.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contenido:
+   :caption: Documentación:
+
+   introduccion
+   instalacion
+   arquitectura
+   configuracion
+   endpoints
+   sincronizacion
+   base_datos
+.. toctree::
+   :maxdepth: 2
+   :caption: Referencia del código:
 
    api/modules
 
