@@ -16,6 +16,12 @@ router = APIRouter(
     tags=["Dispositivo"]
 )
 def get_device_info():
+    """
+    Obtiene la información y el estado del dispositivo biométrico.
+
+    :return: Respuesta con la información obtenida del dispositivo.
+    :rtype: dict
+    """
     try:
         device_info = ZKService.get_device_info()
         return success(
@@ -32,5 +38,3 @@ def get_device_info():
             status_code=500, 
             detail=f"Error al obtener información del dispositivo: {str(e)}"
         )
-    
- 

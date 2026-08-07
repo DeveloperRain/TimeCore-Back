@@ -14,6 +14,8 @@ class PaginationInfo(BaseModel):
     pages: int = Field(..., ge=0, description="Total de páginas")
 
     class Config:
+        """Define la configuración y los ejemplos del modelo de paginación."""
+
         examples = [{
             "page": 1,
             "limit": 20,
@@ -31,6 +33,8 @@ class ApiResponse(BaseModel, Generic[T]):
     pagination: Optional[PaginationInfo] = Field(None, description="Info de paginación")
 
     class Config:
+        """Define la configuración del esquema JSON de la respuesta de la API."""
+
         json_schema_extra = {
             "example": {
                 "status": "success",
@@ -49,6 +53,8 @@ class ErrorDetail(BaseModel):
     details: Optional[str] = Field(None, description="Detalles adicionales")
 
     class Config:
+        """Define la configuración y los ejemplos del modelo de error."""
+
         examples = [{
             "code": "VALIDATION_ERROR",
             "message": "Datos inválidos",

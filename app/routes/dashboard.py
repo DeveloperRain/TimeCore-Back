@@ -18,7 +18,15 @@ router = APIRouter(
 )
 
 
-def attendance_to_dict(record):
+def attendance_to_dict(record) -> dict:
+    """
+    Convierte un registro de asistencia en un diccionario serializable.
+
+    :param record: Instancia del modelo AttendanceRecord.
+    :type record: Any
+    :return: Diccionario con los datos del registro de asistencia.
+    :rtype: dict
+    """
     return {
         "id": record.id,
         "uid": record.uid,
@@ -39,6 +47,15 @@ def dashboard_summary(
         description="ID de sucursal para filtrar el dashboard. Si no se envía, muestra el resumen general.",
     )
 ):
+    """
+    Obtiene un resumen estadístico y métricas generales del dashboard, con opción de filtrado por sucursal.
+
+    :param branch_id: ID opcional de la sucursal para filtrar las métricas.
+    :type branch_id: typing.Optional[int]
+    :return: Respuesta estructurada con el resumen del dashboard.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si se especifica un branch_id y la sucursal no es encontrada.
+    """
     db = SessionLocal()
 
     try:
@@ -131,6 +148,17 @@ def dashboard_activity(
     ),
     limit: int = Query(8, ge=1, le=20),
 ):
+    """
+    Obtiene la lista de registros de actividad reciente de asistencia, con opción de filtrado por sucursal y límite de resultados.
+
+    :param branch_id: ID opcional de la sucursal para filtrar la actividad.
+    :type branch_id: typing.Optional[int]
+    :param limit: Número máximo de registros a retornar (entre 1 y 20).
+    :type limit: int
+    :return: Respuesta estructurada con los registros de actividad reciente.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si se especifica un branch_id y la sucursal no es encontrada.
+    """
     db = SessionLocal()
     try:
         query = db.query(AttendanceRecord)

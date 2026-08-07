@@ -16,6 +16,16 @@ _sync_lock = Lock()
 
 
 def _is_due(device, now: datetime) -> bool:
+    """
+    Determina si un dispositivo debe ejecutar su sincronización automática.
+
+    :param device: Dispositivo cuya configuración de sincronización se evalúa.
+    :type device: object
+    :param now: Fecha y hora utilizadas para verificar el intervalo de sincronización.
+    :type now: datetime
+    :return: Indica si el dispositivo está activo, tiene habilitada la sincronización automática y su intervalo ya se cumplió.
+    :rtype: bool
+    """
     if not bool(getattr(device, "is_active", True)):
         return False
     if not bool(getattr(device, "auto_sync_enabled", True)):
@@ -27,7 +37,12 @@ def _is_due(device, now: datetime) -> bool:
 
 
 def sync_due_devices() -> dict:
-    """Sincroniza solo los relojes cuyo intervalo ya se cumplió."""
+    """
+    Sincroniza los relojes cuyo intervalo de sincronización automática ya se cumplió.
+
+    :return: Resumen con el estado de la ejecución y las cantidades de dispositivos y asistencias procesadas.
+    :rtype: dict
+    """
     if not _sync_lock.acquire(blocking=False):
         logger.warning("[AUTO-SYNC] Se omitió la revisión: otra sincronización sigue activa")
         return {"skipped": True, "devices_synced": 0, "devices_failed": 0, "attendance_synced": 0}
@@ -108,6 +123,12 @@ def sync_due_devices() -> dict:
 
 
 async def automatic_sync_loop() -> None:
+    """
+    Ejecuta continuamente las revisiones de sincronización automática de los relojes.
+
+    :return: No devuelve ningún valor.
+    :rtype: None
+    """
     logger.info(
         "[AUTO-SYNC] Servicio por reloj iniciado. Primera revisión en %s segundos; revisiones cada %s segundos",
         STARTUP_DELAY_SECONDS,

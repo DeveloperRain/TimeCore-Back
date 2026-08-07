@@ -1,7 +1,7 @@
 """Modelo ORM para incidencias manuales de prenomina."""
 from datetime import datetime
 
-from sqlalchemy import Column, Date, DateTime, ForeignKey, Integer, String, Text, Time
+from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, String, Text, Time
 from sqlalchemy.orm import relationship
 
 from app.database.connection import Base
@@ -27,13 +27,19 @@ class PayrollIncident(Base):
     source_fecha = Column(Date, nullable=True, index=True)
     source_hora = Column(Time, nullable=True)
     moved_attendance = Column(Text, nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True)
+    deleted_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     user = relationship("User")
 
     def to_dict(self):
-        """Convierte a diccionario."""
+        """Convierte a diccionario.
+        
+        :return: Un diccionario con los datos serializados de la incidencia de prenomina.
+        :rtype: dict
+        """
         return {
             "id": self.id,
             "uid": self.uid,
@@ -50,6 +56,8 @@ class PayrollIncident(Base):
             "source_fecha": self.source_fecha.isoformat() if self.source_fecha else None,
             "source_hora": self.source_hora.strftime("%H:%M") if self.source_hora else None,
             "moved_attendance": self.moved_attendance,
+            "is_active": bool(self.is_active),
+            "deleted_at": self.deleted_at.isoformat() if self.deleted_at else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

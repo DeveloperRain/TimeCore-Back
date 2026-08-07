@@ -14,12 +14,14 @@ BranchStatus = Literal["Activo", "Inactivo"]
 
 
 class BranchCreate(BaseModel):
+    """Modelo de solicitud para la creación de una nueva sucursal."""
     name: str
     address: Optional[str] = None
     status: Optional[BranchStatus] = "Activo"
 
 
 class BranchUpdate(BaseModel):
+    """Modelo de solicitud para la actualización de una sucursal existente."""
     name: Optional[str] = None
     address: Optional[str] = None
     is_active: Optional[bool] = None
@@ -30,6 +32,16 @@ def normalize_branch_status(
     status: Optional[str],
     is_active: Optional[bool] = None,
 ) -> str:
+    """
+    Normaliza el estado de una sucursal a partir de su texto descriptivo o indicador booleano.
+
+    :param status: Estado en formato de texto (e.g., 'Activo', 'Inactivo').
+    :type status: typing.Optional[str]
+    :param is_active: Indicador booleano de actividad.
+    :type is_active: typing.Optional[bool]
+    :return: Estado normalizado ('Activo' o 'Inactivo').
+    :rtype: str
+    """
     if status:
         status_clean = status.strip().lower()
 
@@ -48,7 +60,15 @@ def normalize_branch_status(
     return "Activo"
 
 
-def branch_to_dict(branch):
+def branch_to_dict(branch) -> dict:
+    """
+    Convierte la instancia de una sucursal en un diccionario serializable con formato estándar.
+
+    :param branch: Instancia del modelo de sucursal.
+    :type branch: Any
+    :return: Diccionario con los datos serializados de la sucursal.
+    :rtype: dict
+    """
     status = normalize_branch_status(
         getattr(branch, "status", None),
         getattr(branch, "is_active", None),
@@ -65,7 +85,15 @@ def branch_to_dict(branch):
     }
 
 
-def user_to_dict(user):
+def user_to_dict(user) -> dict:
+    """
+    Convierte la instancia de un usuario en un diccionario genérico con sus atributos principales.
+
+    :param user: Instancia del modelo de usuario.
+    :type user: Any
+    :return: Diccionario con los datos del usuario.
+    :rtype: dict
+    """
     return {
         "id": getattr(user, "id", None),
         "uid": getattr(user, "uid", None),
@@ -83,7 +111,15 @@ def user_to_dict(user):
     }
 
 
-def device_to_dict(device):
+def device_to_dict(device) -> dict:
+    """
+    Convierte la instancia de un dispositivo biométrico en un diccionario serializable con alias múltiples.
+
+    :param device: Instancia del modelo de dispositivo.
+    :type device: Any
+    :return: Diccionario con los datos del dispositivo.
+    :rtype: dict
+    """
     return {
         "id": getattr(device, "id", None),
         "nombre": getattr(device, "nombre", None),
@@ -102,7 +138,15 @@ def device_to_dict(device):
     }
 
 
-def attendance_to_dict(record):
+def attendance_to_dict(record) -> dict:
+    """
+    Convierte un registro de asistencia en un diccionario serializable, utilizando su propio método si está disponible.
+
+    :param record: Instancia del registro de asistencia.
+    :type record: Any
+    :return: Diccionario con los datos de asistencia.
+    :rtype: dict
+    """
     if hasattr(record, "to_dict"):
         return record.to_dict()
 
@@ -125,6 +169,12 @@ def attendance_to_dict(record):
 
 @router.get("/", summary="Obtener sucursales")
 def get_branches():
+    """
+    Obtiene la lista completa de todas las sucursales registradas en el sistema.
+
+    :return: Respuesta estructurada con la lista de sucursales.
+    :rtype: dict
+    """
     branches = DBService.get_all_branches()
     data = [branch_to_dict(b) for b in branches]
 
@@ -136,6 +186,15 @@ def get_branches():
 
 @router.get("/{branch_id}", summary="Obtener sucursal por ID")
 def get_branch(branch_id: int):
+    """
+    Obtiene los detalles de una sucursal específica a partir de su identificador único.
+
+    :param branch_id: ID de la sucursal a consultar.
+    :type branch_id: int
+    :return: Respuesta estructurada con los datos de la sucursal.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si la sucursal no es encontrada.
+    """
     branch = DBService.get_branch_by_id(branch_id)
 
     if not branch:
@@ -149,6 +208,15 @@ def get_branch(branch_id: int):
 
 @router.get("/{branch_id}/dashboard", summary="Obtener dashboard de una sucursal")
 def get_branch_dashboard(branch_id: int):
+    """
+    Obtiene las métricas y estadísticas principales del dashboard para una sucursal específica.
+
+    :param branch_id: ID de la sucursal.
+    :type branch_id: int
+    :return: Respuesta estructurada con la información resumida del dashboard.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si la sucursal no es encontrada.
+    """
     branch = DBService.get_branch_by_id(branch_id)
 
     if not branch:
@@ -182,6 +250,15 @@ def get_branch_dashboard(branch_id: int):
 
 @router.get("/{branch_id}/users", summary="Obtener empleados de una sucursal")
 def get_branch_users(branch_id: int):
+    """
+    Obtiene la lista de empleados o usuarios asociados a una sucursal específica.
+
+    :param branch_id: ID de la sucursal.
+    :type branch_id: int
+    :return: Respuesta estructurada con la lista de empleados.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si la sucursal no es encontrada.
+    """
     branch = DBService.get_branch_by_id(branch_id)
 
     if not branch:
@@ -197,6 +274,15 @@ def get_branch_users(branch_id: int):
 
 @router.get("/{branch_id}/devices", summary="Obtener relojes de una sucursal")
 def get_branch_devices(branch_id: int):
+    """
+    Obtiene la lista de dispositivos biométricos vinculados a una sucursal específica.
+
+    :param branch_id: ID de la sucursal.
+    :type branch_id: int
+    :return: Respuesta estructurada con la lista de dispositivos.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si la sucursal no es encontrada.
+    """
     branch = DBService.get_branch_by_id(branch_id)
 
     if not branch:
@@ -212,6 +298,15 @@ def get_branch_devices(branch_id: int):
 
 @router.get("/{branch_id}/attendance", summary="Obtener asistencias de una sucursal")
 def get_branch_attendance(branch_id: int):
+    """
+    Obtiene los registros de asistencia asociados a una sucursal específica.
+
+    :param branch_id: ID de la sucursal.
+    :type branch_id: int
+    :return: Respuesta estructurada con los registros de asistencia.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si la sucursal no es encontrada.
+    """
     branch = DBService.get_branch_by_id(branch_id)
 
     if not branch:
@@ -227,6 +322,14 @@ def get_branch_attendance(branch_id: int):
 
 @router.post("/", summary="Crear sucursal")
 def create_branch(payload: BranchCreate):
+    """
+    Crea una nueva sucursal en el sistema y registra la acción en la bitácora.
+
+    :param payload: Datos necesarios para la creación de la sucursal.
+    :type payload: BranchCreate
+    :return: Respuesta estructurada con los datos de la sucursal creada.
+    :rtype: dict
+    """
     status = normalize_branch_status(payload.status)
 
     branch = DBService.create_branch(
@@ -249,6 +352,17 @@ def create_branch(payload: BranchCreate):
 
 @router.put("/{branch_id}", summary="Actualizar sucursal")
 def update_branch(branch_id: int, payload: BranchUpdate):
+    """
+    Actualiza la información de una sucursal existente y registra el cambio en la bitácora.
+
+    :param branch_id: ID de la sucursal a actualizar.
+    :type branch_id: int
+    :param payload: Datos actualizados de la sucursal.
+    :type payload: BranchUpdate
+    :return: Respuesta estructurada con la información de la sucursal actualizada.
+    :rtype: dict
+    :raises fastapi.HTTPException: Si la sucursal no es encontrada.
+    """
     status = payload.status
 
     if status is None and payload.is_active is not None:

@@ -5,6 +5,7 @@ from app.database.connection import Base
 
 
 class Device(Base):
+    """Modelo ORM representativo de la tabla de dispositivos (devices)."""
     __tablename__ = "devices"
 
     id = Column(Integer, primary_key=True)
@@ -47,6 +48,11 @@ class Device(Base):
     )
 
     def to_dict(self):
+        """Convierte la instancia del modelo en un diccionario.
+
+        :return: Un diccionario con los datos serializados del dispositivo, incluyendo alias para varios campos.
+        :rtype: dict
+        """
         return {
             "id": self.id,
             "name": self.name,

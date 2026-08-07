@@ -12,6 +12,14 @@ LOG_FILE = LOG_DIR / "app.log"
 
 
 def setup_logger(name: str = "app") -> logging.Logger:
+    """
+    Configura y devuelve la instancia de un logger con manejadores para consola y archivo.
+
+    :param name: Nombre que se le asignará al logger.
+    :type name: str
+    :return: La instancia del logger configurado.
+    :rtype: logging.Logger
+    """
     logger = logging.getLogger("app")
     logger.setLevel(logging.INFO)
     logger.propagate = False
@@ -39,15 +47,45 @@ def setup_logger(name: str = "app") -> logging.Logger:
 
 
 def get_logger(name: str = "app") -> logging.Logger:
+    """
+    Obtiene un logger configurado a partir de un nombre dado.
+
+    :param name: El nombre específico del logger que se desea obtener.
+    :type name: str
+    :return: El logger correspondiente al nombre solicitado.
+    :rtype: logging.Logger
+    """
     setup_logger()
     return logging.getLogger(name if name == "app" else f"app.{name}")
 
 
 def log_exception(logger: logging.Logger, exc: Exception, message: str = "Ocurrio una excepcion"):
+    """
+    Registra una excepción en el logger proporcionado junto con un mensaje y el rastreo de la pila.
+
+    :param logger: El logger donde se registrará la excepción.
+    :type logger: logging.Logger
+    :param exc: La excepción que ha ocurrido y se desea registrar.
+    :type exc: Exception
+    :param message: Mensaje descriptivo adicional sobre la excepción.
+    :type message: str
+    :return: No retorna ningún valor.
+    :rtype: None
+    """
     logger.exception(f"{message}: {str(exc)}")
 
 
 def log_error(logger: logging.Logger, exc: Exception, message: str):
+    """
+    Registra un mensaje de error en el logger proporcionado, incluyendo los detalles de la excepción.
+
+    :param logger: El logger donde se registrará el error.
+    :type logger: logging.Logger
+    :param exc: La excepción asociada al error.
+    :type exc: Exception
+    :param message: Mensaje descriptivo del error a registrar.
+    :type message: str
+    :return: No retorna ningún valor.
+    :rtype: None
+    """
     logger.error(f"{message}: {str(exc)}")
-
-

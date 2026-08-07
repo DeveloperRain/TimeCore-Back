@@ -31,6 +31,15 @@ DATE_FORMATS = (
 
 
 def parse_report_date(value: str):
+    """
+    Convierte una fecha de texto utilizando los formatos admitidos para los reportes.
+
+    :param value: Fecha que se debe interpretar.
+    :type value: str
+    :return: Fecha convertida a un objeto de fecha.
+    :rtype: datetime.date
+    :raises HTTPException: Si el valor no coincide con ninguno de los formatos admitidos.
+    """
     value = value.strip()
 
     for date_format in DATE_FORMATS:
@@ -47,8 +56,15 @@ def parse_report_date(value: str):
 
 def get_safe_end_datetime(parsed_end_date):
     """
-    Si la fecha final es hoy, no usamos 23:59:59 porque puede contar como futuro.
-    Mejor usamos datetime.now().
+    Obtiene la fecha y hora final segura para un rango de consulta.
+
+    Si la fecha indicada corresponde al día actual, utiliza la fecha y hora
+    presentes. En caso contrario, utiliza el último instante del día indicado.
+
+    :param parsed_end_date: Fecha final previamente interpretada.
+    :type parsed_end_date: datetime.date
+    :return: Fecha y hora que se utilizarán como límite final.
+    :rtype: datetime
     """
     today = datetime.now().date()
 
@@ -62,7 +78,16 @@ def get_target_device(
     branch_id: Optional[int] = None,
     device_id: Optional[int] = None,
 ):
-    """Obtiene el reloj exacto solicitado o el primero activo de la sucursal."""
+    """
+    Obtiene el dispositivo solicitado o el primer dispositivo activo disponible.
+
+    :param branch_id: Identificador opcional de la sucursal utilizada para filtrar dispositivos.
+    :type branch_id: int or None
+    :param device_id: Identificador opcional del dispositivo solicitado.
+    :type device_id: int or None
+    :return: Dispositivo activo encontrado o ``None`` si no existe uno válido.
+    :rtype: object or None
+    """
     if device_id is not None:
         device = DBService.get_device_by_id(device_id)
 
@@ -102,6 +127,17 @@ def get_users(
         description="Empleados por página. Máximo 1000 contando todas las sucursales.",
     ),
 ):
+    """
+    Obtiene usuarios del reloj biométrico, los sincroniza con la base de datos y pagina el resultado.
+
+    :param page: Número de página solicitado.
+    :type page: int
+    :param limit: Cantidad máxima de usuarios incluidos por página.
+    :type limit: int
+    :return: Respuesta paginada con los usuarios obtenidos.
+    :rtype: dict
+    :raises HTTPException: Si los datos son inválidos, el dispositivo no está disponible o ocurre un error durante la consulta.
+    """
     try:
         usuarios = ZKService.get_all_users()
 
@@ -147,6 +183,17 @@ def get_users(
     page: int = Query(1, ge=1, description="Número de página"),
     limit: int = Query(100, ge=1, le=1000, description="Items por página"),
 ):
+    """
+    Obtiene usuarios del reloj biométrico, valida la paginación y sincroniza los registros con la base de datos.
+
+    :param page: Número de página solicitado.
+    :type page: int
+    :param limit: Cantidad máxima de elementos incluidos por página.
+    :type limit: int
+    :return: Respuesta paginada con los usuarios obtenidos.
+    :rtype: dict
+    :raises HTTPException: Si la paginación es inválida, el dispositivo no está disponible o ocurre un error durante la consulta.
+    """
     try:
         from app.services.validators import DataValidator
 
@@ -199,6 +246,15 @@ def get_users(
     tags=["Usuarios"],
 )
 def get_next_uid_for_device(device_id: int):
+    """
+    Obtiene el siguiente UID disponible para un dispositivo registrado.
+
+    :param device_id: Identificador del dispositivo que se debe consultar.
+    :type device_id: int
+    :return: Respuesta con el dispositivo y el siguiente UID disponible.
+    :rtype: dict
+    :raises HTTPException: Si el dispositivo no existe, está inactivo o no se puede calcular el UID.
+    """
     device = DBService.get_device_by_id(device_id)
 
     if not device:
@@ -246,6 +302,17 @@ def copy_user_to_device(
     source_user_id: int,
     payload: UserCopyToDevice,
 ):
+    """
+    Crea una asignación independiente de un empleado en otro dispositivo.
+
+    :param source_user_id: Identificador interno del empleado de origen.
+    :type source_user_id: int
+    :param payload: Datos del dispositivo de destino.
+    :type payload: UserCopyToDevice
+    :return: Respuesta con la nueva asignación y los datos del dispositivo de destino.
+    :rtype: dict
+    :raises HTTPException: Si el empleado o el dispositivo no existen, el destino no es válido o falla la creación de la asignación.
+    """
     source_user = DBService.get_user_by_id(source_user_id)
     if not source_user:
         raise HTTPException(status_code=404, detail="Empleado de origen no encontrado")
@@ -353,6 +420,19 @@ def create_user(
         description="ID del reloj físico donde se creará el empleado",
     ),
 ):
+    """
+    Crea un usuario en un dispositivo biométrico y guarda su información en la base de datos.
+
+    :param user: Datos del usuario que se debe crear.
+    :type user: UserCreate
+    :param branch_id: Identificador opcional de la sucursal seleccionada.
+    :type branch_id: int or None
+    :param device_id: Identificador opcional del dispositivo donde se creará el usuario.
+    :type device_id: int or None
+    :return: Respuesta con los datos del usuario y del dispositivo asociado.
+    :rtype: dict
+    :raises HTTPException: Si el dispositivo no está disponible, el usuario está duplicado o ocurre un error durante la creación.
+    """
     try:
         device = get_target_device(branch_id=branch_id, device_id=device_id)
 
@@ -422,6 +502,17 @@ def create_user(
     tags=["Usuarios"],
 )
 def update_user_by_id(user_id: int, payload: UserUpdate):
+    """
+    Actualiza un empleado específico mediante su identificador interno.
+
+    :param user_id: Identificador interno del empleado que se debe actualizar.
+    :type user_id: int
+    :param payload: Datos del empleado que se deben modificar.
+    :type payload: UserUpdate
+    :return: Respuesta con el resultado de la actualización.
+    :rtype: dict
+    :raises HTTPException: Si no se proporcionan cambios, el empleado o su dispositivo no están disponibles o la actualización falla.
+    """
     if not payload.user_id and not payload.name and not payload.role:
         raise HTTPException(
             status_code=400,
@@ -511,6 +602,19 @@ def update_user(
         description="ID de sucursal para usar el reloj y contraseña correctos",
     ),
 ):
+    """
+    Actualiza un usuario en un dispositivo biométrico y sincroniza los cambios con la base de datos.
+
+    :param uid: UID del usuario que se debe actualizar.
+    :type uid: int
+    :param user: Datos que se deben modificar.
+    :type user: UserUpdate
+    :param branch_id: Identificador opcional de la sucursal utilizada para seleccionar el dispositivo.
+    :type branch_id: int or None
+    :return: Respuesta con los datos actualizados del usuario.
+    :rtype: dict
+    :raises HTTPException: Si no se proporcionan cambios, el dispositivo no está disponible o la actualización falla.
+    """
     try:
         if not user.user_id and not user.name and not user.role:
             raise HTTPException(
@@ -578,6 +682,17 @@ def delete_user(
         description="ID de sucursal para usar el reloj y contraseña correctos",
     ),
 ):
+    """
+    Elimina un usuario del dispositivo biométrico y conserva su información histórica en la base de datos.
+
+    :param uid: UID del usuario que se debe eliminar.
+    :type uid: int
+    :param branch_id: Identificador opcional de la sucursal utilizada para seleccionar el dispositivo.
+    :type branch_id: int or None
+    :return: Respuesta con el UID eliminado.
+    :rtype: dict
+    :raises HTTPException: Si el dispositivo no está disponible, el usuario no existe o la eliminación falla.
+    """
     try:
         device = get_target_device(branch_id)
 
@@ -626,6 +741,17 @@ def get_attendance(
     page: int = Query(1, ge=1, description="Número de página"),
     limit: int = Query(20, ge=1, le=1000, description="Items por página"),
 ):
+    """
+    Obtiene registros de asistencia del dispositivo, los sincroniza con la base de datos y pagina el resultado.
+
+    :param page: Número de página solicitado.
+    :type page: int
+    :param limit: Cantidad máxima de registros incluidos por página.
+    :type limit: int
+    :return: Respuesta paginada con los registros de asistencia.
+    :rtype: dict
+    :raises HTTPException: Si la paginación es inválida, el dispositivo no está disponible o ocurre un error durante la consulta.
+    """
     try:
         from app.services.validators import DataValidator
 
@@ -691,6 +817,21 @@ def download_attendance_excel(
         description="Token opcional enviado desde el frontend",
     ),
 ):
+    """
+    Genera un archivo Excel con registros de asistencia filtrados por modo o rango de fechas.
+
+    :param modo: Modo de filtrado aplicado a los registros.
+    :type modo: str
+    :param start_date: Fecha inicial opcional del rango.
+    :type start_date: str or None
+    :param end_date: Fecha final opcional del rango.
+    :type end_date: str or None
+    :param token: Token opcional recibido desde el cliente.
+    :type token: str or None
+    :return: Respuesta de descarga con el archivo Excel generado.
+    :rtype: StreamingResponse
+    :raises HTTPException: Si los filtros o el rango son inválidos o no se puede generar el archivo.
+    """
     try:
         from app.services.validators import DataValidator
 
@@ -763,6 +904,12 @@ def download_attendance_excel(
     tags=["Asistencia"],
 )
 def get_attendance_dates():
+    """
+    Obtiene las fechas que contienen registros de asistencia y sus totales.
+
+    :return: Respuesta con el resumen de fechas encontradas.
+    :rtype: dict
+    """
     try:
         dates_summary = DBService.get_attendance_dates_summary()
 
@@ -792,6 +939,17 @@ def get_attendance_report(
         description="Fecha final. Formato: YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY",
     ),
 ):
+    """
+    Obtiene registros de asistencia filtrados por un rango de fechas.
+
+    :param start_date: Fecha inicial del reporte.
+    :type start_date: str
+    :param end_date: Fecha final del reporte.
+    :type end_date: str
+    :return: Respuesta con los registros incluidos en el rango.
+    :rtype: dict
+    :raises HTTPException: Si las fechas o el rango son inválidos o la consulta falla.
+    """
     try:
         from app.services.validators import DataValidator
 
@@ -836,6 +994,17 @@ def download_attendance_report(
         description="Fecha final. Formato: YYYY-MM-DD, DD-MM-YYYY o DD/MM/YYYY",
     ),
 ):
+    """
+    Genera un archivo Excel con registros de asistencia filtrados por fechas.
+
+    :param start_date: Fecha inicial del reporte.
+    :type start_date: str
+    :param end_date: Fecha final del reporte.
+    :type end_date: str
+    :return: Respuesta de descarga con el archivo Excel generado.
+    :rtype: StreamingResponse
+    :raises HTTPException: Si las fechas o el rango son inválidos o no se puede generar el archivo.
+    """
     try:
         from app.services.validators import DataValidator
 

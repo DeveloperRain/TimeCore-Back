@@ -20,9 +20,30 @@ router = APIRouter(
 
 
 def sync_registered_device(device, fail_fast: bool = False):
+    """
+    Sincroniza los usuarios y las asistencias de un dispositivo registrado.
+
+    :param device: Dispositivo biométrico registrado que se debe sincronizar.
+    :type device: object
+    :param fail_fast: Indica si la sincronización debe detenerse inmediatamente ante una desconexión.
+    :type fail_fast: bool
+    :return: Resumen de los usuarios, asistencias y estado del reloj procesados.
+    :rtype: dict
+    :raises DeviceClockDriftError: Si la fecha u hora del dispositivo presenta un desfase no permitido.
+    :raises DeviceDisconnectedDuringSyncError: Si el dispositivo pierde la conexión durante la sincronización.
+    :raises TimeCoreError: Si ocurre un error controlado durante la sincronización.
+    """
     disconnect_notified = False
 
     def mark_disconnected(details=None):
+        """
+        Registra la desconexión del dispositivo durante la sincronización.
+
+        :param details: Detalles opcionales relacionados con la desconexión.
+        :type details: dict or None
+        :return: No devuelve ningún valor.
+        :rtype: None
+        """
         nonlocal disconnect_notified
         if disconnect_notified:
             return
@@ -134,6 +155,13 @@ def sync_registered_device(device, fail_fast: bool = False):
 
 @router.post("/users", summary="Sincronizar usuarios del reloj a PostgreSQL")
 def sync_users():
+    """
+    Sincroniza los usuarios del reloj biométrico con la base de datos.
+
+    :return: Respuesta con la cantidad de usuarios sincronizados.
+    :rtype: dict
+    :raises HTTPException: Si ocurre un error durante la obtención o almacenamiento de los usuarios.
+    """
     try:
         usuarios = ZKService.get_all_users()
 
@@ -163,6 +191,13 @@ def sync_users():
 
 @router.post("/attendance", summary="Sincronizar asistencias del reloj a PostgreSQL")
 def sync_attendance():
+    """
+    Sincroniza los registros de asistencia del reloj biométrico con la base de datos.
+
+    :return: Respuesta con la cantidad de asistencias sincronizadas.
+    :rtype: dict
+    :raises HTTPException: Si ocurre un error durante la obtención o almacenamiento de las asistencias.
+    """
     try:
         asistencias = ZKService.get_attendance_records()
 
@@ -188,6 +223,13 @@ def sync_attendance():
 
 @router.post("/all", summary="Sincronizar usuarios y asistencias")
 def sync_all():
+    """
+    Sincroniza los usuarios y las asistencias del reloj biométrico.
+
+    :return: Respuesta con las cantidades de usuarios y asistencias sincronizados.
+    :rtype: dict
+    :raises HTTPException: Si ocurre un error durante la sincronización completa.
+    """
     try:
         usuarios = ZKService.get_all_users()
 
@@ -229,6 +271,21 @@ def sync_all():
     
 @router.post("/device/{device_id}", summary="Sincronizar reloj seleccionado por ID")
 def sync_device_by_id(device_id: int, fail_fast: bool = False):
+    """
+    Sincroniza un dispositivo biométrico registrado mediante su identificador.
+
+    :param device_id: Identificador del dispositivo que se debe sincronizar.
+    :type device_id: int
+    :param fail_fast: Indica si la sincronización debe detenerse inmediatamente ante una desconexión.
+    :type fail_fast: bool
+    :return: Respuesta con el resultado de la sincronización del dispositivo.
+    :rtype: dict
+    :raises HTTPException: Si el dispositivo no existe o se produce un error HTTP controlado.
+    :raises DeviceClockDriftError: Si la fecha u hora del dispositivo presenta un desfase no permitido.
+    :raises DeviceDisconnectedDuringSyncError: Si el dispositivo pierde la conexión durante la sincronización.
+    :raises TimeCoreError: Si ocurre un error controlado durante la sincronización.
+    :raises SyncError: Si ocurre un error no controlado al sincronizar el dispositivo.
+    """
     try:
         device = DBService.get_device_by_id(device_id)
 
@@ -336,6 +393,12 @@ def sync_device_by_id(device_id: int, fail_fast: bool = False):
 
 @router.post("/devices/all", summary="Sincronizar todos los relojes registrados")
 def sync_all_registered_devices():
+    """
+    Sincroniza todos los dispositivos activos y disponibles registrados.
+
+    :return: Respuesta con el resumen de dispositivos sincronizados, omitidos y fallidos.
+    :rtype: dict
+    """
     devices = DBService.get_all_devices()
     active_devices = [
         device

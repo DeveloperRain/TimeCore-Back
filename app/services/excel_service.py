@@ -6,6 +6,14 @@ from zipfile import ZIP_DEFLATED, ZipFile
 
 
 def column_name(index: int) -> str:
+    """
+    Convierte un índice numérico de columna en su nombre equivalente de Excel.
+
+    :param index: Índice de columna basado en uno.
+    :type index: int
+    :return: Nombre alfabético de la columna.
+    :rtype: str
+    """
     name = ""
 
     while index:
@@ -16,6 +24,18 @@ def column_name(index: int) -> str:
 
 
 def text_cell(reference: str, value: Any, style: int | None = None) -> str:
+    """
+    Genera la representación XML de una celda de texto para una hoja de cálculo.
+
+    :param reference: Referencia de la celda, por ejemplo ``A1``.
+    :type reference: str
+    :param value: Valor que se debe escribir en la celda.
+    :type value: Any
+    :param style: Identificador opcional del estilo aplicado a la celda.
+    :type style: int or None
+    :return: Fragmento XML correspondiente a la celda.
+    :rtype: str
+    """
     style_attr = f' s="{style}"' if style is not None else ""
     value = "" if value is None else str(value)
 
@@ -27,6 +47,14 @@ def text_cell(reference: str, value: Any, style: int | None = None) -> str:
 
 
 def parse_datetime(value: Any) -> tuple[str, str]:
+    """
+    Separa un valor de fecha y hora en cadenas de fecha y hora.
+
+    :param value: Valor de fecha y hora que se debe interpretar.
+    :type value: Any
+    :return: Tupla con la fecha y la hora formateadas.
+    :rtype: tuple[str, str]
+    """
     if not value:
         return "", ""
 
@@ -61,6 +89,14 @@ def parse_datetime(value: Any) -> tuple[str, str]:
 
 
 def normalize_status(value: Any) -> str:
+    """
+    Normaliza el estado de una asistencia a una etiqueta en español.
+
+    :param value: Estado original que se debe normalizar.
+    :type value: Any
+    :return: Etiqueta normalizada del tipo de registro.
+    :rtype: str
+    """
     status = "" if value is None else str(value).strip().lower()
 
     translations = {
@@ -79,6 +115,18 @@ def normalize_status(value: Any) -> str:
 
 
 def get_value(record: Dict[str, Any], *keys: str, default: str = "") -> Any:
+    """
+    Obtiene el primer valor no vacío encontrado entre varias claves.
+
+    :param record: Diccionario que contiene los datos del registro.
+    :type record: dict[str, Any]
+    :param keys: Claves que se deben consultar en el orden recibido.
+    :type keys: str
+    :param default: Valor devuelto cuando ninguna clave contiene información válida.
+    :type default: str
+    :return: Primer valor válido encontrado o el valor predeterminado.
+    :rtype: Any
+    """
     for key in keys:
         value = record.get(key)
 
@@ -89,6 +137,14 @@ def get_value(record: Dict[str, Any], *keys: str, default: str = "") -> Any:
 
 
 def build_sheet(rows: List[List[Any]]) -> str:
+    """
+    Construye el contenido XML de una hoja de cálculo con sus filas y celdas.
+
+    :param rows: Filas que se deben incluir en la hoja.
+    :type rows: list[list[Any]]
+    :return: Documento XML de la hoja de cálculo.
+    :rtype: str
+    """
     sheet_rows = []
 
     for row_index, row in enumerate(rows, start=1):
@@ -119,6 +175,14 @@ def build_sheet(rows: List[List[Any]]) -> str:
 
 
 def build_attendance_excel(records: List[Dict[str, Any]]) -> bytes:
+    """
+    Genera un archivo Excel con registros de asistencia.
+
+    :param records: Registros de asistencia que se deben exportar.
+    :type records: list[dict[str, Any]]
+    :return: Contenido binario del archivo Excel generado.
+    :rtype: bytes
+    """
     rows = [[
         "Sucursal",
         "Código",
@@ -196,7 +260,18 @@ def build_attendance_excel(records: List[Dict[str, Any]]) -> bytes:
 
 
 def build_payroll_excel(title: str, columns: List[str], rows_data: List[Dict[str, Any]]) -> bytes:
-    """Genera la prenómina en Excel, incluyendo incidencias y sus colores."""
+    """
+    Genera un archivo Excel de prenómina con incidencias y colores de celda.
+
+    :param title: Título principal del archivo de prenómina.
+    :type title: str
+    :param columns: Encabezados de las columnas del reporte.
+    :type columns: list[str]
+    :param rows_data: Registros que se deben escribir en la hoja.
+    :type rows_data: list[dict[str, Any]]
+    :return: Contenido binario del archivo Excel generado.
+    :rtype: bytes
+    """
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
     from openpyxl.utils import get_column_letter

@@ -50,10 +50,26 @@ ATTENDANCE_STATUS = {
 
 
 def role_to_privilege(role: str) -> int:
+    """
+    Convierte un rol de usuario en el privilegio numérico utilizado por el reloj.
+
+    :param role: Rol que se debe convertir.
+    :type role: str
+    :return: Privilegio numérico correspondiente al rol.
+    :rtype: int
+    """
     return ROLE_PRIVILEGES.get(role, ROLE_PRIVILEGES["usuario"])
 
 
 def privilege_to_role(privilege) -> str:
+    """
+    Convierte un privilegio numérico del reloj en un rol de la aplicación.
+
+    :param privilege: Privilegio numérico que se debe interpretar.
+    :type privilege: Any
+    :return: Rol equivalente al privilegio recibido.
+    :rtype: str
+    """
     try:
         return "admin" if int(privilege) == ROLE_PRIVILEGES["admin"] else "usuario"
     except (TypeError, ValueError):
@@ -61,14 +77,27 @@ def privilege_to_role(privilege) -> str:
 
 
 def normalize_user_id(user_id) -> str:
+    """
+    Normaliza el identificador de un usuario como texto sin espacios externos.
+
+    :param user_id: Identificador del usuario.
+    :type user_id: Any
+    :return: Identificador normalizado.
+    :rtype: str
+    """
     return str(user_id).strip()
 
 
 def normalize_attendance_status(status, punch=None) -> str:
-    """Normaliza el tipo de marcación reportado por distintos modelos ZKTeco.
+    """
+    Normaliza el tipo de marcación reportado por distintos modelos de reloj.
 
-    Algunos equipos colocan el valor útil en ``punch`` y devuelven 255 o None
-    en ``status``. Se usa ``status`` cuando es reconocido y, si no, ``punch``.
+    :param status: Estado de asistencia reportado por el dispositivo.
+    :type status: Any
+    :param punch: Tipo alternativo de marcación reportado por el dispositivo.
+    :type punch: Any or None
+    :return: Estado de asistencia reconocido por la aplicación.
+    :rtype: str
     """
     for value in (status, punch):
         try:
@@ -90,6 +119,12 @@ def normalize_attendance_status(status, punch=None) -> str:
 
 @dataclass
 class _DisconnectLatch:
+    """
+    Mantiene el estado temporal de una desconexión detectada.
+
+    Almacena el momento de la desconexión, los intentos de recuperación
+    satisfactorios y una razón opcional asociada al evento.
+    """
     disconnected_at: float = field(default_factory=time_module.monotonic)
     recovery_successes: int = 0
     reason: Optional[str] = None
@@ -97,6 +132,12 @@ class _DisconnectLatch:
 
 @dataclass
 class _SyncMonitorState:
+    """
+    Conserva el estado utilizado por el monitor de una sincronización.
+
+    Incluye la conexión vigilada, los eventos de control, el estado de
+    conectividad y los datos necesarios para detener o cancelar la operación.
+    """
     key: str
     ip: str
     port: int
@@ -114,6 +155,18 @@ class _SyncMonitorState:
 
 
 def call_if_available(conn, method_name: str, default: str = "Desconocido"):
+    """
+    Ejecuta un método de la conexión cuando está disponible y controla valores o errores.
+
+    :param conn: Conexión activa o potencial con el dispositivo.
+    :type conn: Any
+    :param method_name: Nombre del método que se debe ejecutar.
+    :type method_name: str
+    :param default: Valor utilizado cuando el método no está disponible o falla.
+    :type default: str
+    :return: Valor devuelto por el método o el valor predeterminado.
+    :rtype: Any
+    """
     method = getattr(conn, method_name, None)
 
     if not callable(method):
@@ -128,6 +181,12 @@ def call_if_available(conn, method_name: str, default: str = "Desconocido"):
 
 
 class ZKService:
+    """
+    Proporciona operaciones de comunicación y sincronización con relojes ZKTeco.
+
+    Gestiona conexiones, usuarios, asistencias, estado del dispositivo,
+    sincronización de hora y detección de desconexiones durante operaciones.
+    """
     _device_locks: Dict[str, threading.RLock] = {}
     _device_locks_guard = threading.Lock()
     _sync_states: Dict[str, _SyncMonitorState] = {}
@@ -138,10 +197,30 @@ class ZKService:
 
     @staticmethod
     def _device_key(ip: str = None, port: int = None) -> str:
+        """
+        Construye la clave interna utilizada para identificar un dispositivo.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: Clave compuesta por dirección IP y puerto.
+        :rtype: str
+        """
         return f"{ip or IP_RELOJ}:{int(port or PORT)}"
 
     @staticmethod
     def _get_device_lock(ip: str = None, port: int = None) -> threading.RLock:
+        """
+        Obtiene o crea el bloqueo reentrante asociado a un dispositivo.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: Bloqueo asociado al dispositivo.
+        :rtype: threading.RLock
+        """
         key = ZKService._device_key(ip, port)
         with ZKService._device_locks_guard:
             lock = ZKService._device_locks.get(key)
@@ -153,6 +232,16 @@ class ZKService:
     @staticmethod
     @contextmanager
     def _locked_device(ip: str = None, port: int = None):
+        """
+        Controla el acceso exclusivo a las operaciones de un dispositivo.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str or None
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int or None
+        :return: Contexto que mantiene bloqueado el dispositivo durante la operación.
+        :rtype: Iterator[None]
+        """
         lock = ZKService._get_device_lock(ip, port)
         lock.acquire()
         try:
@@ -166,11 +255,17 @@ class ZKService:
         port: int = None,
         reason: Optional[str] = None,
     ) -> None:
-        """Fija un estado desconectado estable hasta confirmar recuperación.
+        """
+        Registra un estado de desconexión estable para un dispositivo.
 
-        Evita que una respuesta vieja, un socket ocupado o un único sondeo TCP
-        exitoso vuelvan a publicar ``Conectado`` inmediatamente después de que
-        el watchdog canceló una sincronización.
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param reason: Razón opcional asociada a la desconexión.
+        :type reason: str or None
+        :return: No devuelve ningún valor.
+        :rtype: None
         """
         key = ZKService._device_key(ip, port)
         now = time_module.monotonic()
@@ -184,7 +279,16 @@ class ZKService:
 
     @staticmethod
     def mark_device_connected(ip: str = None, port: int = None) -> None:
-        """Confirma conexión mediante una operación real completada."""
+        """
+        Registra una conexión confirmada mediante una operación real completada.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: No devuelve ningún valor.
+        :rtype: None
+        """
         key = ZKService._device_key(ip, port)
         now = time_module.monotonic()
         with ZKService._status_guard:
@@ -193,12 +297,32 @@ class ZKService:
 
     @staticmethod
     def is_disconnect_latched(ip: str = None, port: int = None) -> bool:
+        """
+        Comprueba si un dispositivo conserva un estado de desconexión fijado.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: Indica si existe un estado de desconexión fijado.
+        :rtype: bool
+        """
         key = ZKService._device_key(ip, port)
         with ZKService._status_guard:
             return key in ZKService._disconnect_latches
 
     @staticmethod
     def _get_cached_status(ip: str = None, port: int = None) -> Optional[bool]:
+        """
+        Obtiene el estado de conexión almacenado en caché cuando sigue vigente.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: Estado almacenado o ``None`` si no existe o expiró.
+        :rtype: bool or None
+        """
         key = ZKService._device_key(ip, port)
         now = time_module.monotonic()
         with ZKService._status_guard:
@@ -212,12 +336,32 @@ class ZKService:
 
     @staticmethod
     def _get_sync_state(ip: str = None, port: int = None) -> Optional[_SyncMonitorState]:
+        """
+        Obtiene el estado interno del monitor de sincronización de un dispositivo.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: Estado interno de sincronización o ``None``.
+        :rtype: _SyncMonitorState or None
+        """
         key = ZKService._device_key(ip, port)
         with ZKService._sync_states_guard:
             return ZKService._sync_states.get(key)
 
     @staticmethod
     def get_sync_state(ip: str = None, port: int = None) -> Optional[Dict[str, Any]]:
+        """
+        Obtiene una representación serializable del estado de sincronización.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :return: Datos del monitor de sincronización o ``None`` si no hay una operación activa.
+        :rtype: dict[str, Any] or None
+        """
         state = ZKService._get_sync_state(ip, port)
         if state is None:
             return None
@@ -236,6 +380,16 @@ class ZKService:
 
     @staticmethod
     def _ping_device(ip: str, timeout: float = SYNC_MONITOR_PROBE_TIMEOUT_SECONDS) -> bool:
+        """
+        Comprueba la disponibilidad de un dispositivo mediante una solicitud de ping.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param timeout: Tiempo máximo de espera expresado en segundos.
+        :type timeout: float
+        :return: Indica si el dispositivo respondió al sondeo.
+        :rtype: bool
+        """
         system = platform.system().lower()
         timeout = max(0.25, float(timeout))
 
@@ -258,6 +412,18 @@ class ZKService:
 
     @staticmethod
     def _tcp_probe(ip: str, port: int, timeout: float = SYNC_MONITOR_PROBE_TIMEOUT_SECONDS) -> bool:
+        """
+        Comprueba la disponibilidad de un puerto mediante una conexión TCP breve.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param timeout: Tiempo máximo de espera expresado en segundos.
+        :type timeout: float
+        :return: Indica si la conexión TCP pudo establecerse.
+        :rtype: bool
+        """
         try:
             with socket.create_connection((ip, int(port or PORT)), timeout=max(0.25, timeout)):
                 return True
@@ -266,11 +432,13 @@ class ZKService:
 
     @staticmethod
     def _force_close_connection(conn) -> None:
-        """Cierra el socket interno de PyZK sin enviar CMD_EXIT.
+        """
+        Cierra de forma forzada el socket interno de una conexión PyZK.
 
-        Se usa únicamente cuando el watchdog detecta que el cable o la red se
-        perdieron. Al cerrar el socket, cualquier ``recv`` bloqueado de PyZK
-        termina de inmediato y la sincronización se cancela.
+        :param conn: Conexión activa o potencial con el dispositivo.
+        :type conn: Any
+        :return: No devuelve ningún valor.
+        :rtype: None
         """
         if conn is None:
             return
@@ -293,6 +461,14 @@ class ZKService:
 
     @staticmethod
     def _configure_socket_keepalive(conn) -> None:
+        """
+        Configura opciones de mantenimiento de conexión en el socket TCP de PyZK.
+
+        :param conn: Conexión activa o potencial con el dispositivo.
+        :type conn: Any
+        :return: No devuelve ningún valor.
+        :rtype: None
+        """
         sock = getattr(conn, "_ZK__sock", None)
         if sock is None or not bool(getattr(conn, "tcp", False)):
             return
@@ -319,6 +495,22 @@ class ZKService:
         on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None,
         fail_fast: bool = False,
     ) -> _SyncMonitorState:
+        """
+        Inicia un monitor independiente para detectar desconexiones durante una sincronización.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param conn: Conexión activa o potencial con el dispositivo.
+        :type conn: Any
+        :param on_disconnect: Función opcional invocada cuando se detecta una desconexión.
+        :type on_disconnect: Callable[[Dict[str, Any]], None] or None
+        :param fail_fast: Indica si deben omitirse intentos adicionales de conexión.
+        :type fail_fast: bool
+        :return: Estado del monitor de sincronización iniciado.
+        :rtype: _SyncMonitorState
+        """
         key = ZKService._device_key(ip, port)
         ping_available = ZKService._ping_device(ip)
         tcp_probe_available = (
@@ -346,6 +538,12 @@ class ZKService:
             ZKService._sync_states[key] = state
 
         def monitor() -> None:
+            """
+            Vigila periódicamente la conectividad del dispositivo durante una sincronización.
+
+            :return: No devuelve ningún valor.
+            :rtype: None
+            """
             while not state.stop_event.wait(SYNC_MONITOR_INTERVAL_SECONDS):
                 if state.probe_mode == "ping":
                     reachable = ZKService._ping_device(
@@ -425,6 +623,14 @@ class ZKService:
 
     @staticmethod
     def _stop_sync_monitor(state: Optional[_SyncMonitorState]) -> None:
+        """
+        Detiene un monitor de sincronización y elimina su estado interno.
+
+        :param state: Estado opcional del monitor de sincronización.
+        :type state: _SyncMonitorState or None
+        :return: No devuelve ningún valor.
+        :rtype: None
+        """
         if state is None:
             return
 
@@ -441,6 +647,17 @@ class ZKService:
         state: Optional[_SyncMonitorState],
         stage: str,
     ) -> None:
+        """
+        Interrumpe la operación cuando el monitor marcó la sincronización como cancelada.
+
+        :param state: Estado opcional del monitor de sincronización.
+        :type state: _SyncMonitorState or None
+        :param stage: Etapa de la operación en la que se comprueba la cancelación.
+        :type stage: str
+        :return: No devuelve ningún valor.
+        :rtype: None
+        :raises DeviceDisconnectedDuringSyncError: Si la sincronización fue cancelada por una desconexión.
+        """
         if state is None or not state.cancel_event.is_set():
             return
 
@@ -456,6 +673,18 @@ class ZKService:
 
     @staticmethod
     def check_device_status(ip: str, port: int = PORT, timeout: int = 2) -> bool:
+        """
+        Comprueba el estado de conexión de un dispositivo respetando monitores, bloqueos y caché.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param timeout: Tiempo máximo de espera expresado en segundos.
+        :type timeout: int
+        :return: Indica si el dispositivo se considera conectado.
+        :rtype: bool
+        """
         target_port = int(port or PORT)
         key = ZKService._device_key(ip, target_port)
 
@@ -548,6 +777,23 @@ class ZKService:
         password: str = None,
         fail_fast: bool = False,
     ):
+        """
+        Crea una conexión con el reloj utilizando los modos de comunicación disponibles.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :param fail_fast: Indica si deben omitirse intentos adicionales de conexión.
+        :type fail_fast: bool
+        :return: Conexión activa con el dispositivo.
+        :rtype: Any
+        :raises DeviceAuthenticationError: Si el dispositivo rechaza la contraseña.
+        :raises DeviceTimeoutError: Si se agota el tiempo de conexión.
+        :raises DeviceUnavailableError: Si no es posible comunicarse con el dispositivo.
+        """
         target_ip = ip or IP_RELOJ
         target_port = int(port or PORT)
 
@@ -634,6 +880,14 @@ class ZKService:
 
     @staticmethod
     def _disconnect(conn):
+        """
+        Cierra una conexión activa con el dispositivo.
+
+        :param conn: Conexión activa o potencial con el dispositivo.
+        :type conn: Any
+        :return: No devuelve ningún valor.
+        :rtype: None
+        """
         try:
             conn.disconnect()
         except Exception as e:
@@ -645,6 +899,19 @@ class ZKService:
         server_time: datetime = None,
         max_drift_seconds: int = MAX_CLOCK_DRIFT_SECONDS,
     ) -> Dict[str, Any]:
+        """
+        Compara la hora del dispositivo con la hora del servidor y calcula el desfase.
+
+        :param device_time: Fecha y hora reportadas por el dispositivo.
+        :type device_time: Any
+        :param server_time: Fecha y hora opcionales del servidor utilizadas para la comparación.
+        :type server_time: datetime
+        :param max_drift_seconds: Desfase máximo permitido expresado en segundos.
+        :type max_drift_seconds: int
+        :return: Resumen del estado de sincronización de fecha y hora.
+        :rtype: dict[str, Any]
+        :raises DeviceUnavailableError: Si el dispositivo no devuelve una fecha y hora válidas.
+        """
         if not isinstance(device_time, datetime):
             raise DeviceUnavailableError(
                 "El reloj no devolvió una fecha y hora válidas"
@@ -680,6 +947,20 @@ class ZKService:
         password: str = None,
         max_drift_seconds: int = MAX_CLOCK_DRIFT_SECONDS,
     ) -> Dict[str, Any]:
+        """
+        Obtiene la hora del dispositivo y la compara con la hora del servidor.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :param max_drift_seconds: Desfase máximo permitido expresado en segundos.
+        :type max_drift_seconds: int
+        :return: Resumen del estado de sincronización de fecha y hora.
+        :rtype: dict[str, Any]
+        """
         conn = None
 
         with ZKService._locked_device(ip, port):
@@ -703,12 +984,20 @@ class ZKService:
         password: str = None,
         max_drift_seconds: int = MAX_CLOCK_DRIFT_SECONDS,
     ) -> Dict[str, Any]:
-        """Ajusta la hora del reloj y verifica el cambio con una conexión nueva.
+        """
+        Ajusta la hora del dispositivo y verifica el resultado mediante una conexión nueva.
 
-        Algunos modelos ZKTeco aceptan ``set_time`` sin devolver error, pero la
-        lectura inmediata en la misma sesión puede conservar un valor anterior.
-        Por eso se escribe, se cierra la sesión y se vuelve a conectar para
-        comprobar que el cambio quedó realmente aplicado en el dispositivo.
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :param max_drift_seconds: Desfase máximo permitido expresado en segundos.
+        :type max_drift_seconds: int
+        :return: Estado verificado de la fecha y hora después del ajuste.
+        :rtype: dict[str, Any]
+        :raises DeviceClockDriftError: Si el dispositivo continúa desfasado después de los intentos de ajuste.
         """
         target_ip = ip or IP_RELOJ
         target_port = int(port or PORT)
@@ -823,6 +1112,18 @@ class ZKService:
 
     @staticmethod
     def get_device_info(ip: str = None, port: int = None, password: str = None) -> Dict[str, Any]:
+        """
+        Obtiene información general y de red disponible del dispositivo.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :return: Datos generales del dispositivo.
+        :rtype: dict[str, Any]
+        """
         conn = None
         target_ip = ip or IP_RELOJ
 
@@ -852,6 +1153,18 @@ class ZKService:
 
     @staticmethod
     def get_all_users(ip: str = None, port: int = None, password: str = None) -> List[Dict[str, Any]]:
+        """
+        Obtiene y normaliza todos los usuarios registrados en el dispositivo.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :return: Lista de usuarios obtenidos del reloj.
+        :rtype: list[dict[str, Any]]
+        """
         conn = None
 
         with ZKService._locked_device(ip, port):
@@ -880,11 +1193,23 @@ class ZKService:
         on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None,
         fail_fast: bool = False,
     ) -> Dict[str, Any]:
-        """Lee usuarios y asistencias usando una sola sesión vigilada.
+        """
+        Lee usuarios, asistencias y estado de hora mediante una única sesión vigilada.
 
-        Un watchdog independiente comprueba la conectividad mientras PyZK lee
-        los datos. Si el reloj se desconecta, el watchdog cierra el socket para
-        interrumpir cualquier lectura bloqueada y lanza un error controlado.
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :param on_disconnect: Función opcional invocada cuando se detecta una desconexión.
+        :type on_disconnect: Callable[[Dict[str, Any]], None] or None
+        :param fail_fast: Indica si deben omitirse intentos adicionales de conexión.
+        :type fail_fast: bool
+        :return: Datos de usuarios, asistencias y estado de hora del dispositivo.
+        :rtype: dict[str, Any]
+        :raises DeviceClockDriftError: Si la fecha y hora del dispositivo están fuera del límite permitido.
+        :raises DeviceDisconnectedDuringSyncError: Si se pierde la conexión durante la lectura.
         """
         conn = None
         monitor_state: Optional[_SyncMonitorState] = None
@@ -1095,6 +1420,27 @@ class ZKService:
         port: int = None,
         password: str = None,
     ) -> Dict[str, Any]:
+        """
+        Crea un usuario en el dispositivo después de comprobar que no exista un duplicado.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param name: Nombre del usuario.
+        :type name: str
+        :param role: Rol que se debe convertir.
+        :type role: str
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :return: Resultado de la creación y datos del usuario.
+        :rtype: dict[str, Any]
+        :raises DuplicateUserError: Si el UID o el identificador del usuario ya están registrados.
+        """
         from app.exceptions import DuplicateUserError
 
         conn = None
@@ -1178,10 +1524,23 @@ class ZKService:
         port: int = None,
         password: str = None,
     ) -> Dict[str, Any]:
-        """Crea un usuario usando la siguiente UID real del reloj.
+        """
+        Crea un usuario utilizando el siguiente UID disponible en el dispositivo.
 
-        Consulta los usuarios y crea la nueva asignacion dentro de la misma
-        conexion para reducir colisiones y sesiones simultaneas.
+        :param name: Nombre del usuario.
+        :type name: str
+        :param role: Rol que se debe convertir.
+        :type role: str
+        :param minimum_uid: UID mínimo que se debe considerar para la nueva asignación.
+        :type minimum_uid: int
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :return: Resultado de la creación y datos del usuario.
+        :rtype: dict[str, Any]
         """
         conn = None
 
@@ -1259,6 +1618,27 @@ class ZKService:
         port: int = None,
         password: str = None,
     ) -> Dict[str, Any]:
+        """
+        Actualiza los datos de un usuario existente en el dispositivo.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param name: Nombre del usuario.
+        :type name: str
+        :param role: Rol que se debe convertir.
+        :type role: str
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :return: Resultado de la actualización y datos del usuario.
+        :rtype: dict[str, Any]
+        :raises ValueError: Si no existe un usuario con el UID indicado.
+        """
         conn = None
 
         try:
@@ -1304,6 +1684,21 @@ class ZKService:
 
     @staticmethod
     def delete_user(uid: int, ip: str = None, port: int = None, password: str = None) -> Dict[str, Any]:
+        """
+        Elimina un usuario del dispositivo mediante su UID.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :return: Resultado de la eliminación.
+        :rtype: dict[str, Any]
+        :raises ValueError: Si no existe un usuario con el UID indicado.
+        """
         conn = None
 
         try:
@@ -1337,6 +1732,20 @@ class ZKService:
         password: str = None,
         on_disconnect: Optional[Callable[[Dict[str, Any]], None]] = None,
     ) -> List[Dict[str, Any]]:
+        """
+        Obtiene los registros de asistencia mediante una lectura completa vigilada.
+
+        :param ip: Dirección IP opcional del dispositivo.
+        :type ip: str
+        :param port: Puerto opcional de comunicación del dispositivo.
+        :type port: int
+        :param password: Contraseña opcional de comunicación del dispositivo.
+        :type password: str
+        :param on_disconnect: Función opcional invocada cuando se detecta una desconexión.
+        :type on_disconnect: Callable[[Dict[str, Any]], None] or None
+        :return: Lista de registros de asistencia normalizados.
+        :rtype: list[dict[str, Any]]
+        """
         snapshot = ZKService.get_sync_snapshot(
             ip,
             port,

@@ -9,7 +9,7 @@ from sqlalchemy import and_, func, or_
 
 from app.database.connection import SessionLocal
 from app.models.user import User, UserRole
-from app.models.attendance import AttendanceRecord
+from app.models.attendance import AttendanceRecord as AttendanceModel
 from app.models.device import Device
 from app.models.log import Log
 from app.models.branch import Branch
@@ -23,7 +23,14 @@ logger = get_logger("services.db")
 
 
 def _parse_assignment_filter(value: str):
-    """Devuelve (device_id, user_id) para claves como '6:23'."""
+    """
+    Interpreta una clave de asignación compuesta por el identificador del dispositivo y el identificador del usuario.
+
+    :param value: Clave de asignación que se debe interpretar.
+    :type value: str
+    :return: Tupla con el identificador del dispositivo y del usuario, o ``None`` si la clave no es válida.
+    :rtype: tuple[int, str] or None
+    """
     raw = str(value or "").strip()
     if not raw or ":" not in raw:
         return None
@@ -50,6 +57,16 @@ class DBService:
 
     @staticmethod
     def _get_branch_by_name(db: Session, sucursal: Optional[str]) -> Optional[Branch]:
+        """
+        Busca una sucursal mediante su nombre normalizado.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str or None
+        :return: Sucursal encontrada o ``None`` si no existe una coincidencia.
+        :rtype: Branch or None
+        """
         if not sucursal:
             return None
 
@@ -65,6 +82,18 @@ class DBService:
         branch_id: Optional[int] = None,
         sucursal: Optional[str] = None,
     ) -> Optional[int]:
+        """
+        Resuelve el identificador de una sucursal a partir de su ID o de su nombre.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str or None
+        :return: Identificador de la sucursal encontrada o ``None``.
+        :rtype: int or None
+        """
         if branch_id is not None:
             branch = db.query(Branch).filter(Branch.id == branch_id).first()
             return branch.id if branch else None
@@ -79,6 +108,20 @@ class DBService:
         user_id: Optional[str],
         device_id: Optional[int] = None,
     ) -> Optional[int]:
+        """
+        Obtiene el identificador de sucursal asociado a un usuario.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int or None
+        :param user_id: Identificador del usuario.
+        :type user_id: str or None
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int or None
+        :return: Identificador de sucursal del usuario o ``None``.
+        :rtype: int or None
+        """
         query = db.query(User)
         if device_id is not None:
             query = query.filter(User.device_id == device_id)
@@ -109,7 +152,32 @@ class DBService:
         empresa: Optional[str] = None,
         db: Optional[Session] = None,
     ) -> User:
-        """Guarda o actualiza un usuario en la BD."""
+        """
+        Guarda un usuario nuevo o actualiza su asignación existente en la base de datos.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param name: Nombre del usuario o de la sucursal, según la operación.
+        :type name: str
+        :param role: Rol del usuario.
+        :type role: str
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str or None
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int or None
+        :param empresa: Empresa asociada.
+        :type empresa: str or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Usuario creado o actualizado.
+        :rtype: User
+        :raises DataValidationError: Si los datos del usuario o el rol no son válidos.
+        :raises Exception: Si ocurre un error durante la operación de persistencia.
+        """
         DataValidator.validate_user(uid, user_id, name, role)
 
         if db is None:
@@ -214,7 +282,14 @@ class DBService:
 
     @staticmethod
     def get_all_users_from_db(db: Optional[Session] = None) -> List[User]:
-        """Obtiene todos los usuarios activos de la BD."""
+        """
+        Obtiene todos los usuarios registrados en la base de datos.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de usuarios registrados.
+        :rtype: list[User]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -233,7 +308,16 @@ class DBService:
 
     @staticmethod
     def get_users_by_branch(branch_id: int, db: Optional[Session] = None) -> List[User]:
-        """Obtiene empleados de una sucursal usando branch_id real."""
+        """
+        Obtiene los usuarios asociados a una sucursal.
+
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de usuarios de la sucursal.
+        :rtype: list[User]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -260,7 +344,24 @@ class DBService:
         status: Optional[str] = None,
         db: Optional[Session] = None,
     ) -> Dict:
-        """Obtiene empleados paginados y filtrados directamente en PostgreSQL."""
+        """
+        Obtiene usuarios paginados y aplica filtros opcionales en la consulta.
+
+        :param page: Número de página solicitado.
+        :type page: int
+        :param limit: Cantidad máxima de resultados.
+        :type limit: int
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param search: Texto opcional utilizado para filtrar usuarios.
+        :type search: str or None
+        :param status: Estado utilizado para la operación o el filtrado.
+        :type status: str or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Diccionario con los usuarios de la página y el total de resultados.
+        :rtype: dict
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -304,7 +405,16 @@ class DBService:
 
     @staticmethod
     def get_user_by_id(user_id: int, db: Optional[Session] = None) -> Optional[User]:
-        """Obtiene un empleado por la PK interna de PostgreSQL."""
+        """
+        Obtiene un usuario mediante su identificador interno de PostgreSQL.
+
+        :param user_id: Identificador del usuario.
+        :type user_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Usuario encontrado o ``None``.
+        :rtype: User or None
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -326,7 +436,16 @@ class DBService:
         device_id: int,
         db: Optional[Session] = None,
     ) -> int:
-        """Obtiene la siguiente UID local disponible para un reloj."""
+        """
+        Calcula el siguiente UID local disponible para un dispositivo.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Siguiente UID local disponible.
+        :rtype: int
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -352,10 +471,23 @@ class DBService:
         user_id: str,
         db: Optional[Session] = None,
     ) -> User:
-        """Crea una asignacion independiente en otro reloj.
+        """
+        Crea una asignación independiente de un usuario en otro dispositivo sin modificar la asignación original.
 
-        La fila original no se modifica y sus asistencias historicas conservan
-        el UID y device_id de origen.
+        :param source_user_id: Identificador interno del usuario de origen.
+        :type source_user_id: int
+        :param target_device_id: Identificador del dispositivo de destino.
+        :type target_device_id: int
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Nueva asignación del usuario.
+        :rtype: User
+        :raises ValueError: Si el usuario de origen, el dispositivo de destino o la asignación no son válidos.
+        :raises Exception: Si ocurre un error durante la creación de la asignación.
         """
         if db is None:
             db = SessionLocal()
@@ -438,7 +570,19 @@ class DBService:
         status: str,
         db: Optional[Session] = None,
     ) -> Optional[User]:
-        """Actualiza el estado usando la PK interna, no el UID del reloj."""
+        """
+        Actualiza el estado de un usuario mediante su identificador interno.
+
+        :param user_id: Identificador del usuario.
+        :type user_id: int
+        :param status: Estado utilizado para la operación o el filtrado.
+        :type status: str
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Usuario actualizado o ``None`` si no existe.
+        :rtype: User or None
+        :raises Exception: Si ocurre un error al actualizar el estado.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -474,7 +618,29 @@ class DBService:
         branch_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> Optional[User]:
-        """Actualiza el perfil usando la PK interna de PostgreSQL."""
+        """
+        Actualiza el perfil de un usuario mediante su identificador interno.
+
+        :param user_id: Identificador del usuario.
+        :type user_id: int
+        :param role: Rol del usuario.
+        :type role: str
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str
+        :param email: Valor utilizado por la operación para ``email``.
+        :type email: str
+        :param area: Valor utilizado por la operación para ``area``.
+        :type area: str
+        :param empresa: Empresa asociada.
+        :type empresa: str
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Usuario actualizado o ``None`` si no existe.
+        :rtype: User or None
+        :raises Exception: Si ocurre un error al actualizar el perfil.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -524,6 +690,19 @@ class DBService:
 
     @staticmethod
     def update_user_status(uid: int, status: str, db: Optional[Session] = None) -> Optional[User]:
+        """
+        Actualiza el estado de un usuario mediante su UID.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param status: Estado utilizado para la operación o el filtrado.
+        :type status: str
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Usuario actualizado o ``None`` si no existe.
+        :rtype: User or None
+        :raises Exception: Si ocurre un error al actualizar el estado.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -563,6 +742,29 @@ class DBService:
         branch_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> Optional[User]:
+        """
+        Actualiza el perfil de un usuario mediante su UID.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param role: Rol del usuario.
+        :type role: str
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str
+        :param email: Valor utilizado por la operación para ``email``.
+        :type email: str
+        :param area: Valor utilizado por la operación para ``area``.
+        :type area: str
+        :param empresa: Empresa asociada.
+        :type empresa: str
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Usuario actualizado o ``None`` si no existe.
+        :rtype: User or None
+        :raises Exception: Si ocurre un error al actualizar el perfil.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -627,10 +829,18 @@ class DBService:
         present_uids: List[int],
         db: Optional[Session] = None,
     ) -> int:
-        """Marca como inactivos a los empleados que ya no están en el reloj.
+        """
+        Marca como inactivos los usuarios que ya no se encuentran presentes en un dispositivo.
 
-        No elimina filas ni asistencias. Si el empleado vuelve a aparecer en una
-        sincronización posterior, save_user() lo reactiva automáticamente.
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param present_uids: UID presentes actualmente en el dispositivo.
+        :type present_uids: list[int]
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Cantidad de usuarios marcados como inactivos.
+        :rtype: int
+        :raises Exception: Si ocurre un error al actualizar los usuarios ausentes.
         """
         if db is None:
             db = SessionLocal()
@@ -681,9 +891,18 @@ class DBService:
         device_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> bool:
-        """Conserva al empleado en BD y sólo lo marca como inactivo.
+        """
+        Conserva un usuario en la base de datos y lo marca como inactivo.
 
-        Las asistencias históricas permanecen intactas.
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: ``True`` si el usuario fue marcado como inactivo; de lo contrario, ``False``.
+        :rtype: bool
+        :raises Exception: Si ocurre un error al conservar al usuario como inactivo.
         """
         if db is None:
             db = SessionLocal()
@@ -740,7 +959,36 @@ class DBService:
         sync_interval_minutes: int = 4,
         db: Optional[Session] = None,
     ) -> Device:
-        """Guarda un nuevo reloj biométrico en la BD."""
+        """
+        Registra un nuevo dispositivo biométrico en la base de datos.
+
+        :param nombre: Nombre del dispositivo.
+        :type nombre: str
+        :param ip: Dirección IP del dispositivo.
+        :type ip: str
+        :param puerto: Puerto de comunicación del dispositivo.
+        :type puerto: int
+        :param password: Contraseña del dispositivo.
+        :type password: str
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str
+        :param ubicacion: Descripción opcional de la ubicación.
+        :type ubicacion: str
+        :param empresa: Empresa asociada.
+        :type empresa: str
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param auto_sync_enabled: Indica si la sincronización automática está habilitada.
+        :type auto_sync_enabled: bool
+        :param sync_interval_minutes: Intervalo de sincronización automática expresado en minutos.
+        :type sync_interval_minutes: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Dispositivo registrado.
+        :rtype: Device
+        :raises DataValidationError: Si ya existe un dispositivo con la misma dirección IP.
+        :raises Exception: Si ocurre un error durante el registro.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -797,7 +1045,14 @@ class DBService:
 
     @staticmethod
     def get_all_devices(db: Optional[Session] = None) -> List[Device]:
-        """Obtiene todos los relojes registrados."""
+        """
+        Obtiene todos los dispositivos registrados.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de dispositivos registrados.
+        :rtype: list[Device]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -812,7 +1067,16 @@ class DBService:
 
     @staticmethod
     def get_devices_by_branch(branch_id: int, db: Optional[Session] = None) -> List[Device]:
-        """Obtiene relojes de una sucursal usando branch_id real."""
+        """
+        Obtiene los dispositivos asociados a una sucursal.
+
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de dispositivos de la sucursal.
+        :rtype: list[Device]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -832,7 +1096,16 @@ class DBService:
 
     @staticmethod
     def get_device_by_id(device_id: int, db: Optional[Session] = None) -> Optional[Device]:
-        """Obtiene un reloj por ID."""
+        """
+        Obtiene un dispositivo mediante su identificador.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Dispositivo encontrado o ``None``.
+        :rtype: Device or None
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -861,7 +1134,40 @@ class DBService:
         sync_interval_minutes: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> Optional[Device]:
-        """Actualiza datos de un reloj registrado."""
+        """
+        Actualiza los datos configurables de un dispositivo registrado.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param nombre: Nombre del dispositivo.
+        :type nombre: str
+        :param ip: Dirección IP del dispositivo.
+        :type ip: str
+        :param puerto: Puerto de comunicación del dispositivo.
+        :type puerto: int
+        :param password: Contraseña del dispositivo.
+        :type password: str
+        :param sucursal: Nombre opcional de la sucursal.
+        :type sucursal: str
+        :param ubicacion: Descripción opcional de la ubicación.
+        :type ubicacion: str
+        :param empresa: Empresa asociada.
+        :type empresa: str
+        :param activo: Indica si el dispositivo debe permanecer activo.
+        :type activo: bool
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param auto_sync_enabled: Indica si la sincronización automática está habilitada.
+        :type auto_sync_enabled: bool or None
+        :param sync_interval_minutes: Intervalo de sincronización automática expresado en minutos.
+        :type sync_interval_minutes: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Dispositivo actualizado o ``None`` si no existe.
+        :rtype: Device or None
+        :raises DataValidationError: Si la contraseña o el intervalo de sincronización no son válidos.
+        :raises Exception: Si ocurre un error durante la actualización.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -952,7 +1258,21 @@ class DBService:
         ultima_sincronizacion: datetime = None,
         db: Optional[Session] = None,
     ) -> Optional[Device]:
-        """Actualiza estado y última conexión de un reloj."""
+        """
+        Actualiza el estado y, opcionalmente, la última conexión de un dispositivo.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param estado: Estado que se debe asignar al dispositivo.
+        :type estado: str
+        :param ultima_sincronizacion: Fecha y hora opcionales de la última conexión.
+        :type ultima_sincronizacion: datetime
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Dispositivo actualizado o ``None`` si no existe.
+        :rtype: Device or None
+        :raises Exception: Si ocurre un error al actualizar el estado.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -992,7 +1312,21 @@ class DBService:
         synced_at: datetime = None,
         db: Optional[Session] = None,
     ) -> Optional[Device]:
-        """Actualiza el estado y la última sincronización real del reloj."""
+        """
+        Actualiza el estado y la fecha de la última sincronización real de un dispositivo.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param estado: Estado que se debe asignar al dispositivo.
+        :type estado: str
+        :param synced_at: Fecha y hora opcionales de la sincronización.
+        :type synced_at: datetime
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Dispositivo actualizado o ``None`` si no existe.
+        :rtype: Device or None
+        :raises Exception: Si ocurre un error al actualizar la sincronización.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1022,7 +1356,17 @@ class DBService:
 
     @staticmethod
     def delete_device(device_id: int, db: Optional[Session] = None) -> bool:
-        """Inactiva un reloj registrado en lugar de eliminarlo."""
+        """
+        Inactiva un dispositivo registrado sin eliminarlo de la base de datos.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: ``True`` si el dispositivo fue inactivado; de lo contrario, ``False``.
+        :rtype: bool
+        :raises Exception: Si ocurre un error al inactivar el dispositivo.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1053,7 +1397,17 @@ class DBService:
 
     @staticmethod
     def activate_device(device_id: int, db: Optional[Session] = None) -> bool:
-        """Reactiva un reloj previamente inactivado."""
+        """
+        Reactiva un dispositivo previamente inactivado.
+
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: ``True`` si el dispositivo fue activado; de lo contrario, ``False``.
+        :rtype: bool
+        :raises Exception: Si ocurre un error al activar el dispositivo.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1096,8 +1450,30 @@ class DBService:
         branch_id: Optional[int] = None,
         device_id: Optional[int] = None,
         db: Optional[Session] = None,
-    ) -> AttendanceRecord:
-        """Guarda un registro de asistencia en la BD."""
+    ) -> AttendanceModel:
+        """
+        Guarda un registro individual de asistencia en la base de datos.
+
+        :param uid: UID del usuario en el dispositivo.
+        :type uid: int
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param name: Nombre del usuario o de la sucursal, según la operación.
+        :type name: str
+        :param timestamp: Fecha y hora del registro de asistencia.
+        :type timestamp: datetime
+        :param status: Estado utilizado para la operación o el filtrado.
+        :type status: str
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Registro de asistencia guardado.
+        :rtype: :class:`app.models.attendance.AttendanceRecord`
+        :raises Exception: Si ocurre un error al guardar la asistencia.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1115,7 +1491,7 @@ class DBService:
                     device_id=device_id,
                 )
 
-            record = AttendanceRecord(
+            record = AttendanceModel(
                 uid=uid,
                 user_id=user_id,
                 name=name,
@@ -1147,12 +1523,20 @@ class DBService:
         device_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> int:
-        """Guarda múltiples asistencias sin mezclar relojes.
+        """
+        Guarda múltiples registros de asistencia y descarta registros inválidos o duplicados.
 
-        La identidad de una marcación se determina por:
-        ``device_id + uid/user_id + timestamp + status``. También normaliza UID,
-        recupera nombre/UID desde la asignación local cuando el reloj no los
-        devuelve y registra un resumen útil de descartes y duplicados.
+        :param records: Registros de asistencia que se deben procesar.
+        :type records: list[dict]
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Cantidad de registros nuevos insertados.
+        :rtype: int
+        :raises Exception: Si ocurre un error durante el procesamiento o guardado de los registros.
         """
         if db is None:
             db = SessionLocal()
@@ -1248,17 +1632,17 @@ class DBService:
                     )
 
                 identity_filters = [
-                    AttendanceRecord.device_id == record_device_id,
-                    AttendanceRecord.timestamp == timestamp,
-                    AttendanceRecord.status == status,
+                    AttendanceModel.device_id == record_device_id,
+                    AttendanceModel.timestamp == timestamp,
+                    AttendanceModel.status == status,
                 ]
                 if uid is not None:
-                    identity_filters.append(AttendanceRecord.uid == uid)
+                    identity_filters.append(AttendanceModel.uid == uid)
                 else:
-                    identity_filters.append(AttendanceRecord.user_id == user_id)
+                    identity_filters.append(AttendanceModel.user_id == user_id)
 
                 existing = (
-                    db.query(AttendanceRecord)
+                    db.query(AttendanceModel)
                     .filter(and_(*identity_filters))
                     .first()
                 )
@@ -1268,7 +1652,7 @@ class DBService:
                     continue
 
                 db.add(
-                    AttendanceRecord(
+                    AttendanceModel(
                         uid=uid,
                         user_id=user_id,
                         name=name or f"Usuario {user_id}",
@@ -1310,7 +1694,26 @@ class DBService:
         user_ids: Optional[List[str]] = None,
         db: Optional[Session] = None,
     ) -> Dict:
-        """Obtiene asistencias paginadas sin cargar toda la tabla en memoria."""
+        """
+        Obtiene registros de asistencia paginados y filtrados directamente en la base de datos.
+
+        :param page: Número de página solicitado.
+        :type page: int
+        :param limit: Cantidad máxima de resultados.
+        :type limit: int
+        :param start_date: Fecha inicial del rango.
+        :type start_date: datetime or None
+        :param end_date: Fecha final del rango.
+        :type end_date: datetime or None
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param user_ids: Identificadores o claves de asignación utilizados para filtrar.
+        :type user_ids: list[str] or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Diccionario con los registros de la página y el total de resultados.
+        :rtype: dict
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1318,14 +1721,14 @@ class DBService:
             close_db = False
 
         try:
-            query = db.query(AttendanceRecord)
+            query = db.query(AttendanceModel)
 
             if start_date is not None:
-                query = query.filter(AttendanceRecord.timestamp >= start_date)
+                query = query.filter(AttendanceModel.timestamp >= start_date)
             if end_date is not None:
-                query = query.filter(AttendanceRecord.timestamp <= end_date)
+                query = query.filter(AttendanceModel.timestamp <= end_date)
             if branch_id is not None:
-                query = query.filter(AttendanceRecord.branch_id == branch_id)
+                query = query.filter(AttendanceModel.branch_id == branch_id)
             if user_ids:
                 assignment_filters = []
                 legacy_user_ids = []
@@ -1340,8 +1743,8 @@ class DBService:
                         selected_device_id, selected_user_id = parsed
                         assignment_filters.append(
                             and_(
-                                AttendanceRecord.device_id == selected_device_id,
-                                AttendanceRecord.user_id == selected_user_id,
+                                AttendanceModel.device_id == selected_device_id,
+                                AttendanceModel.user_id == selected_user_id,
                             )
                         )
                     else:
@@ -1350,7 +1753,7 @@ class DBService:
                 filters = list(assignment_filters)
                 if legacy_user_ids:
                     filters.append(
-                        AttendanceRecord.user_id.in_(legacy_user_ids)
+                        AttendanceModel.user_id.in_(legacy_user_ids)
                     )
 
                 if filters:
@@ -1358,7 +1761,7 @@ class DBService:
 
             total = query.count()
             items = (
-                query.order_by(AttendanceRecord.timestamp.desc())
+                query.order_by(AttendanceModel.timestamp.desc())
                 .offset((page - 1) * limit)
                 .limit(limit)
                 .all()
@@ -1374,8 +1777,19 @@ class DBService:
         start_date: datetime,
         end_date: datetime,
         db: Optional[Session] = None,
-    ) -> List[AttendanceRecord]:
-        """Obtiene registros de asistencia en un rango de fechas."""
+    ) -> List[AttendanceModel]:
+        """
+        Obtiene registros de asistencia incluidos en un rango de fechas.
+
+        :param start_date: Fecha inicial del rango.
+        :type start_date: datetime
+        :param end_date: Fecha final del rango.
+        :type end_date: datetime
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de registros incluidos en el rango.
+        :rtype: list[AttendanceModel]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1384,14 +1798,14 @@ class DBService:
 
         try:
             return (
-                db.query(AttendanceRecord)
+                db.query(AttendanceModel)
                 .filter(
                     and_(
-                        AttendanceRecord.timestamp >= start_date,
-                        AttendanceRecord.timestamp <= end_date,
+                        AttendanceModel.timestamp >= start_date,
+                        AttendanceModel.timestamp <= end_date,
                     )
                 )
-                .order_by(AttendanceRecord.timestamp.desc())
+                .order_by(AttendanceModel.timestamp.desc())
                 .all()
             )
         finally:
@@ -1402,8 +1816,17 @@ class DBService:
     def get_attendance_by_branch(
         branch_id: int,
         db: Optional[Session] = None,
-    ) -> List[AttendanceRecord]:
-        """Obtiene asistencias de una sucursal usando branch_id real."""
+    ) -> List[AttendanceModel]:
+        """
+        Obtiene los registros de asistencia asociados a una sucursal.
+
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de registros de asistencia de la sucursal.
+        :rtype: list[AttendanceModel]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1412,9 +1835,9 @@ class DBService:
 
         try:
             return (
-                db.query(AttendanceRecord)
-                .filter(AttendanceRecord.branch_id == branch_id)
-                .order_by(AttendanceRecord.timestamp.desc())
+                db.query(AttendanceModel)
+                .filter(AttendanceModel.branch_id == branch_id)
+                .order_by(AttendanceModel.timestamp.desc())
                 .all()
             )
         finally:
@@ -1427,8 +1850,21 @@ class DBService:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         db: Optional[Session] = None,
-    ) -> List[AttendanceRecord]:
-        """Obtiene asistencias de un usuario específico."""
+    ) -> List[AttendanceModel]:
+        """
+        Obtiene los registros de asistencia de un usuario específico.
+
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param start_date: Fecha inicial del rango.
+        :type start_date: datetime or None
+        :param end_date: Fecha final del rango.
+        :type end_date: datetime or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de registros de asistencia del usuario.
+        :rtype: list[AttendanceModel]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1436,17 +1872,17 @@ class DBService:
             close_db = False
 
         try:
-            query = db.query(AttendanceRecord).filter(AttendanceRecord.user_id == user_id)
+            query = db.query(AttendanceModel).filter(AttendanceModel.user_id == user_id)
 
             if start_date and end_date:
                 query = query.filter(
                     and_(
-                        AttendanceRecord.timestamp >= start_date,
-                        AttendanceRecord.timestamp <= end_date,
+                        AttendanceModel.timestamp >= start_date,
+                        AttendanceModel.timestamp <= end_date,
                     )
                 )
 
-            return query.order_by(AttendanceRecord.timestamp.desc()).all()
+            return query.order_by(AttendanceModel.timestamp.desc()).all()
 
         finally:
             if close_db:
@@ -1454,7 +1890,14 @@ class DBService:
 
     @staticmethod
     def get_attendance_dates_summary(db: Optional[Session] = None) -> List[Dict]:
-        """Obtiene las fechas con registros de asistencia y su total."""
+        """
+        Obtiene las fechas que contienen asistencias y el total de registros por día.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de fechas con el total de registros correspondiente.
+        :rtype: list[dict]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1462,12 +1905,12 @@ class DBService:
             close_db = False
 
         try:
-            attendance_date = func.date(AttendanceRecord.timestamp)
+            attendance_date = func.date(AttendanceModel.timestamp)
 
             rows = (
                 db.query(
                     attendance_date.label("fecha"),
-                    func.count(AttendanceRecord.id).label("total"),
+                    func.count(AttendanceModel.id).label("total"),
                 )
                 .group_by(attendance_date)
                 .order_by(attendance_date.desc())
@@ -1500,7 +1943,20 @@ class DBService:
         branch_id: Optional[int] = None,
         db: Optional[Session] = None,
     ) -> List[PayrollIncident]:
-        """Obtiene incidencias distinguiendo cada asignación por reloj + usuario."""
+        """
+        Obtiene incidencias de prenómina incluidas en un rango de fechas.
+
+        :param start_date: Fecha inicial del rango.
+        :type start_date: date
+        :param end_date: Fecha final del rango.
+        :type end_date: date
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de incidencias encontradas.
+        :rtype: list[PayrollIncident]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1511,6 +1967,7 @@ class DBService:
             query = (
                 db.query(PayrollIncident)
                 .filter(
+                    PayrollIncident.is_active.is_(True),
                     or_(
                         and_(
                             PayrollIncident.fecha >= start_date,
@@ -1572,10 +2029,30 @@ class DBService:
         db: Optional[Session] = None,
     ) -> PayrollIncident:
         """
-        Crea o actualiza una incidencia para una asignación concreta.
+        Crea o actualiza una incidencia de prenómina para una asignación concreta.
 
-        La identidad del empleado es device_id + user_id. Cambiar la fecha de
-        la incidencia no mueve ni copia registros biométricos.
+        :param user_id: Identificador del usuario.
+        :type user_id: str
+        :param fecha: Fecha de la incidencia.
+        :type fecha: date
+        :param hora: Hora opcional asociada a la incidencia.
+        :type hora: time or None
+        :param incidencia: Nombre o tipo de la incidencia.
+        :type incidencia: str
+        :param descripcion: Descripción opcional de la incidencia.
+        :type descripcion: str
+        :param color: Color hexadecimal asociado a la incidencia.
+        :type color: str
+        :param incident_id: Identificador opcional de la incidencia que se debe actualizar.
+        :type incident_id: int or None
+        :param device_id: Identificador opcional del dispositivo.
+        :type device_id: int or None
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Incidencia creada o actualizada.
+        :rtype: PayrollIncident
+        :raises DataValidationError: Si los datos de la incidencia, el usuario o el dispositivo no son válidos.
+        :raises Exception: Si ocurre un error durante el guardado.
         """
         if db is None:
             db = SessionLocal()
@@ -1635,6 +2112,8 @@ class DBService:
                 incident.fecha = fecha
                 incident.incidencia = clean_incidencia
                 incident.color = clean_color
+                incident.is_active = True
+                incident.deleted_at = None
 
                 # Sólo cambia la incidencia elegida por su id. Las demás
                 # incidencias del mismo día permanecen intactas.
@@ -1659,6 +2138,8 @@ class DBService:
                 source_fecha=fecha,
                 source_hora=hora,
                 moved_attendance=None,
+                is_active=True,
+                deleted_at=None,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow(),
             )
@@ -1686,7 +2167,17 @@ class DBService:
         incident_id: int,
         db: Optional[Session] = None,
     ) -> bool:
-        """Elimina una incidencia de prenómina."""
+        """
+        Conserva una incidencia de prenómina y la marca como inactiva.
+
+        :param incident_id: Identificador opcional de la incidencia que se debe actualizar.
+        :type incident_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: ``True`` si la incidencia fue marcada como inactiva; de lo contrario, ``False``.
+        :rtype: bool
+        :raises Exception: Si ocurre un error al conservar la incidencia como inactiva.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1694,19 +2185,32 @@ class DBService:
             close_db = False
 
         try:
-            incident = db.query(PayrollIncident).filter(PayrollIncident.id == incident_id).first()
+            incident = (
+                db.query(PayrollIncident)
+                .filter(
+                    PayrollIncident.id == incident_id,
+                    PayrollIncident.is_active.is_(True),
+                )
+                .first()
+            )
 
             if not incident:
                 return False
 
-            db.delete(incident)
+            incident.is_active = False
+            incident.deleted_at = datetime.utcnow()
+            incident.updated_at = datetime.utcnow()
             db.commit()
 
             return True
 
         except Exception as e:
             db.rollback()
-            logger.error(f"Error al borrar incidencia de prenómina {incident_id}: {str(e)}")
+            logger.error(
+                "Error al conservar incidencia de prenómina %s como inactiva: %s",
+                incident_id,
+                str(e),
+            )
             raise
         finally:
             if close_db:
@@ -1724,6 +2228,24 @@ class DBService:
         status: str = "Activo",
         db: Optional[Session] = None,
     ) -> Branch:
+        """
+        Crea una nueva sucursal en la base de datos.
+
+        :param name: Nombre del usuario o de la sucursal, según la operación.
+        :type name: str
+        :param address: Dirección opcional de la sucursal.
+        :type address: str
+        :param is_active: Indica si la sucursal debe permanecer activa.
+        :type is_active: bool
+        :param status: Estado utilizado para la operación o el filtrado.
+        :type status: str
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Sucursal creada.
+        :rtype: Branch
+        :raises DataValidationError: Si ya existe una sucursal con el mismo nombre.
+        :raises Exception: Si ocurre un error durante la creación.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1766,6 +2288,14 @@ class DBService:
 
     @staticmethod
     def get_all_branches(db: Optional[Session] = None) -> List[Branch]:
+        """
+        Obtiene todas las sucursales registradas.
+
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de sucursales registradas.
+        :rtype: list[Branch]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1780,7 +2310,16 @@ class DBService:
 
     @staticmethod
     def get_branch_by_id(branch_id: int, db: Optional[Session] = None) -> Optional[Branch]:
-        """Obtiene una sucursal por ID."""
+        """
+        Obtiene una sucursal mediante su identificador.
+
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Sucursal encontrada o ``None``.
+        :rtype: Branch or None
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1802,6 +2341,25 @@ class DBService:
         status: str = None,
         db: Optional[Session] = None,
     ) -> Optional[Branch]:
+        """
+        Actualiza los datos y el estado de una sucursal.
+
+        :param branch_id: Identificador opcional de la sucursal.
+        :type branch_id: int
+        :param name: Nombre del usuario o de la sucursal, según la operación.
+        :type name: str
+        :param address: Dirección opcional de la sucursal.
+        :type address: str
+        :param is_active: Indica si la sucursal debe permanecer activa.
+        :type is_active: bool
+        :param status: Estado utilizado para la operación o el filtrado.
+        :type status: str
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Sucursal actualizada o ``None`` si no existe.
+        :rtype: Branch or None
+        :raises Exception: Si ocurre un error durante la actualización.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1867,7 +2425,19 @@ class DBService:
 
     @staticmethod
     def create_log(accion: str, detalle: str, db: Optional[Session] = None) -> Log:
-        """Crea un registro de auditoría."""
+        """
+        Crea un registro de auditoría.
+
+        :param accion: Nombre de la acción auditada.
+        :type accion: str
+        :param detalle: Descripción de la acción auditada.
+        :type detalle: str
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Registro de auditoría creado.
+        :rtype: Log
+        :raises Exception: Si ocurre un error al crear el registro de auditoría.
+        """
         if db is None:
             db = SessionLocal()
             close_db = True
@@ -1897,7 +2467,16 @@ class DBService:
 
     @staticmethod
     def get_logs(limit: int = 100, db: Optional[Session] = None) -> List[Log]:
-        """Obtiene los últimos registros de auditoría."""
+        """
+        Obtiene los registros de auditoría más recientes.
+
+        :param limit: Cantidad máxima de resultados.
+        :type limit: int
+        :param db: Sesión opcional de SQLAlchemy. Si no se proporciona, se crea una sesión interna.
+        :type db: Session or None
+        :return: Lista de registros de auditoría.
+        :rtype: list[Log]
+        """
         if db is None:
             db = SessionLocal()
             close_db = True

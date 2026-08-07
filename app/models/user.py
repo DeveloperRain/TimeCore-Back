@@ -38,7 +38,11 @@ class User(Base):
     device = relationship("Device", back_populates="users")
 
     def to_dict(self):
-        """Convierte a diccionario."""
+        """Convierte a diccionario.
+
+        :return: Un diccionario con los datos serializados del usuario.
+        :rtype: dict
+        """
         return {
             "id": self.id,
             "uid": self.uid,

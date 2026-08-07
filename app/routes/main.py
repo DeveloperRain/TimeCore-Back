@@ -26,7 +26,15 @@ logger = setup_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Inicia y detiene la sincronización automática sin bloquear la API."""
+    """
+    Inicia la tarea de sincronización automática y la detiene al cerrar la API.
+
+    :param app: Instancia principal de la aplicación FastAPI.
+    :type app: FastAPI
+    :return: Contexto asíncrono que controla el ciclo de vida de la aplicación.
+    :rtype: AsyncIterator[None]
+    :raises Exception: Si ocurre un error no controlado durante el inicio o cierre de la aplicación.
+    """
     sync_task = asyncio.create_task(automatic_sync_loop())
 
     try:
@@ -51,12 +59,15 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8080",
-        "http://127.0.0.1:8080",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origin_regex=(
+        r"^http://("
+        r"localhost"
+        r"|127\.0\.0\.1"
+        r"|192\.168\.\d{1,3}\.\d{1,3}"      # Redes LAN locales (cualquier sucursal)
+        r"|10\.\d{1,3}\.\d{1,3}\.\d{1,3}"   # Otro rango LAN privado común
+        r"|25\.\d{1,3}\.\d{1,3}\.\d{1,3}"   # Rango de IPs virtuales de Hamachi
+        r"):\d+$"
+    ),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,7 +77,29 @@ app.add_middleware(ErrorHandlerMiddleware)
 register_exception_handlers(app)
 
 # Crear tablas en la base de datos al iniciar
-create_tables()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Inicializa las tablas de la base de datos y controla la sincronización automática.
+
+    :param app: Instancia principal de la aplicación FastAPI.
+    :type app: FastAPI
+    :return: Contexto asíncrono que controla el ciclo de vida de la aplicación.
+    :rtype: AsyncIterator[None]
+    :raises Exception: Si ocurre un error no controlado durante la inicialización o cierre de los recursos.
+    """
+
+    create_tables()
+    sync_task = asyncio.create_task(automatic_sync_loop())
+
+    try:
+        yield
+    finally:
+        sync_task.cancel()
+        try:
+            await sync_task
+        except asyncio.CancelledError:
+            pass
 
 # Routers
 app.include_router(auth_router)
@@ -80,7 +113,12 @@ app.include_router(branches_router)
 
 
 def custom_openapi():
-    """Personalizar documentación OpenAPI."""
+    """
+    Genera y almacena el esquema OpenAPI personalizado de la aplicación.
+
+    :return: Esquema OpenAPI configurado para la API.
+    :rtype: dict
+    """
     if app.openapi_schema:
         return app.openapi_schema
 
@@ -109,7 +147,12 @@ app.openapi = custom_openapi
     tags=["General"]
 )
 def root():
-    """Endpoint raíz con información general de la API."""
+    """
+    Verifica la disponibilidad de la API y devuelve su información general.
+
+    :return: Respuesta con el estado, versión, servicio, fecha y endpoints de la API.
+    :rtype: dict
+    """
     logger.info("Health check requested")
 
     return success(

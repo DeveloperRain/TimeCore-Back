@@ -1,3 +1,5 @@
+"""Define rutas y utilidades para empleados, asistencias, prenómina y relojes biométricos."""
+
 from fastapi import APIRouter, HTTPException, Query
 from datetime import datetime, time, timedelta
 from pydantic import BaseModel
@@ -38,6 +40,14 @@ WEEKDAY_LABELS = [
 
 
 def parse_date(value: str):
+    """Convierte una cadena de texto en una fecha válida usando los formatos admitidos.
+
+    :param value: Cadena que contiene la fecha que se desea interpretar.
+    :type value: str
+    :return: Fecha obtenida a partir de la cadena proporcionada.
+    :rtype: datetime.date
+    :raises HTTPException: Si la cadena no coincide con ninguno de los formatos admitidos.
+    """
     for fmt in DATE_FORMATS:
         try:
             return datetime.strptime(value.strip(), fmt).date()
@@ -51,6 +61,14 @@ def parse_date(value: str):
 
 
 def parse_hour(value: str):
+    """Convierte una cadena de texto en una hora con formato de horas y minutos.
+
+    :param value: Cadena que contiene la hora que se desea interpretar.
+    :type value: str
+    :return: Hora obtenida a partir de la cadena proporcionada.
+    :rtype: datetime.time
+    :raises HTTPException: Si la cadena no utiliza el formato HH:MM.
+    """
     try:
         return datetime.strptime(value.strip(), "%H:%M").time()
     except ValueError:
@@ -61,6 +79,13 @@ def parse_hour(value: str):
 
 
 def parse_user_ids(value: Optional[str]):
+    """Separa una cadena de identificadores de empleados delimitados por comas.
+
+    :param value: Cadena de identificadores o valor nulo.
+    :type value: Optional[str]
+    :return: Lista de identificadores sin espacios vacíos.
+    :rtype: list[str]
+    """
     if not value:
         return []
 
@@ -72,12 +97,27 @@ def parse_user_ids(value: Optional[str]):
 
 
 def make_assignment_key(device_id, user_id) -> str:
-    """Crea una clave única por reloj y código de empleado."""
+    """Crea una clave única a partir del reloj y el código de empleado.
+
+    :param device_id: Identificador del reloj asociado.
+    :type device_id: int | None
+    :param user_id: Código del empleado asociado.
+    :type user_id: str | int | None
+    :return: Clave compuesta con el formato ``device_id:user_id``.
+    :rtype: str
+    """
     clean_device_id = int(device_id) if device_id is not None else 0
     return f"{clean_device_id}:{str(user_id or '').strip()}"
 
 
 def parse_assignment_key(value: str):
+    """Interpreta una clave compuesta de reloj y empleado.
+
+    :param value: Clave que se desea interpretar.
+    :type value: str
+    :return: Tupla con el identificador del reloj y el código del empleado, o ``None`` si la clave no es válida.
+    :rtype: tuple[int, str] | None
+    """
     raw = str(value or "").strip()
     if ":" not in raw:
         return None
@@ -96,7 +136,15 @@ def parse_assignment_key(value: str):
 
 
 def matches_assignment(entity, selected_values: set[str]) -> bool:
-    """Admite claves device_id:user_id y, por compatibilidad, UIDs simples."""
+    """Comprueba si una entidad coincide con alguna asignación seleccionada.
+
+    :param entity: Entidad que contiene datos de reloj, usuario o UID.
+    :type entity: object
+    :param selected_values: Claves compuestas o identificadores simples seleccionados.
+    :type selected_values: set[str]
+    :return: ``True`` si la entidad coincide o si no existen filtros; en caso contrario, ``False``.
+    :rtype: bool
+    """
     if not selected_values:
         return True
 
@@ -120,6 +168,16 @@ def matches_assignment(entity, selected_values: set[str]) -> bool:
 
 
 def get_date_range_days(start_date: str, end_date: str):
+    """Obtiene todas las fechas comprendidas dentro de un intervalo inclusivo.
+
+    :param start_date: Fecha inicial en uno de los formatos admitidos.
+    :type start_date: str
+    :param end_date: Fecha final en uno de los formatos admitidos.
+    :type end_date: str
+    :return: Lista ordenada de fechas desde el inicio hasta el final.
+    :rtype: list[datetime.date]
+    :raises HTTPException: Si el formato es inválido o la fecha inicial es posterior a la fecha final.
+    """
     start = parse_date(start_date)
     end = parse_date(end_date)
 
@@ -135,11 +193,25 @@ def get_date_range_days(start_date: str, end_date: str):
 
 
 def format_day_label(day):
+    """Genera la etiqueta legible de una fecha con el nombre del día de la semana.
+
+    :param day: Fecha que se desea representar.
+    :type day: datetime.date
+    :return: Etiqueta con el día de la semana y la fecha.
+    :rtype: str
+    """
     weekday = WEEKDAY_LABELS[day.weekday()]
     return f"{weekday} {day.strftime('%d/%m/%Y')}"
 
 
 def incident_to_dict(incident):
+    """Convierte una incidencia de prenómina en un diccionario serializable.
+
+    :param incident: Incidencia que se desea convertir.
+    :type incident: object
+    :return: Diccionario con los datos disponibles de la incidencia.
+    :rtype: dict
+    """
     if hasattr(incident, "to_dict"):
         return incident.to_dict()
 
@@ -173,11 +245,19 @@ def build_payroll_data(
     branch_id: Optional[int] = None,
     user_ids: Optional[list[str]] = None,
 ):
-    """
-    Genera la prenómina separando cada asignación por device_id + user_id.
+    """Genera la información de prenómina separando cada asignación por reloj y empleado.
 
-    Una UID puede repetirse en distintos relojes; nunca se deben mezclar sus
-    asistencias, incidencias, empresa o área.
+    :param start_date: Fecha inicial del periodo.
+    :type start_date: str
+    :param end_date: Fecha final del periodo.
+    :type end_date: str
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :param user_ids: Claves o códigos opcionales de empleados seleccionados.
+    :type user_ids: Optional[list[str]]
+    :return: Estructura con días, horas y filas de asistencias e incidencias.
+    :rtype: dict
+    :raises HTTPException: Si el intervalo, la sucursal o los servicios requeridos no son válidos.
     """
     selected_assignments = set(user_ids or [])
 
@@ -374,6 +454,17 @@ def build_payroll_data(
 
 
 def build_payroll_excel_fallback(title: str, columns: list[str], rows_data: list[dict]) -> bytes:
+    """Genera un archivo de prenómina en Excel mediante el constructor alternativo.
+
+    :param title: Título que se mostrará en la hoja.
+    :type title: str
+    :param columns: Nombres de las columnas del reporte.
+    :type columns: list[str]
+    :param rows_data: Filas que se escribirán en el archivo.
+    :type rows_data: list[dict]
+    :return: Contenido binario del archivo Excel generado.
+    :rtype: bytes
+    """
     from openpyxl import Workbook
     from openpyxl.styles import Alignment, Font, PatternFill, Border, Side
 
@@ -418,6 +509,13 @@ def build_payroll_excel_fallback(title: str, columns: list[str], rows_data: list
 
 
 def user_to_dict(user):
+    """Convierte un empleado en un diccionario serializable.
+
+    :param user: Empleado que se desea convertir.
+    :type user: object
+    :return: Diccionario con los datos disponibles del empleado.
+    :rtype: dict
+    """
     return {
         "id": user.id,
         "uid": user.uid,
@@ -438,6 +536,13 @@ def user_to_dict(user):
 
 
 def attendance_to_dict(record):
+    """Convierte un registro de asistencia en un diccionario serializable.
+
+    :param record: Registro de asistencia que se desea convertir.
+    :type record: object
+    :return: Diccionario con los datos disponibles de la asistencia.
+    :rtype: dict
+    """
     return {
         "id": record.id,
         "uid": record.uid,
@@ -453,6 +558,13 @@ def attendance_to_dict(record):
 
 
 def attendance_to_excel_dict(record):
+    """Convierte un registro de asistencia al formato utilizado por el exportador de Excel.
+
+    :param record: Registro de asistencia que se desea convertir.
+    :type record: object
+    :return: Diccionario con los campos requeridos para el archivo Excel.
+    :rtype: dict
+    """
     return {
         "uid": record.uid,
         "user_id": record.user_id,
@@ -463,7 +575,13 @@ def attendance_to_excel_dict(record):
 
 
 def utc_iso(value):
-    """Serializa fechas UTC para que el navegador las convierta a la hora local."""
+    """Serializa una fecha UTC en formato ISO para su conversión en el navegador.
+
+    :param value: Fecha u hora que se desea serializar.
+    :type value: datetime | None
+    :return: Cadena ISO terminada en ``Z`` o ``None`` cuando no existe un valor.
+    :rtype: str | None
+    """
     if value is None:
         return None
 
@@ -472,6 +590,13 @@ def utc_iso(value):
 
 
 def device_to_dict(device):
+    """Convierte un reloj biométrico y su estado de sincronización en un diccionario.
+
+    :param device: Reloj biométrico que se desea convertir.
+    :type device: object
+    :return: Diccionario con la configuración y el estado disponible del reloj.
+    :rtype: dict
+    """
     sync_state = ZKService.get_sync_state(device.ip, device.port)
     return {
         "id": device.id,
@@ -514,6 +639,17 @@ def device_to_dict(device):
 
 
 def test_device_connection(ip: str, port: int, timeout: float = 2.0) -> bool:
+    """Comprueba el estado de conexión de un reloj biométrico.
+
+    :param ip: Dirección IP del reloj.
+    :type ip: str
+    :param port: Puerto de comunicación del reloj.
+    :type port: int
+    :param timeout: Tiempo máximo de espera para la comprobación.
+    :type timeout: float
+    :return: ``True`` si el reloj responde como conectado; en caso contrario, ``False``.
+    :rtype: bool
+    """
     # Usa el mismo candado de ZKService para no abrir sondeos TCP mientras el
     # reloj está descargando usuarios o asistencias.
     return ZKService.check_device_status(
@@ -524,6 +660,15 @@ def test_device_connection(ip: str, port: int, timeout: float = 2.0) -> bool:
 
 
 def update_device_status_safely(device, status: str):
+    """Intenta actualizar el estado almacenado de un reloj sin propagar errores de actualización.
+
+    :param device: Reloj cuyo estado se desea actualizar.
+    :type device: object
+    :param status: Nuevo estado que se desea registrar.
+    :type status: str
+    :return: No devuelve ningún valor.
+    :rtype: None
+    """
     try:
         DBService.update_device_status(device.id, status)
     except TypeError:
@@ -539,6 +684,14 @@ def update_device_status_safely(device, status: str):
 
 
 def get_branch_or_404(branch_id: int):
+    """Obtiene una sucursal por su identificador o genera una respuesta de recurso no encontrado.
+
+    :param branch_id: Identificador interno de la sucursal.
+    :type branch_id: int
+    :return: Sucursal encontrada.
+    :rtype: object
+    :raises HTTPException: Si no existe una sucursal con el identificador proporcionado.
+    """
     branch = DBService.get_branch_by_id(branch_id)
 
     if not branch:
@@ -548,6 +701,17 @@ def get_branch_or_404(branch_id: int):
 
 
 def filter_records_by_range(records, start_datetime: datetime, end_datetime: datetime):
+    """Filtra registros de asistencia por un intervalo de fecha y hora inclusivo.
+
+    :param records: Registros que se desean filtrar.
+    :type records: iterable
+    :param start_datetime: Límite inicial del intervalo.
+    :type start_datetime: datetime
+    :param end_datetime: Límite final del intervalo.
+    :type end_datetime: datetime
+    :return: Lista de registros cuyo sello de tiempo pertenece al intervalo.
+    :rtype: list
+    """
     return [
         record
         for record in records
@@ -562,6 +726,18 @@ def get_attendance_records(
     end_datetime: datetime = datetime.max,
     branch_id: Optional[int] = None,
 ):
+    """Obtiene registros de asistencia dentro de un intervalo y, opcionalmente, de una sucursal.
+
+    :param start_datetime: Fecha y hora inicial del intervalo.
+    :type start_datetime: datetime
+    :param end_datetime: Fecha y hora final del intervalo.
+    :type end_datetime: datetime
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Registros de asistencia que cumplen los filtros indicados.
+    :rtype: list
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     if branch_id is not None:
         get_branch_or_404(branch_id)
         records = DBService.get_attendance_by_branch(branch_id)
@@ -581,6 +757,22 @@ def get_users_paginated_from_db(
     search: Optional[str] = Query(None),
     status: Optional[str] = Query(None),
 ):
+    """Obtiene empleados paginados desde la base de datos.
+
+    :param page: Número de página solicitado.
+    :type page: int
+    :param limit: Cantidad máxima de registros por página.
+    :type limit: int
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :param search: Texto opcional de búsqueda.
+    :type search: Optional[str]
+    :param status: Estado opcional para filtrar empleados.
+    :type status: Optional[str]
+    :return: Respuesta con los empleados y la información de paginación.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     if branch_id is not None:
         get_branch_or_404(branch_id)
 
@@ -613,6 +805,14 @@ def get_users_from_db(
         description="ID de sucursal para filtrar empleados"
     )
 ):
+    """Obtiene empleados desde la base de datos y permite filtrarlos por sucursal.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con la lista de empleados encontrados.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     if branch_id is not None:
         get_branch_or_404(branch_id)
         users = DBService.get_users_by_branch(branch_id)
@@ -636,6 +836,24 @@ def get_attendance_paginated_from_db(
     branch_id: Optional[int] = Query(None),
     user_ids: Optional[str] = Query(None),
 ):
+    """Obtiene asistencias paginadas aplicando los filtros proporcionados.
+
+    :param page: Número de página solicitado.
+    :type page: int
+    :param limit: Cantidad máxima de registros por página.
+    :type limit: int
+    :param start_date: Fecha inicial opcional del filtro.
+    :type start_date: Optional[str]
+    :param end_date: Fecha final opcional del filtro.
+    :type end_date: Optional[str]
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :param user_ids: Códigos opcionales de empleados separados por comas.
+    :type user_ids: Optional[str]
+    :return: Respuesta con las asistencias y la información de paginación.
+    :rtype: dict
+    :raises HTTPException: Si una fecha es inválida o la sucursal no existe.
+    """
     if branch_id is not None:
         get_branch_or_404(branch_id)
 
@@ -673,6 +891,16 @@ def get_attendance_from_db(
         description="ID de sucursal para filtrar asistencias"
     )
 ):
+    """Obtiene una cantidad limitada de asistencias desde la base de datos.
+
+    :param limit: Cantidad máxima de registros que se devolverán.
+    :type limit: int
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con la lista de asistencias encontradas.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     records = get_attendance_records(branch_id=branch_id)
     records = records[:limit]
 
@@ -691,6 +919,14 @@ def get_attendance_dates_from_db(
         description="ID de sucursal para filtrar fechas con asistencia"
     )
 ):
+    """Obtiene las fechas que contienen registros de asistencia.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con las fechas y el total de registros por fecha.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     if branch_id is None:
         dates = DBService.get_attendance_dates_summary()
 
@@ -734,6 +970,18 @@ def get_attendance_report_from_db(
         description="ID de sucursal para filtrar reporte"
     )
 ):
+    """Obtiene un reporte de asistencias para el intervalo indicado.
+
+    :param start_date: Fecha inicial del reporte.
+    :type start_date: str
+    :param end_date: Fecha final del reporte.
+    :type end_date: str
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con los registros de asistencia del periodo.
+    :rtype: dict
+    :raises HTTPException: Si una fecha es inválida o la sucursal no existe.
+    """
     start = datetime.combine(parse_date(start_date), time.min)
     end = datetime.combine(parse_date(end_date), time.max)
 
@@ -758,6 +1006,14 @@ def get_today_attendance(
         description="ID de sucursal para filtrar asistencias de hoy"
     )
 ):
+    """Obtiene las asistencias correspondientes al día actual.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con las asistencias del día actual.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     today = datetime.now().date()
 
     start_datetime = datetime.combine(today, time.min)
@@ -784,6 +1040,14 @@ def get_week_attendance(
         description="ID de sucursal para filtrar asistencias de la semana"
     )
 ):
+    """Obtiene las asistencias correspondientes a la semana actual.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con las asistencias de la semana actual.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     today = datetime.now().date()
     start_of_week = today - timedelta(days=today.weekday())
     end_of_week = start_of_week + timedelta(days=6)
@@ -806,6 +1070,7 @@ def get_week_attendance(
 
 
 class PayrollIncidentCreate(BaseModel):
+    """Representa los datos utilizados para crear o actualizar una incidencia de prenómina."""
     id: Optional[int] = None
     device_id: int
     user_id: str
@@ -830,6 +1095,20 @@ def get_payroll_report(
         description="Códigos de empleados separados por coma"
     ),
 ):
+    """Genera la respuesta de prenómina con asistencias e incidencias del periodo indicado.
+
+    :param start_date: Fecha inicial del periodo.
+    :type start_date: str
+    :param end_date: Fecha final del periodo.
+    :type end_date: str
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :param user_ids: Códigos o claves opcionales de empleados separados por comas.
+    :type user_ids: Optional[str]
+    :return: Respuesta con la estructura de prenómina generada.
+    :rtype: dict
+    :raises HTTPException: Si los filtros o los servicios requeridos no son válidos.
+    """
     data = build_payroll_data(
         start_date=start_date,
         end_date=end_date,
@@ -846,6 +1125,14 @@ def get_payroll_report(
 @router.post("/prenomina/incidencias", summary="Guardar incidencia de prenómina")
 @router.post("/payroll/incidents", summary="Guardar incidencia de prenómina")
 def save_payroll_incident(payload: PayrollIncidentCreate):
+    """Guarda o actualiza una incidencia de prenómina.
+
+    :param payload: Datos de la incidencia que se desea guardar.
+    :type payload: PayrollIncidentCreate
+    :return: Respuesta con la incidencia almacenada.
+    :rtype: dict
+    :raises HTTPException: Si el servicio requerido no existe o los datos no pueden procesarse.
+    """
     try:
         incident = DBService.save_payroll_incident(
             user_id=payload.user_id,
@@ -881,9 +1168,17 @@ def save_payroll_incident(payload: PayrollIncidentCreate):
     )
 
 
-@router.delete("/prenomina/incidencias/{incident_id}", summary="Eliminar incidencia de prenómina")
-@router.delete("/payroll/incidents/{incident_id}", summary="Eliminar incidencia de prenómina")
+@router.delete("/prenomina/incidencias/{incident_id}", summary="Inactivar incidencia de prenómina")
+@router.delete("/payroll/incidents/{incident_id}", summary="Inactivar incidencia de prenómina")
 def delete_payroll_incident(incident_id: int):
+    """Inactiva una incidencia de prenómina sin eliminarla de la base de datos.
+
+    :param incident_id: Identificador interno de la incidencia.
+    :type incident_id: int
+    :return: Respuesta con el identificador de la incidencia inactivada.
+    :rtype: dict
+    :raises HTTPException: Si el servicio requerido no existe o la incidencia no fue encontrada.
+    """
     try:
         deleted = DBService.delete_payroll_incident(incident_id)
     except AttributeError:
@@ -897,7 +1192,7 @@ def delete_payroll_incident(incident_id: int):
 
     return success(
         data={"id": incident_id},
-        message="Incidencia eliminada correctamente"
+        message="Incidencia inactivada correctamente"
     )
 
 
@@ -915,6 +1210,20 @@ def download_payroll_report(
         description="Códigos de empleados separados por coma"
     ),
 ):
+    """Genera y descarga la prenómina del periodo en formato Excel.
+
+    :param start_date: Fecha inicial del periodo.
+    :type start_date: str
+    :param end_date: Fecha final del periodo.
+    :type end_date: str
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :param user_ids: Códigos o claves opcionales de empleados separados por comas.
+    :type user_ids: Optional[str]
+    :return: Respuesta de descarga con el archivo Excel generado.
+    :rtype: StreamingResponse
+    :raises HTTPException: Si los filtros o los servicios requeridos no son válidos.
+    """
     report = build_payroll_data(
         start_date=start_date,
         end_date=end_date,
@@ -1026,6 +1335,7 @@ def download_payroll_report(
 
 
 class DeviceCreate(BaseModel):
+    """Representa los datos requeridos para registrar un reloj biométrico."""
     nombre: str
     ip: str
     password: str
@@ -1039,6 +1349,7 @@ class DeviceCreate(BaseModel):
 
 
 class DeviceUpdate(BaseModel):
+    """Representa los campos opcionales utilizados para actualizar un reloj biométrico."""
     nombre: Optional[str] = None
     ip: Optional[str] = None
     password: Optional[str] = None
@@ -1059,6 +1370,14 @@ def get_devices_from_db(
         description="ID de sucursal para filtrar relojes"
     )
 ):
+    """Obtiene los relojes biométricos registrados y permite filtrarlos por sucursal.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con la lista de relojes registrados.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     if branch_id is not None:
         get_branch_or_404(branch_id)
         devices = DBService.get_devices_by_branch(branch_id)
@@ -1080,6 +1399,14 @@ def check_devices_status(
         description="ID de sucursal para filtrar relojes"
     )
 ):
+    """Verifica el estado de conexión de los relojes biométricos registrados.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta con el estado actualizado de los relojes verificados.
+    :rtype: dict
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     if branch_id is not None:
         get_branch_or_404(branch_id)
         devices = DBService.get_devices_by_branch(branch_id)
@@ -1124,6 +1451,14 @@ def check_devices_status(
 
 @router.post("/devices", summary="Registrar reloj biométrico en PostgreSQL")
 def create_device(device: DeviceCreate):
+    """Registra un reloj biométrico en la base de datos.
+
+    :param device: Datos de configuración del reloj que se desea registrar.
+    :type device: DeviceCreate
+    :return: Respuesta con el reloj registrado.
+    :rtype: dict
+    :raises HTTPException: Si el intervalo de sincronización, la contraseña o la sucursal no son válidos.
+    """
     if device.sync_interval_minutes < 1 or device.sync_interval_minutes > 60:
         raise HTTPException(status_code=400, detail="El intervalo debe estar entre 1 y 60 minutos")
 
@@ -1162,6 +1497,14 @@ def create_device(device: DeviceCreate):
 
 @router.get("/devices/{device_id}", summary="Obtener reloj por ID desde PostgreSQL")
 def get_device_by_id(device_id: int):
+    """Obtiene un reloj biométrico por su identificador interno.
+
+    :param device_id: Identificador interno del reloj.
+    :type device_id: int
+    :return: Respuesta con los datos del reloj encontrado.
+    :rtype: dict
+    :raises HTTPException: Si el reloj no existe.
+    """
     device = DBService.get_device_by_id(device_id)
 
     if not device:
@@ -1178,6 +1521,14 @@ def get_device_by_id(device_id: int):
     summary="Comparar fecha y hora del reloj con el servidor",
 )
 def get_device_time_status(device_id: int):
+    """Compara la fecha y hora de un reloj biométrico con las del servidor.
+
+    :param device_id: Identificador interno del reloj.
+    :type device_id: int
+    :return: Respuesta con el estado de sincronización de fecha y hora.
+    :rtype: dict
+    :raises HTTPException: Si el reloj no existe.
+    """
     device = DBService.get_device_by_id(device_id)
 
     if not device:
@@ -1209,6 +1560,15 @@ def get_device_time_status(device_id: int):
     summary="Ajustar fecha y hora del reloj con la hora del servidor",
 )
 def sync_device_time(device_id: int):
+    """Ajusta la fecha y hora de un reloj biométrico con la hora del servidor.
+
+    :param device_id: Identificador interno del reloj.
+    :type device_id: int
+    :return: Respuesta con el resultado del ajuste de fecha y hora.
+    :rtype: dict
+    :raises HTTPException: Si el reloj no existe.
+    :raises DeviceClockDriftError: Si el reloj no confirma correctamente el ajuste.
+    """
     device = DBService.get_device_by_id(device_id)
 
     if not device:
@@ -1247,6 +1607,16 @@ def sync_device_time(device_id: int):
 
 @router.put("/devices/{device_id}", summary="Actualizar reloj biométrico")
 def update_device(device_id: int, device: DeviceUpdate):
+    """Actualiza la configuración de un reloj biométrico.
+
+    :param device_id: Identificador interno del reloj.
+    :type device_id: int
+    :param device: Campos que se desean actualizar.
+    :type device: DeviceUpdate
+    :return: Respuesta con los datos actualizados del reloj.
+    :rtype: dict
+    :raises HTTPException: Si los datos son inválidos, la sucursal no existe o el reloj no fue encontrado.
+    """
     if device.sync_interval_minutes is not None and not 1 <= device.sync_interval_minutes <= 60:
         raise HTTPException(status_code=400, detail="El intervalo debe estar entre 1 y 60 minutos")
 
@@ -1290,6 +1660,14 @@ def update_device(device_id: int, device: DeviceUpdate):
 
 @router.delete("/devices/{device_id}", summary="Inactivar reloj biométrico")
 def delete_device(device_id: int):
+    """Inactiva un reloj biométrico registrado.
+
+    :param device_id: Identificador interno del reloj.
+    :type device_id: int
+    :return: Respuesta con el identificador del reloj inactivado.
+    :rtype: dict
+    :raises HTTPException: Si el reloj no existe o no puede inactivarse.
+    """
     device = DBService.get_device_by_id(device_id)
 
     if not device:
@@ -1316,6 +1694,14 @@ def delete_device(device_id: int):
 
 @router.put("/devices/{device_id}/activate", summary="Activar reloj biométrico")
 def activate_device(device_id: int):
+    """Activa un reloj biométrico registrado.
+
+    :param device_id: Identificador interno del reloj.
+    :type device_id: int
+    :return: Respuesta con el identificador del reloj activado.
+    :rtype: dict
+    :raises HTTPException: Si el reloj no existe o no puede activarse.
+    """
     device = DBService.get_device_by_id(device_id)
 
     if not device:
@@ -1344,6 +1730,14 @@ def download_attendance_from_db(
         description="ID de sucursal para filtrar descarga"
     )
 ):
+    """Genera y descarga todas las asistencias disponibles en formato Excel.
+
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta de descarga con el archivo Excel generado.
+    :rtype: StreamingResponse
+    :raises HTTPException: Si se proporciona una sucursal inexistente.
+    """
     records = get_attendance_records(branch_id=branch_id)
 
     records_dict = [attendance_to_excel_dict(record) for record in records]
@@ -1372,6 +1766,18 @@ def download_attendance_report_from_db(
         description="ID de sucursal para filtrar descarga"
     )
 ):
+    """Genera y descarga un reporte de asistencias por periodo en formato Excel.
+
+    :param start_date: Fecha inicial del reporte.
+    :type start_date: str
+    :param end_date: Fecha final del reporte.
+    :type end_date: str
+    :param branch_id: Identificador opcional de la sucursal.
+    :type branch_id: Optional[int]
+    :return: Respuesta de descarga con el archivo Excel generado.
+    :rtype: StreamingResponse
+    :raises HTTPException: Si una fecha es inválida o la sucursal no existe.
+    """
     start = datetime.combine(parse_date(start_date), time.min)
     end = datetime.combine(parse_date(end_date), time.max)
 
@@ -1402,11 +1808,22 @@ def download_attendance_report_from_db(
 
 
 class UserStatusUpdate(BaseModel):
+    """Representa el nuevo estado que se asignará a un empleado."""
     status: str
 
 
 @router.put("/users/by-id/{user_id}/status", summary="Actualizar estado por ID interno")
 def update_user_status_by_id(user_id: int, payload: UserStatusUpdate):
+    """Actualiza el estado de un empleado mediante su identificador interno.
+
+    :param user_id: Identificador interno del empleado.
+    :type user_id: int
+    :param payload: Nuevo estado que se desea asignar.
+    :type payload: UserStatusUpdate
+    :return: Respuesta con los datos actualizados del empleado.
+    :rtype: dict
+    :raises HTTPException: Si el estado es inválido o el empleado no existe.
+    """
     allowed = ["Activo", "Inactivo", "Baja"]
     if payload.status not in allowed:
         raise HTTPException(
@@ -1426,6 +1843,16 @@ def update_user_status_by_id(user_id: int, payload: UserStatusUpdate):
 
 @router.put("/users/{uid}/status", summary="Actualizar estado de empleado")
 def update_user_status(uid: int, payload: UserStatusUpdate):
+    """Actualiza el estado de un empleado mediante su UID.
+
+    :param uid: UID del empleado.
+    :type uid: int
+    :param payload: Nuevo estado que se desea asignar.
+    :type payload: UserStatusUpdate
+    :return: Respuesta con los datos principales del empleado actualizado.
+    :rtype: dict
+    :raises HTTPException: Si el estado es inválido o el empleado no existe.
+    """
     allowed = ["Activo", "Inactivo", "Baja"]
 
     if payload.status not in allowed:
@@ -1456,6 +1883,7 @@ def update_user_status(uid: int, payload: UserStatusUpdate):
 
 
 class UserProfileUpdate(BaseModel):
+    """Representa los campos opcionales utilizados para actualizar el perfil de un empleado."""
     role: Optional[str] = None
     sucursal: Optional[str] = None
     email: Optional[str] = None
@@ -1466,6 +1894,16 @@ class UserProfileUpdate(BaseModel):
 
 @router.put("/users/by-id/{user_id}/profile", summary="Actualizar perfil por ID interno")
 def update_user_profile_by_id(user_id: int, payload: UserProfileUpdate):
+    """Actualiza el perfil de un empleado mediante su identificador interno.
+
+    :param user_id: Identificador interno del empleado.
+    :type user_id: int
+    :param payload: Campos del perfil que se desean actualizar.
+    :type payload: UserProfileUpdate
+    :return: Respuesta con los datos actualizados del empleado.
+    :rtype: dict
+    :raises HTTPException: Si la sucursal o el empleado no existen.
+    """
     sucursal = payload.sucursal
     if payload.branch_id is not None:
         branch = get_branch_or_404(payload.branch_id)
@@ -1491,6 +1929,16 @@ def update_user_profile_by_id(user_id: int, payload: UserProfileUpdate):
 
 @router.put("/users/{uid}/profile", summary="Actualizar perfil de empleado")
 def update_user_profile(uid: int, payload: UserProfileUpdate):
+    """Actualiza el perfil de un empleado mediante su UID.
+
+    :param uid: UID del empleado.
+    :type uid: int
+    :param payload: Campos del perfil que se desean actualizar.
+    :type payload: UserProfileUpdate
+    :return: Respuesta con los datos principales del perfil actualizado.
+    :rtype: dict
+    :raises HTTPException: Si la sucursal o el empleado no existen.
+    """
     sucursal = payload.sucursal
 
     if payload.branch_id is not None:

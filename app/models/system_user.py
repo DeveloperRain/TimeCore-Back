@@ -6,6 +6,7 @@ from app.database.connection import Base
 
 
 class SystemUser(Base):
+    """Modelo ORM representativo de la tabla de usuarios del sistema (system_users)."""
     __tablename__ = "system_users"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -16,4 +17,3 @@ class SystemUser(Base):
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-        

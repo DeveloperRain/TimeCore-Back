@@ -7,6 +7,7 @@ from app.database.connection import Base
 
 
 class Branch(Base):
+    """Modelo ORM representativo de la tabla de sucursales (branches)."""
     __tablename__ = "branches"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -38,6 +39,11 @@ class Branch(Base):
     )
 
     def to_dict(self):
+        """Convierte la instancia del modelo en un diccionario.
+
+        :return: Un diccionario con los datos serializados de la sucursal.
+        :rtype: dict
+        """
         return {
             "id": self.id,
             "name": self.name,
